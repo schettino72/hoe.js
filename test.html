@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>test hoe.js</title>
+    <script type="text/javascript" src="jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="hoe.js"></script>
+    <script type="text/javascript">
+      jQuery(function(){
+          $('body').append(
+              _div('this is a string'),
+              _div('have style', {style: 'color:blue'}),
+              _div($('<div>simple</div>').get(0)),
+              _div(_span('item one'), _span('/ item two')),
+              _div([_span('list item one'), _span('/ item two')])
+          );
+
+          // assert gives error
+          try {
+              $('body').append(_div(true));
+          }
+          catch(err) {
+              got_exception = err;
+          }
+          if (got_exception){
+              $('body').append(_div('OK: bool failed'));
+          }
+          else{
+              $('body').append(_div('FAIL: no error trown on invalid param'));
+          }
+      });
+    </script>
+  </head>
+
+  <body>
+    <h1>hoe.js</h1>
+  </body>
+</html>
