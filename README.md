@@ -1,4 +1,4 @@
 hoe.js
 ======
 
-javascript for pesants
+javascript for peasants
