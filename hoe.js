@@ -1,14 +1,20 @@
-function hoe_ele_init($ele, params){
-    var param, type;
-    for(var i=0, max=params.length; i<max; i++) {
-        param = params[i];
-        type = jQuery.type(param);
+jQuery.fn.hoe = function() {
+    /*
+      Guess which jQuery method should be applied to arguments based on type:
+       - string: append text
+       - plain object: set html attributes
+       - DOM element & jQuery object: append elements
+       - array: append elements
+    */
+
+    function _guess_apply($ele, param){
+        var type = jQuery.type(param);
         if(type === "string"){
-            $ele.text(param);
+            $ele.append(param);
         }
         else if(type === "array"){
-            for(var j=0, jmax=param.length; i<max; i++) {
-                $ele.append(param[i]);
+            for(var i=0, max=param.length; i<max; i++) {
+                $ele.append(param);
             }
         }
         else if (type === "object") {
@@ -28,27 +34,45 @@ function hoe_ele_init($ele, params){
             throw Error("Invalid type: " + type);
         }
     }
-    return $ele;
-}
 
-function define_hoe(){
-    var tags = [
-        'a', 'body', 'br', 'code', 'div',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'input', 'label', 'li', 'ol', 'p', 'pre', 'select', 'span',
-        'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
+    for(var i=0, max=arguments.length; i<max; i++) {
+        _guess_apply(this, arguments[i]);
+    }
+    return this;
+};
+
+
+/* hoe namespace */
+// create new object and apply arguments
+// hoe(tag [, param ...]
+var hoe = function(tag){
+    var $ele = hoe._create(tag);
+    return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));
+};
+
+// create a "hoe" object
+hoe._create = function(tag){
+    return jQuery(document.createElement(tag));
+};
+
+// build functions to create hoe objcts on namespace
+hoe.init = function(namespace, tags){
+    // by default add most common tags to window object
+    var default_tags = [
+        'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
+        'label', 'input', 'select',
+        'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
     ];
+    namespace = namespace || window;
+    tags = tags || default_tags;
 
     function _create_function(tag){
         return function(){
-            return hoe_ele_init($(document.createElement(tag)), arguments);
+            var $ele = hoe._create(tag);
+            return $ele.hoe.apply($ele, arguments);
         }
     }
-    var tag;
     for (var i=0, max=tags.length; i<max; i++){
-        tag = tags[i];
-        window['_' + tag] = _create_function(tag);
+        namespace[tags[i]] = _create_function(tags[i]);
     }
-}
-
-define_hoe();
+};
