@@ -60,7 +60,7 @@ hoe.init = function(namespace, tags){
     // by default add most common tags to window object
     var default_tags = [
         'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
-        'label', 'input', 'select',
+        'form', 'label', 'input', 'select',
         'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
     ];
     namespace = namespace || window;
