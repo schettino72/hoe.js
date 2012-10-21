@@ -72,3 +72,7 @@ hoe.init = function(namespace, tags){
         namespace[tags[i]] = _create_function(tags[i]);
     }
 };
+
+// node stuff
+if (typeof exports !== 'undefined')
+    exports.hoe = hoe;
