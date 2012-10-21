@@ -1,6 +1,7 @@
 "use strict" // ecmascript 5
 
-if (typeof window === 'undefined'){ // running from node
+/*** setup test runner ***/
+if (typeof window === 'undefined'){ // running on node
     var assert = require('assert');
 
     // setup DOM + jQuery
@@ -10,16 +11,23 @@ if (typeof window === 'undefined'){ // running from node
     global.document = window.document;
     var $ = global.jQuery = require('jquery').create(window);
 
-    var hoe = require('../hoe.js').hoe;
+    if (!global.HOE_PATH){
+        global.HOE_PATH = '../lib/hoe.js';
+    }
+    var hoe = require(HOE_PATH).hoe;
 }
-else { // for browser
+else { // running on browser
     var assert = chai.assert;
 }
 
 
+/*** tests ***/
+
+// TODO extend chai
 function html_str($ele){
     return $('<div>').html($ele).html();
 }
+
 
 suite('hoe', function(){
     suite('hoe()', function(){
