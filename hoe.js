@@ -1,3 +1,4 @@
+
 jQuery.fn.hoe = function() {
     /*
       Guess which jQuery method should be applied to arguments based on type:
@@ -46,13 +47,8 @@ jQuery.fn.hoe = function() {
 // create new object and apply arguments
 // hoe(tag [, param ...]
 var hoe = function(tag){
-    var $ele = hoe._create(tag);
+    var $ele = jQuery(document.createElement(tag));
     return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));
-};
-
-// create a "hoe" object
-hoe._create = function(tag){
-    return jQuery(document.createElement(tag));
 };
 
 // build functions to create hoe objcts on namespace
@@ -68,7 +64,7 @@ hoe.init = function(namespace, tags){
 
     function _create_function(tag){
         return function(){
-            var $ele = hoe._create(tag);
+            var $ele = jQuery(document.createElement(tag));
             return $ele.hoe.apply($ele, arguments);
         }
     }
