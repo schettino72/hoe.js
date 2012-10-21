@@ -21,11 +21,13 @@ def task_coverage():
         'targets': ['coverage/hoe.js'],
         }
     # XXX no reasonable terminal coverage result
+    # XXX doesnt report tests failed
     yield {
         'name': 'test',
         'actions': [
             mocha_cmd + ' --require setup_cov.js --reporter html-cov > coverage/result.html'],
         'file_dep': ['coverage/hoe.js', 'test/test.js'],
+        'targets': ['coverage/result.html'],
         }
 
 
