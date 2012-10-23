@@ -9,6 +9,10 @@
     "maxlen": 80,
     "multistr": true,
 
+    "globals": {
+        "Element": false,
+        "exports": false
+    },
     "browser": true,
     "jquery": true
 }
