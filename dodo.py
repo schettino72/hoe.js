@@ -3,13 +3,15 @@ DOIT_CONFIG = {
     'verbosity': 2,
     }
 
-mocha_cmd = 'node_modules/mocha/bin/mocha --ui tdd'
+
+MOCHA_CMD = 'node_modules/mocha/bin/mocha --ui tdd'
+HOE_JS = 'src/hoe.js'
 
 
 def task_check():
     return {
-        'actions': ['jshint --config hint.json lib/hoe.js'],
-        'file_dep': ['hint.json', 'lib/hoe.js'],
+        'actions': ['jshint --config hint.json ' + HOE_JS],
+        'file_dep': ['hint.json', HOE_JS],
         }
 
 
@@ -17,15 +19,15 @@ def task_test():
     """run unit-tests using mocha"""
     return {
         'actions': [
-            mocha_cmd + ' --colors --reporter spec'],
-        'file_dep': ['lib/hoe.js', 'test/test.js'],
+            MOCHA_CMD + ' --colors --reporter spec'],
+        'file_dep': [HOE_JS, 'test/test.js'],
         }
 
 def task_coverage():
     yield {
         'name': 'annotate',
-        'actions': ['jscoverage --no-highlight lib coverage'],
-        'file_dep': ['lib/hoe.js'],
+        'actions': ['jscoverage --no-highlight src coverage'],
+        'file_dep': [HOE_JS],
         'targets': ['coverage/hoe.js'],
         }
     # XXX no reasonable terminal coverage result
@@ -33,7 +35,7 @@ def task_coverage():
     yield {
         'name': 'test',
         'actions': [
-            mocha_cmd + ' --require setup_cov.js --reporter html-cov > coverage/result.html'],
+            MOCHA_CMD + ' --require setup_cov.js --reporter html-cov > coverage/result.html'],
         'file_dep': ['coverage/hoe.js', 'test/test.js'],
         'targets': ['coverage/result.html'],
         }

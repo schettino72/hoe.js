@@ -19,7 +19,7 @@ if (IS_NODE){ // running on node
     fake_dom();
 
     if (!global.HOE_PATH){
-        global.HOE_PATH = '../lib/hoe.js';
+        global.HOE_PATH = '../src/hoe.js';
     }
     var hoe = require(HOE_PATH).hoe;
 }
