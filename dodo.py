@@ -1,9 +1,17 @@
 DOIT_CONFIG = {
-    'default_tasks': ['test'],
+    'default_tasks': ['check', 'test'],
     'verbosity': 2,
     }
 
 mocha_cmd = 'node_modules/mocha/bin/mocha --ui tdd'
+
+
+def task_check():
+    return {
+        'actions': ['jshint --config hint.json lib/hoe.js'],
+        'file_dep': ['hint.json', 'lib/hoe.js'],
+        }
+
 
 def task_test():
     """run unit-tests using mocha"""
