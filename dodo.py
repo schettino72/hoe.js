@@ -25,6 +25,7 @@ def task_test():
         'file_dep': [HOE_JS, 'test/test.js'],
         }
 
+
 def task_coverage():
     yield {
         'name': 'annotate',
@@ -40,6 +41,15 @@ def task_coverage():
             MOCHA_CMD + ' --require setup_cov.js --reporter html-cov > coverage/result.html'],
         'file_dep': ['coverage/hoe.js', 'test/test.js'],
         'targets': ['coverage/result.html'],
+        }
+
+
+def task_readme():
+    """convert README.md into html"""
+    return {
+        'actions': ['markdown_py README.md > README.html'],
+        'file_dep': ['README.md'],
+        'targets': ['README.hmtl'],
         }
 
 
