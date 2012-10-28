@@ -1,13 +1,12 @@
 // based on angularjs.org TODO example
 
-function TodoItem(text, done){
+var TodoItem = hoe.Type(function(text, done){
     this.text = text; // (str)
     this.done = done; // (bool)
 
     this.$text = null; // containing the todo text
     this.$input = null; // containing the checkbox
-}
-$.extend(TodoItem.prototype, hoe.obj_proto);
+});
 
 TodoItem.prototype.render = function(){
     this.$input = input({type: "checkbox"}).prop('checked', this.done);
@@ -24,14 +23,13 @@ TodoItem.prototype.set_done = function(){
 
 
 
-function Todo() {
+var Todo = hoe.Type(function() {
     this.remaining = 0;
     this.todos = [];
 
     this.$remaining_title = span();
     this.$todo_list = ul({'class': "unstyled"});
-}
-$.extend(Todo.prototype, hoe.obj_proto);
+});
 
 Todo.prototype.addTodo = function(text, done) {
     var item = new TodoItem(text || '', done || false);

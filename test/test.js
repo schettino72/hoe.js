@@ -120,12 +120,41 @@ suite('hoe', function(){
     });
 
 
-    suite('hoe events', function(){
-        test('DOM event', function(){
-            function MyStuff(){
+    suite('hoe.inherit', function(){
+        test('new constructor', function(){
+            function Base(){
                 this.x = 1;
             }
-            $.extend(MyStuff.prototype, hoe.obj_proto);
+            Base.prototype.three = function(){return 3;};
+            Base.constant_x = 5;
+            var Sub = hoe.inherit(Base, function(){
+                this.y = 2;
+            });
+            var obj = new Sub();
+            assert.equal(2, obj.y);
+            assert.equal("undefined", typeof obj.x);
+            assert.equal(3, obj.three());
+            assert.equal(5, Sub.constant_x);
+        });
+        test('new constructor', function(){
+            function Base(){
+                this.x = 1;
+            }
+            Base.prototype.three = function(){return 3;};
+            Base.constant_x = 5;
+            var Sub = hoe.inherit(Base);
+            var obj = new Sub();
+            assert.equal(1, obj.x);
+            assert.equal(3, obj.three());
+            assert.equal(5, Sub.constant_x);
+        });
+    });
+
+    suite('hoe.Type event system', function(){
+        test('DOM event', function(){
+            var MyStuff = hoe.Type(function(){
+                this.x = 1;
+            });
             var $ele = hoe('div', "xxx");
             var my = new MyStuff();
             my.on($ele, 'click', function(){this.x=2;});
@@ -134,17 +163,15 @@ suite('hoe', function(){
             assert.equal(2, my.x);
         });
         test('obj event', function(){
-            function Observed(){
+            var Observed = hoe.Type(function(){
                 this.do_x = function(){this.trigger('done', 5);};
-            }
-            $.extend(Observed.prototype, hoe.obj_proto);
-            function Observer(){
+            });
+            var Observer = hoe.Type(function(){
                 this.x = 1;
                 this.ele = new Observed();
                 this.react = function(val){this.x=val;};
                 this.on(this.ele, 'done', this.react);
-            }
-            $.extend(Observer.prototype, hoe.obj_proto);
+            });
             var obj = new Observer();
             assert.equal(1, obj.x);
             obj.ele.do_x();
@@ -153,12 +180,12 @@ suite('hoe', function(){
     });
 
 
-    suite('hoe functional', function(){
+    suite('hoe.Type functional', function(){
         test('forEach', function(){
             function MyStuff(){
                 this.x = [];
             }
-            $.extend(MyStuff.prototype, hoe.obj_proto);
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
             var my = new MyStuff();
             assert.deepEqual([], my.x);
             my.forEach([1,3,5], function(val){this.x.push(val+1);});

@@ -73,8 +73,26 @@ hoe.init = function(namespace, tags){
 };
 
 
+
+hoe.inherit = function (base_type, constructor){
+    var new_type;
+    if (constructor){
+        new_type = constructor;
+    }
+    else{
+        new_type = function(){return base_type.apply(this, arguments);};
+    }
+    $.extend(new_type, base_type);
+    $.extend(new_type.prototype, base_type.prototype);
+    return new_type;
+};
+
+
 // object helpers that bind scope to object
-hoe.obj_proto = {
+hoe.Type = function(constructor){
+    return hoe.inherit(hoe.Type, constructor);
+};
+hoe.Type.prototype = {
     // event system
     on: function(observed, event, callback){
         if(observed instanceof jQuery){
