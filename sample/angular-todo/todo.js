@@ -1,7 +1,6 @@
 // based on angularjs.org TODO example
 
-function TodoItem(list, text, done){
-    this.list = list; // reference to Todo
+function TodoItem(text, done){
     this.text = text; // (str)
     this.done = done; // (bool)
 
@@ -14,12 +13,12 @@ function TodoItem(list, text, done){
         this.$text = span(this.text);
         this._set_done();
         return [this.$input, this.$text];
-    }
+    };
     this._set_done = function(event){
         this.done = this.$input.prop('checked');
         this.$text.addClass('done-' + this.done).removeClass('done-' + !this.done);
-        this.list.update(!event, this.done);
-    }
+        this.trigger('changed', !event, this.done);
+    };
 }
 $.extend(TodoItem.prototype, hoe.obj_proto);
 
@@ -32,7 +31,8 @@ function Todo() {
     this.$todo_list = ul({'class': "unstyled"});
 
     this.addTodo = function(text, done) {
-        var item = new TodoItem(this, text || '', done || false)
+        var item = new TodoItem(text || '', done || false);
+        this.on(item, 'changed', this.update);
         this.todos.push(item);
         item.$ele = li(item.render());
         this.$todo_list.append(item.$ele);
@@ -76,6 +76,6 @@ function Todo() {
 
         return [this._render_remaining(), ' [', $archive_link, ']',
                 this.$todo_list, form($todo_input, $addBtn)];
-    }
+    };
 }
 $.extend(Todo.prototype, hoe.obj_proto);

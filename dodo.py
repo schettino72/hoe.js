@@ -9,10 +9,12 @@ HOE_JS = 'src/hoe.js'
 
 
 def task_check():
-    return {
-        'actions': ['jshint --config hint.json ' + HOE_JS],
-        'file_dep': ['hint.json', HOE_JS],
-        }
+    for js_file in (HOE_JS, 'test/test.js'):
+        yield {
+            'name': js_file,
+            'actions': ['jshint --config hint.json ' + js_file],
+            'file_dep': ['hint.json', js_file],
+            }
 
 
 def task_test():

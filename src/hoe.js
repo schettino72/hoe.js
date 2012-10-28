@@ -76,8 +76,28 @@ hoe.init = function(namespace, tags){
 // object helpers that bind scope to object
 hoe.obj_proto = {
     // event system
-    on: function($ele, event, callback){
-        $ele.bind(event, $.proxy(callback, this));
+    on: function(observed, event, callback){
+        if(observed instanceof jQuery){
+            observed.bind(event, $.proxy(callback, this));
+        }
+        else{
+            if (typeof observed._hoe_obs === 'undefined'){
+                observed._hoe_obs = {};
+            }
+            if (!(event in observed._hoe_obs)){
+                observed._hoe_obs[event] = [];
+            }
+            observed._hoe_obs[event].push({scope:this, fn:callback});
+        }
+    },
+    trigger: function(event){
+        if (this._hoe_obs && this._hoe_obs[event]){
+            var callbacks = this._hoe_obs[event];
+            for (var i=0, max=callbacks.length; i<max; i++){
+                callbacks[i].fn.apply(callbacks[i].scope,
+                                      Array.prototype.slice.call(arguments, 1));
+            }
+        }
     },
 
     // functional stuff

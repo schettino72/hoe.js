@@ -1,4 +1,9 @@
-"use strict" // ecmascript 5
+/*jshint globalstrict:true */
+/*global global, require */
+/*global suite, test*/
+
+"use strict"; // ecmascript 5
+
 
 var IS_NODE = typeof window === 'undefined';
 
@@ -21,7 +26,7 @@ if (IS_NODE){ // running on node
     if (!global.HOE_PATH){
         global.HOE_PATH = '../src/hoe.js';
     }
-    var hoe = require(HOE_PATH).hoe;
+    var hoe = require(global.HOE_PATH).hoe;
 }
 
 var assert = chai.assert;
@@ -80,12 +85,13 @@ suite('hoe', function(){
             assert.throws(fn, /Invalid type: boolean/);
         });
         test('invalid parameter type (object)', function(){
-            function MyType(){};
+            function MyType(){}
             var obj = new MyType();
             var fn = function(){return hoe('div', obj);};
             assert.throws(fn, /Invalid object:/);
         });
     });
+
 
     suite('hoe.init()', function(){
         test('default create elements on window', function(){
@@ -113,6 +119,7 @@ suite('hoe', function(){
         });
     });
 
+
     suite('hoe events', function(){
         test('DOM event', function(){
             function MyStuff(){
@@ -126,7 +133,25 @@ suite('hoe', function(){
             $ele.trigger('click');
             assert.equal(2, my.x);
         });
+        test('obj event', function(){
+            function Observed(){
+                this.do_x = function(){this.trigger('done', 5);};
+            }
+            $.extend(Observed.prototype, hoe.obj_proto);
+            function Observer(){
+                this.x = 1;
+                this.ele = new Observed();
+                this.react = function(val){this.x=val;};
+                this.on(this.ele, 'done', this.react);
+            }
+            $.extend(Observer.prototype, hoe.obj_proto);
+            var obj = new Observer();
+            assert.equal(1, obj.x);
+            obj.ele.do_x();
+            assert.equal(5, obj.x);
+        });
     });
+
 
     suite('hoe functional', function(){
         test('forEach', function(){
@@ -142,4 +167,3 @@ suite('hoe', function(){
     });
 
 });
-
