@@ -1,0 +1,22 @@
+<!-- use this to play around or do manual tests -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>hoe.js</title>
+  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
+<body>
+
+  <script src="../components/jquery.js"></script>
+  <script src="../src/hoe.js"></script>
+
+  <script>
+    $(function(){
+        hoe.init();
+        $('body').append(
+            div('this is used for quick manual tests. edit the code...')
+        );
+    });
+  </script>
+</body>
+</html>
