@@ -9,15 +9,17 @@ function TodoItem(text, done){
 
     this.render = function(){
         this.$input = input({type: "checkbox"}).prop('checked', this.done);
-        this.on(this.$input, 'click', this._set_done);
+        this.on(this.$input, 'click', function(){
+            this._set_done();
+            this.trigger('changed', this.done);
+        });
         this.$text = span(this.text);
         this._set_done();
         return [this.$input, this.$text];
     };
-    this._set_done = function(event){
+    this._set_done = function(){
         this.done = this.$input.prop('checked');
         this.$text.addClass('done-' + this.done).removeClass('done-' + !this.done);
-        this.trigger('changed', !event, this.done);
     };
 }
 $.extend(TodoItem.prototype, hoe.obj_proto);
@@ -33,16 +35,14 @@ function Todo() {
     this.addTodo = function(text, done) {
         var item = new TodoItem(text || '', done || false);
         this.on(item, 'changed', this.update);
+        this.remaining += item.done ? 0 : 1;
         this.todos.push(item);
         item.$ele = li(item.render());
         this.$todo_list.append(item.$ele);
     };
 
-    this.update = function(added, done) {
-        if (added)
-            this.remaining += done ? 0 : 1;
-        else
-            this.remaining += done ? -1 : 1;
+    this.update = function(done) {
+        this.remaining += done ? -1 : 1;
         this._render_remaining();
     };
 
@@ -70,6 +70,7 @@ function Todo() {
         var $addBtn = input({'class': "btn-primary", type:"submit", value:"add"});
         this.on($addBtn, 'click', function(event){
             this.addTodo($todo_input.val(), false);
+            this._render_remaining();
             $todo_input.val('');
             event.preventDefault();
         });
