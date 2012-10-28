@@ -72,6 +72,24 @@ hoe.init = function(namespace, tags){
     }
 };
 
+
+// object helpers that bind scope to object
+hoe.obj_proto = {
+    // event system
+    on: function($ele, event, callback){
+        $ele.bind(event, $.proxy(callback, this));
+    },
+
+    // functional stuff
+    forEach: function(array, fn){
+        for(var i = 0, len = array.length; i < len; ++i) {
+            fn.call(this, array[i], i, array);
+        }
+    }
+};
+
+
 // node stuff
-if (typeof exports !== 'undefined')
+if (typeof exports !== 'undefined'){
     exports.hoe = hoe;
+}

@@ -10,7 +10,7 @@ function TodoItem(list, text, done){
 
     this.render = function(){
         this.$input = input({type: "checkbox"}).prop('checked', this.done);
-        this.$input.click($.proxy(this._set_done, this));
+        this.on(this.$input, 'click', this._set_done);
         this.$text = span(this.text);
         this._set_done();
         return [this.$input, this.$text];
@@ -21,6 +21,8 @@ function TodoItem(list, text, done){
         this.list.update(!event, this.done);
     }
 }
+$.extend(TodoItem.prototype, hoe.obj_proto);
+
 
 function Todo() {
     this.remaining = 0;
@@ -47,12 +49,12 @@ function Todo() {
     this.archive = function() {
         var oldTodos = this.todos;
         this.todos = [];
-        for(var i=0,max=oldTodos.length;i<max;i++){
-            if (!oldTodos[i].done)
-                this.todos.push(oldTodos[i]);
+        this.forEach(oldTodos, function(todo){
+            if (!todo.done)
+                this.todos.push(todo);
             else
-                oldTodos[i].$ele.remove();
-        }
+                todo.$ele.remove();
+        });
         this._render_remaining();
     };
 
@@ -62,16 +64,18 @@ function Todo() {
     };
 
     this.render = function() {
-        var $archive_link = a({href: "#"}, 'archive').click($.proxy(this.archive, this));
+        var $archive_link = a({href: "#"}, 'archive');
+        this.on($archive_link, 'click', this.archive);
         var $todo_input = input({type:"text", size:"30", placeholder:"add new todo here"});
         var $addBtn = input({'class': "btn-primary", type:"submit", value:"add"});
-        $addBtn.click($.proxy(function(event){
+        this.on($addBtn, 'click', function(event){
             this.addTodo($todo_input.val(), false);
             $todo_input.val('');
             event.preventDefault();
-        }, this));
+        });
 
         return [this._render_remaining(), ' [', $archive_link, ']',
                 this.$todo_list, form($todo_input, $addBtn)];
     }
 }
+$.extend(Todo.prototype, hoe.obj_proto);

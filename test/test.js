@@ -112,5 +112,34 @@ suite('hoe', function(){
             assert.equal('<span>xxx</span>', html_str($ele));
         });
     });
+
+    suite('hoe events', function(){
+        test('DOM event', function(){
+            function MyStuff(){
+                this.x = 1;
+            }
+            $.extend(MyStuff.prototype, hoe.obj_proto);
+            var $ele = hoe('div', "xxx");
+            var my = new MyStuff();
+            my.on($ele, 'click', function(){this.x=2;});
+            assert.equal(1, my.x);
+            $ele.trigger('click');
+            assert.equal(2, my.x);
+        });
+    });
+
+    suite('hoe functional', function(){
+        test('forEach', function(){
+            function MyStuff(){
+                this.x = [];
+            }
+            $.extend(MyStuff.prototype, hoe.obj_proto);
+            var my = new MyStuff();
+            assert.deepEqual([], my.x);
+            my.forEach([1,3,5], function(val){this.x.push(val+1);});
+            assert.deepEqual([2,4,6], my.x);
+        });
+    });
+
 });
 
