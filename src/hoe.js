@@ -53,9 +53,11 @@ jQuery.fn.hoe = hoe.jquery_plugin;
 // build functions to create hoe objcts on namespace
 // by default add most common tags to window object
 hoe.init_default_tags = [
-        'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
-        'form', 'label', 'input', 'select',
-        'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
+    'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong',
+    'section', 'header', 'footer',
+    'form', 'label', 'input', 'select', 'button',
+    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
 ];
 hoe.init = function(namespace, tags){
     namespace = namespace || window;
@@ -119,9 +121,16 @@ hoe.Type.prototype = {
     },
 
     // functional stuff
-    forEach: function(array, fn){
-        for(var i = 0, len = array.length; i < len; ++i) {
-            fn.call(this, array[i], i, array);
+    forEach: function(seq, fn){
+        if (jQuery.type(seq) == 'array'){
+            for(var i = 0, len = seq.length; i < len; ++i) {
+                fn.call(this, seq[i], i, seq);
+            }
+        }
+        else { // must be an object
+            for (var key in seq){
+                fn.call(this, seq[key], key, seq);
+            }
         }
     }
 };

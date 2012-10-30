@@ -181,7 +181,7 @@ suite('hoe', function(){
 
 
     suite('hoe.Type functional', function(){
-        test('forEach', function(){
+        test('forEach array', function(){
             function MyStuff(){
                 this.x = [];
             }
@@ -191,6 +191,15 @@ suite('hoe', function(){
             my.forEach([1,3,5], function(val){this.x.push(val+1);});
             assert.deepEqual([2,4,6], my.x);
         });
+        test('forEach object', function(){
+            function MyStuff(){
+                this.x = {};
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            assert.deepEqual({}, my.x);
+            my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
+            assert.deepEqual({1:3, 3:5}, my.x);
+        });
     });
-
 });
