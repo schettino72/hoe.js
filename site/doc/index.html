@@ -1,41 +1,51 @@
-  <div class="row">
-    <img src="media/ninja-logo.png" alt="logo" style="margin:30px;float:left;width:320px;">
-    <img src="media/hoe-title.png" alt="hoe.js" style="margin-top:50px;padding:20px;float:left;width:520px">
+<div class="row">
+  <img src="media/ninja-logo.png" alt="logo" style="margin:30px;float:left;width:320px;">
+  <img src="media/hoe-title.png" alt="hoe.js" style="margin-top:50px;padding:20px;float:left;width:520px">
+</div>
+
+
+<div class="row">
+
+  <div class="four panel columns">
+
+    <h4>Why <em>hoe.js</em> ?</h4>
+    <p><em>hoe.js</em> is a lightweight javascript library desgined to easy the creation of user interface in HTML/javascript.</p>
+    <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
+    <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
+    <p><em>hoe.js</em> goal is to let you write strcutured code for small components and ley you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, adding some missing pieces:</p>
+    <ul class="side-nav" style="padding:0;">
+      <li><a href="#dom">DOM creation</a></li>
+      <li><a href="#prototype">prototype helpers</a></li>
+      <li><a href="#event">event system</a></li>
+    </ul>
   </div>
 
+  <div class="eight columns">
+    <div id="dom" class="panel">
+      <h4>DOM creation</h4>
 
-  <div class="row">
+      <pre class="prettyprint">
+hoe.init();
+var row = tr(td('col1', {'class': "my_class"}),
+             td(a('col2', {name: 'xxx'})) );
+      </pre>
 
-    <div class="four panel columns">
+      <p><code>hoe.init()</code> define function helpers to create most
+      commonly used tags.</p>
 
-      <h4>Why <em>hoe.js</em> ?</h4>
-      <p><em>hoe.js</em> is a lightweight javascript library desgined to easy the creation of user interface in HTML/javascript.</p>
-      <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
-      <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
-      <p><em>hoe.js</em> goal is to let you write strcutured code for small components and ley you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, adding some missing pieces:</p>
-      <ul class="side-nav" style="padding:0;">
-        <li><a href="#dom">DOM creation</a></li>
-        <li><a href="#prototype">prototype helpers</a></li>
-        <li><a href="#event">event system</a></li>
+      The function's name is the <em>tag</em> it creates.
+      It returns a jQuery objet and can take any numbers of arguments where:
+      <ul>
+        <li>plain javascript objects are element attributes</li>
+        <li>strings are append to the element content</li>
+        <li>DOM element or jQuery object is append to the element content</li>
+        <li>can also  take a array of DOM/jQuery</li>
       </ul>
-    </div>
 
-    <div class="eight columns">
-      <div id="dom" class="panel">
-        <h4>DOM creation</h4>
-        templates blablabla
 
-        <div class="row">
-          <div class="six columns">
-            <img src="http://placehold.it/600x500&text=Thumbnail">
-          </div>
-          <div class="six columns">
-            <img src="http://placehold.it/600x500&text=Thumbnail">
-          </div>
-        </div>
-      </div><!-- end panel 'dom' -->
-
-    </div>
+    </div><!-- end panel 'dom' -->
 
   </div>
+
+</div>
 
