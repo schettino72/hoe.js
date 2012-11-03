@@ -1,3 +1,5 @@
+from glob import glob
+
 DOIT_CONFIG = {
     'default_tasks': ['check', 'test'],
     'verbosity': 2,
@@ -64,6 +66,24 @@ def task_readme():
 
 ####################### site
 def task_site():
-    return {
-        'actions': ['cat site/template/head.html site/doc/index.html site/template/foot.html > site/index.html'],
+    head = 'site/template/head.html'
+    foot = 'site/template/foot.html'
+
+    for content in glob('site/doc/*.html'):
+        name = content.split('/')[-1].rsplit('.', 1)[0]
+
+        # put pages together: head + content + foot
+        page = 'site/' + name + '.html'
+        yield {
+            'basename': 'render',
+            'name': name,
+            'actions': ['cat %s %s %s > %s' % (head, content, foot, page)],
+            'file_dep': [head, foot, content],
+            'targets': [page],
+            }
+
+    yield {
+        'basename': 'site',
+        'actions':[],
+        'task_dep': ['render'],
         }
