@@ -11,9 +11,21 @@
   <!-- Set the viewport width to device width for mobile -->
   <meta name="viewport" content="width=device-width" />
 
-  <title>hoe.js</title>
+  <title>hoe.js - javascript for peasants</title>
   <link rel="stylesheet" href="stylesheets/foundation.min.css">
   <link rel="stylesheet" href="stylesheets/app.css">
+  <style>
+    body {
+      background-color: #2f1c0e; /* brown */
+    }
+    h1, h2, h3 ,h4, h5, h6 {
+      color: #499d49; /* green */
+    }
+    .soon {
+      border-bottom: inherit;
+      text-decoration: line-through;
+    }
+  </style>
 
   <script src="javascripts/modernizr.foundation.js"></script>
 
@@ -26,30 +38,23 @@
 <body>
 
   <!-- Navigation -->
-
   <nav class="top-bar fixed">
     <ul>
-      <li class="name"><h1><a href="#">Title</a></h1></li>
+      <li class="name"><h1><a href="index.html">hoe.js</a></h1></li>
       <li class="toggle-topbar"><a href="#"></a></li>
     </ul>
 
     <section>
       <ul class="left">
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
+        <li><a class="soon has-tip" title="coming soon...">tutorial</a></li>
+        <li><a class="soon has-tip" title="coming soon...">API</a></li>
+        <li><a class="soon has-tip" title="coming soon...">test</a></li>
+        <li><a class="soon has-tip" title="coming soon...">compare</a></li>
       </ul>
 
       <ul class="right">
-        <li class="has-dropdown">
-          <a href="#">Link</a>
-
-          <ul class="dropdown">
-            <li><a href="#">Dropdown Link</a></li>
-            <li><a href="#">Dropdown Link</a></li>
-            <li><a href="#">Dropdown Link</a></li>
-          </ul>
-        </li>
+        <li><a href="https://github.com/schettino72/hoe.js">github</a></li>
+        <li><a class="soon has-tip" title="coming soon...">download</a></li>
       </ul>
     </section>
   </nav><br><br>
@@ -59,15 +64,16 @@
 
   <!-- Header -->
 
-    <img src="http://placehold.it/1600x600&text=Header"><br><br>
-
+  <div class="row" style="margin-top:30px">
+    <img src="media/ninja-logo.png" alt="logo" style="margin:30px;float:left;width:320px;">
+    <img src="media/hoe-title.png" alt="hoe.js" style="margin-top:50px;padding:20px;float:left;width:520px">
+  </div>
   <!-- End Header -->
 
 
   <div class="row">
 
     <div class="three panel columns">
-      <img src="http://placehold.it/500x500&text=Image">
 
       <h4>Header</h4>
 
