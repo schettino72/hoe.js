@@ -59,3 +59,11 @@ def task_readme():
 # npm install chai
 # npm install jquery
 # sudo apt-get install jscoverage
+
+
+
+####################### site
+def task_site():
+    return {
+        'actions': ['cat site/template/head.html site/doc/index.html site/template/foot.html > site/index.html'],
+        }
