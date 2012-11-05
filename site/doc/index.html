@@ -12,13 +12,14 @@
     <p><em>hoe.js</em> is a lightweight javascript library desgined to easy the creation of user interface in HTML/javascript.</p>
     <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
     <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
-    <p><em>hoe.js</em> goal is to let you write strcutured code for small components and ley you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, adding some missing pieces:</p>
+    <p><em>hoe.js</em> goal is to let you write strcutured code for small components and ley you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, just adding some missing pieces:</p>
     <ul class="side-nav" style="padding:0;">
       <li><a href="#dom">DOM creation</a></li>
       <li><a href="#prototype">prototype helpers</a></li>
       <li><a href="#event">event system</a></li>
     </ul>
   </div>
+
 
   <div class="eight columns">
     <div id="dom" class="panel">
@@ -33,19 +34,123 @@ var row = tr(td('col1', {'class': "my_class"}),
       <p><code>hoe.init()</code> define function helpers to create most
       commonly used tags.</p>
 
-      The function's name is the <em>tag</em> it creates.
+      <p>The function's name is the <em>tag</em> it creates. In this example
+      <code>tr()</code> <code>td()</code> and <code>a()</code>.
       It returns a jQuery objet and can take any numbers of arguments where:
+      </p>
       <ul>
         <li>plain javascript objects are element attributes</li>
         <li>strings are append to the element content</li>
         <li>DOM element or jQuery object is append to the element content</li>
         <li>can also  take a array of DOM/jQuery</li>
       </ul>
-
-
+      <!--
+* init can take 2 arguments
+  1. the namespace where the functions will be created (default: window)
+  2. list of string with tag names which functions will be created
+* you can also use the `hoe()` function where the first argument is a string
+  with tag name, other arguments are same as described above
+-->
     </div><!-- end panel 'dom' -->
 
-  </div>
 
+    <div id="prototype" class="panel">
+      <h4>prototype helpers</h4>
+
+      <h5>hoe.inherit()</h5>
+      <p>Create new types by "inheriting" from other types:</p>
+      <pre class="prettyprint">
+function Base(){
+    this.x = 1;
+}
+Base.prototype.three = function(){
+    return 3;
+};
+
+var Sub = hoe.inherit(Base, function(){
+    this.x = 2;
+});
+var obj = new Sub();
+obj.three();
+      </pre>
+      <ul>
+        <li>the first argument is the function constructor to copy the prototype from</li>
+        <li>the second argument is optional. If present defines the constructor
+        otherwise the constructor from the base type is used</li>
+      </ul>
+
+      <h5>hoe.Type</h5>
+      <p><code>hoe.Type</code> is an <em>abstract</em> type that provides some convenience methods
+      that keep the scope to the object when passing methods as callbacks.
+      It also support a basic event system to be used between objects.
+      </p>
+
+      <p>When creating new type you should inherit from <code>hoe.Type</code></p>
+      <pre class="prettyprint">
+var MyType = hoe.inherit(hoe.Type, function(){/*...*/});
+
+// ... this shorthand has the same effect as above
+var MyType = hoe.Type(function(){/*...*/});
+      </pre>
+
+      <h5>hoe.Type.forEach</h5>
+      Iterate through arrays and objects keeping the context to current object.
+
+      <pre class="prettyprint">
+var MyType = hoe.Type(function(){
+    this.class = 'hoe';
+    this.$ele = div();
+};
+MyType.prototype.add_span = function(content){
+   this.$ele.append(span({'class': this.class}, content));
+}
+
+var my = new MyType();
+my.forEach(['ele1', 'ele2'], this.add_span);
+my.$ele.html();
+// &lt;div&gt;
+//    &lt;span class="hoe"&gt;ele1&lt;/span&gt;
+//    &lt;span class="hoe"&gt;ele2&lt;/span&gt;
+// &lt;/div&gt;
+      </pre>
+
+    </div><!-- end panel 'prototype' -->
+
+    <div id="event" class="panel">
+      <h4>Event system</h4>
+
+      <h5>DOM events</h5>
+      <code>hoe.Type.on()</code> can be used to bind DOM events keeping the object context.
+      <pre class="prettyprint">
+my_obj.on($ele, 'click', function(){alert(this.my_attr)});
+
+// is the same as plain jQuery
+$ele.bind('click', $.proxy(function(){alert(this.my_attr)}, my_obj));
+      </pre>
+
+      <h5>object events</h5>
+      Objects can create their own events with <code>hoe.Type.trigger()</code>.
+
+      <pre class="prettyprint">
+my.trigger('my-custom-event-name', "argument1", {arg: 2});
+      </pre>
+
+      <ul>
+        <li>the first argument is the event name</li>
+        <li>other arguments will be passed to any event callback</li>
+      </ul>
+
+      <p>Other objects can register callbacks to handle events in similar way
+it is done for DOM events, but first argument is an object that generates
+events instead of a DOM element.</p>
+
+      <pre class="prettyprint">
+var my2 = new MyType();
+my2.on(my, 'my-custom-event-name', function(val){
+     this.ele.append(val);
+});
+      </pre>
+    </div>
+  </div>
 </div>
 
