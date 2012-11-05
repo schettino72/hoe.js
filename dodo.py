@@ -87,3 +87,10 @@ def task_site():
         'actions':[],
         'task_dep': ['render'],
         }
+
+def task_deploy():
+    """not really deploy, just copy site to folder with git repo  for site"""
+    return {
+        'actions': ['rsync -avP site ../hoe-website'],
+        'task_dep': ['site'],
+        }

@@ -2,6 +2,7 @@ node_modules
 coverage
 mocha
 README.html
+site/*.html
 
 .doit.db
 *.pyc
