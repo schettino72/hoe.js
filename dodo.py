@@ -53,6 +53,13 @@ def task_coverage():
         }
 
 
+def task_apidoc():
+    return {
+        'actions': ['jsdoc --directory=api src/hoe.js'],
+        'file_dep': [HOE_JS],
+        }
+
+
 def task_readme():
     """convert README.md into html"""
     return {
@@ -67,8 +74,9 @@ def task_readme():
 # npm install mocha
 # npm install chai
 # npm install jquery
+# npm install -g jshint
 # sudo apt-get install jscoverage
-
+# sudo apt-get install jsdoc-toolkit
 
 
 ####################### site
@@ -98,9 +106,9 @@ def task_site():
 def task_deploy():
     """not really deploy, just copy site to folder with git repo  for site"""
     actions = []
-    for source in ['site/', 'src', 'components', 'test', 'coverage']:
+    for source in ['site/', 'src', 'components', 'test', 'coverage', 'api']:
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['testdoc', 'coverage', 'site'],
+        'task_dep': ['site', 'testdoc', 'coverage', 'apidoc'],
         }

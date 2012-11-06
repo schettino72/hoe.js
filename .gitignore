@@ -1,6 +1,10 @@
+# installed
 node_modules
-coverage
 mocha
+
+# output from test/doc
+coverage
+api
 README.html
 site/*.html
 test/result.html
