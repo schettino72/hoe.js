@@ -3,6 +3,7 @@ coverage
 mocha
 README.html
 site/*.html
+test/result.html
 
 .doit.db
 *.pyc

@@ -27,6 +27,13 @@ def task_test():
         'file_dep': [HOE_JS, 'test/test.js'],
         }
 
+def task_testdoc():
+    """run unit-tests using mocha"""
+    return {
+        'actions': [
+            MOCHA_CMD + ' --reporter doc > test/result.html'],
+        'file_dep': [HOE_JS, 'test/test.js'],
+        }
 
 def task_coverage():
     yield {
@@ -90,11 +97,10 @@ def task_site():
 
 def task_deploy():
     """not really deploy, just copy site to folder with git repo  for site"""
+    actions = []
+    for source in ['site/', 'src', 'components', 'test', 'coverage']:
+        actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
-        'actions': ['rsync -avP site/ ../hoe-website/',
-                    'rsync -avP src ../hoe-website/',
-                    'rsync -avP test ../hoe-website/',
-                    'rsync -avP components ../hoe-website/',
-                    ],
-        'task_dep': ['site'],
+        'actions': actions,
+        'task_dep': ['testdoc', 'coverage', 'site'],
         }
