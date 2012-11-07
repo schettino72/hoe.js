@@ -205,7 +205,7 @@
 							 this.$footer.attr( 'id', 'footer' ) );
 
         // Create a group of elements that will be hidden when todo list is empty.
-		this.$hide_empty = $( this.$toggleAll, this.$footer, this.$main ).hide();
+		this.$hide_empty = $( this.$footer ).add( this.$main ).hide();
 
         // Attach event handler for haschange in the URL
 		this.on($(window), 'hashchange', this.hashChanged);
