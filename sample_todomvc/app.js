@@ -8,10 +8,10 @@
 // it is based on <http://todomvc.com/>.
 // You can take a look at full [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification) - but not required.
 //
-// Before we start you can play with it [here](http://schettino72.github.com/hoe.js/todomvc/index.html).
+// Before we start you can play with it [here](../sample_todomvc/index.html).
 //
 // To run locally grab the source files for HTML, CSS and other dependencies
-// from the [github repo](https://github.com/schettino72/hoe.js/tree/gh-pages/???).
+// from the [github repo](https://github.com/schettino72/hoe.js/tree/gh-pages/sample_todomvc).
 //
 (function( window ) {
 	'use strict';

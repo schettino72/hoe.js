@@ -59,6 +59,12 @@ def task_apidoc():
         'file_dep': [HOE_JS],
         }
 
+def task_tutorial():
+    return {
+        'actions': ['docco sample_todomvc/app.js --output tutorial'],
+        'file_dep': [HOE_JS, 'sample_todomvc/app.js'],
+        'targets': ['tutorial'],
+        }
 
 def task_readme():
     """convert README.md into html"""
@@ -75,6 +81,7 @@ def task_readme():
 # npm install chai
 # npm install jquery
 # npm install -g jshint
+# npm install -g docco
 # sudo apt-get install jscoverage
 # sudo apt-get install jsdoc-toolkit
 
@@ -106,9 +113,10 @@ def task_site():
 def task_deploy():
     """not really deploy, just copy site to folder with git repo  for site"""
     actions = []
-    for source in ['site/', 'src', 'components', 'test', 'coverage', 'api']:
+    for source in ['site/', 'src', 'components', 'test', 'coverage',
+                   'api', 'tutorial', 'sample_todomvc']:
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['site', 'testdoc', 'coverage', 'apidoc'],
+        'task_dep': ['site', 'tutorial', 'testdoc', 'coverage', 'apidoc'],
         }
