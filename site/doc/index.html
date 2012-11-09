@@ -9,10 +9,10 @@
   <div class="four panel columns">
 
     <h4>Why <em>hoe.js</em> ?</h4>
-    <p><em>hoe.js</em> is a lightweight javascript library desgined to easy the creation of user interface in HTML/javascript.</p>
+    <p><em>hoe.js</em> is a lightweight javascript library designed to streamline the creation of user interface in HTML/javascript.</p>
     <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
     <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
-    <p><em>hoe.js</em> goal is to let you write strcutured code for small components and ley you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, just adding some missing pieces:</p>
+    <p><em>hoe.js's</em> goal is to let you write structured code for small components and let you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, just adding some missing pieces:</p>
     <ul class="side-nav" style="padding:0;">
       <li><a href="#dom">DOM creation</a></li>
       <li><a href="#prototype">prototype helpers</a></li>
@@ -31,18 +31,18 @@ var row = tr(td('col1', {'class': "my_class"}),
              td(a('col2', {name: 'xxx'})) );
       </pre>
 
-      <p><code>hoe.init()</code> define function helpers to create most
+      <p><code>hoe.init()</code> defines function helpers to create most
       commonly used tags.</p>
 
       <p>The function's name is the <em>tag</em> it creates. In this example
       <code>tr()</code> <code>td()</code> and <code>a()</code>.
-      It returns a jQuery objet and can take any numbers of arguments where:
+      It returns a jQuery object and can take any number of arguments where:
       </p>
       <ul>
         <li>plain javascript objects are element attributes</li>
-        <li>strings are append to the element content</li>
-        <li>DOM element or jQuery object is append to the element content</li>
-        <li>can also  take a array of DOM/jQuery</li>
+        <li>strings are appended to the element content</li>
+        <li>DOM element or jQuery object is appended to the element content</li>
+        <li>can also take an array of DOM/jQuery</li>
       </ul>
       <!--
 * init can take 2 arguments
@@ -75,14 +75,14 @@ obj.three();
       </pre>
       <ul>
         <li>the first argument is the function constructor to copy the prototype from</li>
-        <li>the second argument is optional. If present defines the constructor
+        <li>the second argument is optional. If present, defines the constructor
         otherwise the constructor from the base type is used</li>
       </ul>
 
       <h5>hoe.Type</h5>
       <p><code>hoe.Type</code> is an <em>abstract</em> type that provides some convenience methods
       that keep the scope to the object when passing methods as callbacks.
-      It also support a basic event system to be used between objects.
+      It also supports a basic event system to be used between objects.
       </p>
 
       <p>When creating new type you should inherit from <code>hoe.Type</code></p>
@@ -94,7 +94,7 @@ var MyType = hoe.Type(function(){/*...*/});
       </pre>
 
       <h5>hoe.Type.forEach</h5>
-      Iterate through arrays and objects keeping the context to current object.
+      Iterate through arrays or objects keeping the context to the current object.
 
       <pre class="prettyprint">
 var MyType = hoe.Type(function(){
@@ -140,8 +140,8 @@ my.trigger('my-custom-event-name', "argument1", {arg: 2});
         <li>other arguments will be passed to any event callback</li>
       </ul>
 
-      <p>Other objects can register callbacks to handle events in similar way
-it is done for DOM events, but first argument is an object that generates
+      <p>Other objects can register callbacks to handle events in a similar way
+it is done for DOM events, but the first argument is an object that generates
 events instead of a DOM element.</p>
 
       <pre class="prettyprint">

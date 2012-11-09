@@ -4,9 +4,9 @@
 // hoe.js Tutorial - TodoMVC
 // =============================
 //
-// This tutorial we will create a simple TODO application,
+// In this tutorial we will create a simple TODO application,
 // it is based on <http://todomvc.com/>.
-// You can take a look at full [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification) - but not required.
+// You can take a look at the full [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification) - but not required.
 //
 // Before we start you can play with it [here](../sample_todomvc/index.html).
 //
@@ -44,13 +44,13 @@
     // `hoe.js` approach is that HTML for "widgets" should be created
     // directly by javascript.
     //
-    // But shouldnt we separate the presentation from the logic with templates?
+    // But shouldn't we separate the presentation from the logic with templates?
     // Well, using templates you would typically need to reference
-    // mostly every element by `id` or `class` in other to attach events
+    // mostly every element by `id` or `class` in order to attach events
     // and modify the element. So how much separation are you really getting
     // from this?
     //
-    // Creating HTML from js let us simplify by keeping all the code in a single
+    // Creating HTML from js lets us simplify by keeping all the code in a single
     // location and avoid problems like referencing elements by name that might
     // changed, have a typo or are simply hard to locate.
 	TodoItem.prototype.render = function() {
@@ -62,13 +62,13 @@
         // set the checkbox according to the instance value using jQuery method.
 		this.$checkbox.prop('checked', this.completed );
         // Whenever a TodoItem is marked or unmarked as completed we need
-        // to update our objects data, so lets attach an event handler.
+        // to update our object's data, so let's attach an event handler.
         //
         // The standard way to attach callbacks to events is to use the
         // method `on`. (This is a `hoe.Type.on` method not the be confused
-        // with jQuery `on` method). The difference is that this method
-        // belongs to the TodoItem object and callback will be automatically
-        // execute on the object scope (no need to use `$.proxy`).
+        // with jQuery's `on` method). The difference is that this method
+        // belongs to the TodoItem object and the callback will be automatically
+        // executed on the object scope (no need to use `$.proxy`).
         //
         // the arguments are:
         // * the jQuery/DOM element that generates the event
@@ -124,7 +124,7 @@
             // update the UI
 			this.$label.text( this.title );
 			this.$ele.removeClass( 'editing' );
-            // notiy the container element triggering an event
+            // notify the container element triggering an event
 			if ( !this.title ){
 				this.trigger( 'delete', this );
 			}
@@ -144,7 +144,7 @@
 
     // ## TodoApp
     // The TodoApp will follow the same pattern.
-    // The constructor define the object properties, the initial data
+    // The constructor defines the object properties, the initial data
     // is loaded from LocalStorage.
     // The URL hash can be used to set the initial "view filter".
 	var TodoApp = hoe.Type(function() {
@@ -169,7 +169,7 @@
     // ### render
     // create HTMl elements and attach events
 	TodoApp.prototype.render = function() {
-        // the input element where new TodoItem's can be added
+        // the input element where new TodoItem can be added
 		this.$input = input({ id: 'new-todo', placeholder: 'What needs to be done?', autofocus: '' });
 		this.on( this.$input, 'keyup', this.addItemCallback );
 
@@ -238,12 +238,12 @@
 		$( 'a', this.$filters ).removeClass( 'selected' );
 		this.filter_opts[path].$ele.addClass( 'selected' );
 		this.forEach( this.todos, this.filterItem );
-        // the active filter is also needs to be save in LocalStorage
+        // the active filter also needs to be saved in LocalStorage
 		this.save();
 	};
 
     // ### addItem
-    // Adds the TodoItem to the TodoApp and render it.
+    // Adds the TodoItem to the TodoApp and renders it.
     // This is used on initialization for items read from LocalStorage
     // and for items added through the UI.
     TodoApp.prototype.addItem = function( id, title, completed ) {
@@ -327,7 +327,7 @@
 	};
 
     // ### clearCompleted
-    // Delete all TodoItem's that are completed.
+    // Delete all TodoItem that are completed.
     // Note: items are deleted one by one...
 	TodoApp.prototype.clearCompleted = function(){
 		this.forEach( this.todos, function( item ){
@@ -342,7 +342,7 @@
 	TodoApp.prototype.load = function() {
 		var store = localStorage.getItem( 'todos-hoejs' );
 		if ( store ) {
-            // first load TodoItem's and next_id from LocaStorage
+            // first load TodoItem and next_id from LocaStorage
 			var data = ( JSON.parse( store ) );
 			this.filter = data.filter;
 			this.next_id = data.next_id;
