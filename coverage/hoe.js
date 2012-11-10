@@ -39,246 +39,246 @@ if (typeof _$jscoverage !== 'object') {
 }
 if (! _$jscoverage['hoe.js']) {
   _$jscoverage['hoe.js'] = [];
-  _$jscoverage['hoe.js'][7] = 0;
-  _$jscoverage['hoe.js'][8] = 0;
-  _$jscoverage['hoe.js'][9] = 0;
-  _$jscoverage['hoe.js'][21] = 0;
-  _$jscoverage['hoe.js'][30] = 0;
-  _$jscoverage['hoe.js'][31] = 0;
-  _$jscoverage['hoe.js'][32] = 0;
-  _$jscoverage['hoe.js'][33] = 0;
+  _$jscoverage['hoe.js'][12] = 0;
+  _$jscoverage['hoe.js'][13] = 0;
+  _$jscoverage['hoe.js'][14] = 0;
+  _$jscoverage['hoe.js'][26] = 0;
   _$jscoverage['hoe.js'][35] = 0;
   _$jscoverage['hoe.js'][36] = 0;
   _$jscoverage['hoe.js'][37] = 0;
+  _$jscoverage['hoe.js'][38] = 0;
   _$jscoverage['hoe.js'][40] = 0;
   _$jscoverage['hoe.js'][41] = 0;
   _$jscoverage['hoe.js'][42] = 0;
-  _$jscoverage['hoe.js'][43] = 0;
+  _$jscoverage['hoe.js'][45] = 0;
   _$jscoverage['hoe.js'][46] = 0;
   _$jscoverage['hoe.js'][47] = 0;
-  _$jscoverage['hoe.js'][50] = 0;
-  _$jscoverage['hoe.js'][54] = 0;
-  _$jscoverage['hoe.js'][58] = 0;
+  _$jscoverage['hoe.js'][48] = 0;
+  _$jscoverage['hoe.js'][51] = 0;
+  _$jscoverage['hoe.js'][52] = 0;
+  _$jscoverage['hoe.js'][55] = 0;
   _$jscoverage['hoe.js'][59] = 0;
-  _$jscoverage['hoe.js'][61] = 0;
+  _$jscoverage['hoe.js'][63] = 0;
   _$jscoverage['hoe.js'][64] = 0;
-  _$jscoverage['hoe.js'][72] = 0;
-  _$jscoverage['hoe.js'][86] = 0;
-  _$jscoverage['hoe.js'][87] = 0;
-  _$jscoverage['hoe.js'][88] = 0;
-  _$jscoverage['hoe.js'][90] = 0;
+  _$jscoverage['hoe.js'][66] = 0;
+  _$jscoverage['hoe.js'][69] = 0;
+  _$jscoverage['hoe.js'][77] = 0;
   _$jscoverage['hoe.js'][91] = 0;
   _$jscoverage['hoe.js'][92] = 0;
   _$jscoverage['hoe.js'][93] = 0;
+  _$jscoverage['hoe.js'][95] = 0;
   _$jscoverage['hoe.js'][96] = 0;
   _$jscoverage['hoe.js'][97] = 0;
-  _$jscoverage['hoe.js'][108] = 0;
-  _$jscoverage['hoe.js'][109] = 0;
-  _$jscoverage['hoe.js'][110] = 0;
-  _$jscoverage['hoe.js'][111] = 0;
+  _$jscoverage['hoe.js'][98] = 0;
+  _$jscoverage['hoe.js'][101] = 0;
+  _$jscoverage['hoe.js'][102] = 0;
+  _$jscoverage['hoe.js'][113] = 0;
   _$jscoverage['hoe.js'][114] = 0;
+  _$jscoverage['hoe.js'][115] = 0;
   _$jscoverage['hoe.js'][116] = 0;
-  _$jscoverage['hoe.js'][117] = 0;
-  _$jscoverage['hoe.js'][118] = 0;
-  _$jscoverage['hoe.js'][128] = 0;
-  _$jscoverage['hoe.js'][129] = 0;
-  _$jscoverage['hoe.js'][140] = 0;
-  _$jscoverage['hoe.js'][141] = 0;
-  _$jscoverage['hoe.js'][142] = 0;
+  _$jscoverage['hoe.js'][119] = 0;
+  _$jscoverage['hoe.js'][121] = 0;
+  _$jscoverage['hoe.js'][122] = 0;
+  _$jscoverage['hoe.js'][123] = 0;
+  _$jscoverage['hoe.js'][133] = 0;
+  _$jscoverage['hoe.js'][134] = 0;
   _$jscoverage['hoe.js'][145] = 0;
   _$jscoverage['hoe.js'][146] = 0;
-  _$jscoverage['hoe.js'][148] = 0;
-  _$jscoverage['hoe.js'][149] = 0;
+  _$jscoverage['hoe.js'][147] = 0;
+  _$jscoverage['hoe.js'][150] = 0;
   _$jscoverage['hoe.js'][151] = 0;
-  _$jscoverage['hoe.js'][160] = 0;
-  _$jscoverage['hoe.js'][161] = 0;
-  _$jscoverage['hoe.js'][162] = 0;
-  _$jscoverage['hoe.js'][163] = 0;
-  _$jscoverage['hoe.js'][164] = 0;
-  _$jscoverage['hoe.js'][179] = 0;
-  _$jscoverage['hoe.js'][180] = 0;
-  _$jscoverage['hoe.js'][181] = 0;
-  _$jscoverage['hoe.js'][182] = 0;
+  _$jscoverage['hoe.js'][153] = 0;
+  _$jscoverage['hoe.js'][154] = 0;
+  _$jscoverage['hoe.js'][156] = 0;
+  _$jscoverage['hoe.js'][165] = 0;
+  _$jscoverage['hoe.js'][166] = 0;
+  _$jscoverage['hoe.js'][167] = 0;
+  _$jscoverage['hoe.js'][168] = 0;
+  _$jscoverage['hoe.js'][169] = 0;
+  _$jscoverage['hoe.js'][184] = 0;
+  _$jscoverage['hoe.js'][185] = 0;
   _$jscoverage['hoe.js'][186] = 0;
   _$jscoverage['hoe.js'][187] = 0;
-  _$jscoverage['hoe.js'][194] = 0;
-  _$jscoverage['hoe.js'][195] = 0;
+  _$jscoverage['hoe.js'][191] = 0;
+  _$jscoverage['hoe.js'][192] = 0;
+  _$jscoverage['hoe.js'][199] = 0;
+  _$jscoverage['hoe.js'][200] = 0;
 }
-_$jscoverage['hoe.js'].source = ["/**"," * @namespace creates new DOM elements"," * @param {String} tag name of tag to be created"," * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}"," * @returns {jQuery}"," */","var hoe = function(tag){","    var $ele = jQuery(document.createElement(tag));","    return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));","};","","/**"," * Exposed to any jQuery object as 'hoe' plugin."," * Guess which jQuery method should be applied to object,"," * operation depends on param type."," * @param {String} [param] append as text to element content"," * @param {Object} [param] set as html element attributes"," * @param {DOMElement[]|jQuery[]} [param] append param into element content"," * @returns {jQuery}"," */","hoe.jquery_plugin = function() {","    /*","       to arguments based on type:","       - string: append text","       - plain object: set html attributes","       - DOM element &amp; jQuery object: append elements","       - array: append elements","    */","","    function _guess_apply($ele, param){","        var type = jQuery.type(param);","        if(type === \"string\"){","            $ele.append(param);","        }","        else if(type === \"array\"){","            for(var i=0, max=param.length; i&lt;max; i++) {","                $ele.append(param[i]);","            }","        }","        else if (type === \"object\") {","            if (jQuery.isPlainObject(param)){","                for(var name in param){","                    $ele.attr(name, param[name]);","                }","            }","            else if((param instanceof jQuery) || (param instanceof Element)){","                $ele.append(param);","            }","            else {","                throw Error(\"Invalid object: \" + param);","            }","        }","        else {","            throw Error(\"Invalid type: \" + type);","        }","    }","","    for(var i=0, max=arguments.length; i&lt;max; i++) {","        _guess_apply(this, arguments[i]);","    }","    return this;","};","","jQuery.fn.hoe = hoe.jquery_plugin;","","","/**"," * build functions to create hoe objcts on namespace"," * by default add most common tags to window object"," * @constant"," */","hoe.init_default_tags = [","    'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',","    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong',","    'section', 'header', 'footer',","    'form', 'label', 'input', 'select', 'button',","    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'","];","","/**"," * define factory functions to create DOM elements"," * @param {Object} [namespace=window] namespace where functions will be created"," * @param {String[]} [tags=hoe.init_default_tags] functions will be created","          for given tags"," */","hoe.init = function(namespace, tags){","    namespace = namespace || window;","    tags = tags || hoe.init_default_tags;","","    function _create_function(tag){","        return function(){","            var $ele = jQuery(document.createElement(tag));","            return $ele.hoe.apply($ele, arguments);","        };","    }","    for (var i=0, max=tags.length; i&lt;max; i++){","        namespace[tags[i]] = _create_function(tags[i]);","    }","};","","","/**"," * create new type by inheriting from other types"," * @param {Object} base_type Type to inherit from"," * @param {Function} [constructor] over-write constructor from base_type"," * @return {Type} new Type/constructor"," */","hoe.inherit = function (base_type, constructor){","    var new_type;","    if (constructor){","        new_type = constructor;","    }","    else{","        new_type = function(){return base_type.apply(this, arguments);};","    }","    $.extend(new_type, base_type);","    $.extend(new_type.prototype, base_type.prototype);","    return new_type;","};","","/**"," * Base Type with helpers that bind scope to object."," * Constructor can be used to create new types."," * @constructor"," * @param {Function} constructor constructor of a new Type"," * @returns {Function/Type} new Type that inherit from hoe.Type"," */","hoe.Type = function(constructor){","    return hoe.inherit(hoe.Type, constructor);","};","","","/**"," * Attach a callback on this object scope for event from observed"," * @param {jQuery|hoe.Type} observed object that trigger events"," * @param {String} event name of the event"," * @param {Function} callback to be executed when event is triggered."," *                      this will be bound to current object."," */","hoe.Type.prototype.on = function(observed, event, callback){","    if(observed instanceof jQuery){","        observed.bind(event, $.proxy(callback, this));","    }","    else{","        if (typeof observed._hoe_obs === 'undefined'){","            observed._hoe_obs = {};","        }","        if (!(event in observed._hoe_obs)){","            observed._hoe_obs[event] = [];","        }","        observed._hoe_obs[event].push({scope:this, fn:callback});","    }","};","","/**"," * Trigger an event for this object"," * @param {String} event name of the event"," * @param [arguments] other arguments will be passed to the callback"," */","hoe.Type.prototype.trigger = function(event){","    if (this._hoe_obs &amp;&amp; this._hoe_obs[event]){","        var callbacks = this._hoe_obs[event];","        for (var i=0, max=callbacks.length; i&lt;max; i++){","            callbacks[i].fn.apply(callbacks[i].scope,","                                  Array.prototype.slice.call(arguments, 1));","        }","    }","};","","/**"," * Iterate through Arrays or plain objects keeping the scope"," * @param {Array|Object} seq contains items that will be iterated"," * @param {Function} callback to be called for each item.","          The callback the 3 paramaters:","          1) value","          2) index/key","          3) reference to the whole sequence"," */","hoe.Type.prototype.forEach = function(seq, fn){","    if (jQuery.type(seq) == 'array'){","        for(var i = 0, len = seq.length; i &lt; len; ++i) {","            fn.call(this, seq[i], i, seq);","        }","    }","    else { // must be an object","        for (var key in seq){","            fn.call(this, seq[key], key, seq);","        }","    }","};","","","/** @exports */","if (typeof exports !== 'undefined'){","    exports.hoe = hoe;","}"];
-_$jscoverage['hoe.js'][7]++;
+_$jscoverage['hoe.js'].source = ["/** @license"," *   hoe.js - [http://schettino72.github.com/hoe.js]"," *   MIT license - Copyright (c) 2012 Eduardo Naufel Schettino"," */","","/**"," * @namespace creates new DOM elements"," * @param {String} tag name of tag to be created"," * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}"," * @returns {jQuery}"," */","var hoe = function(tag){","    var $ele = jQuery(document.createElement(tag));","    return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));","};","","/**"," * Exposed to any jQuery object as 'hoe' plugin."," * Guess which jQuery method should be applied to object,"," * operation depends on param type."," * @param {String} [param] append as text to element content"," * @param {Object} [param] set as html element attributes"," * @param {DOMElement[]|jQuery[]} [param] append param into element content"," * @returns {jQuery}"," */","hoe.jquery_plugin = function() {","    /*","       to arguments based on type:","       - string: append text","       - plain object: set html attributes","       - DOM element &amp; jQuery object: append elements","       - array: append elements","    */","","    function _guess_apply($ele, param){","        var type = jQuery.type(param);","        if(type === \"string\"){","            $ele.append(param);","        }","        else if(type === \"array\"){","            for(var i=0, max=param.length; i&lt;max; i++) {","                $ele.append(param[i]);","            }","        }","        else if (type === \"object\") {","            if (jQuery.isPlainObject(param)){","                for(var name in param){","                    $ele.attr(name, param[name]);","                }","            }","            else if((param instanceof jQuery) || (param instanceof Element)){","                $ele.append(param);","            }","            else {","                throw Error(\"Invalid object: \" + param);","            }","        }","        else {","            throw Error(\"Invalid type: \" + type);","        }","    }","","    for(var i=0, max=arguments.length; i&lt;max; i++) {","        _guess_apply(this, arguments[i]);","    }","    return this;","};","","jQuery.fn.hoe = hoe.jquery_plugin;","","","/**"," * build functions to create hoe objcts on namespace"," * by default add most common tags to window object"," * @constant"," */","hoe.init_default_tags = [","    'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',","    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong',","    'section', 'header', 'footer',","    'form', 'label', 'input', 'select', 'button',","    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'","];","","/**"," * define factory functions to create DOM elements"," * @param {Object} [namespace=window] namespace where functions will be created"," * @param {String[]} [tags=hoe.init_default_tags] functions will be created","          for given tags"," */","hoe.init = function(namespace, tags){","    namespace = namespace || window;","    tags = tags || hoe.init_default_tags;","","    function _create_function(tag){","        return function(){","            var $ele = jQuery(document.createElement(tag));","            return $ele.hoe.apply($ele, arguments);","        };","    }","    for (var i=0, max=tags.length; i&lt;max; i++){","        namespace[tags[i]] = _create_function(tags[i]);","    }","};","","","/**"," * create new type by inheriting from other types"," * @param {Object} base_type Type to inherit from"," * @param {Function} [constructor] over-write constructor from base_type"," * @return {Type} new Type/constructor"," */","hoe.inherit = function (base_type, constructor){","    var new_type;","    if (constructor){","        new_type = constructor;","    }","    else{","        new_type = function(){return base_type.apply(this, arguments);};","    }","    $.extend(new_type, base_type);","    $.extend(new_type.prototype, base_type.prototype);","    return new_type;","};","","/**"," * Base Type with helpers that bind scope to object."," * Constructor can be used to create new types."," * @constructor"," * @param {Function} constructor constructor of a new Type"," * @returns {Function/Type} new Type that inherit from hoe.Type"," */","hoe.Type = function(constructor){","    return hoe.inherit(hoe.Type, constructor);","};","","","/**"," * Attach a callback on this object scope for event from observed"," * @param {jQuery|hoe.Type} observed object that trigger events"," * @param {String} event name of the event"," * @param {Function} callback to be executed when event is triggered."," *                      this will be bound to current object."," */","hoe.Type.prototype.on = function(observed, event, callback){","    if(observed instanceof jQuery){","        observed.bind(event, $.proxy(callback, this));","    }","    else{","        if (typeof observed._hoe_obs === 'undefined'){","            observed._hoe_obs = {};","        }","        if (!(event in observed._hoe_obs)){","            observed._hoe_obs[event] = [];","        }","        observed._hoe_obs[event].push({scope:this, fn:callback});","    }","};","","/**"," * Trigger an event for this object"," * @param {String} event name of the event"," * @param [arguments] other arguments will be passed to the callback"," */","hoe.Type.prototype.trigger = function(event){","    if (this._hoe_obs &amp;&amp; this._hoe_obs[event]){","        var callbacks = this._hoe_obs[event];","        for (var i=0, max=callbacks.length; i&lt;max; i++){","            callbacks[i].fn.apply(callbacks[i].scope,","                                  Array.prototype.slice.call(arguments, 1));","        }","    }","};","","/**"," * Iterate through Arrays or plain objects keeping the scope"," * @param {Array|Object} seq contains items that will be iterated"," * @param {Function} callback to be called for each item.","          The callback the 3 paramaters:","          1) value","          2) index/key","          3) reference to the whole sequence"," */","hoe.Type.prototype.forEach = function(seq, fn){","    if (jQuery.type(seq) == 'array'){","        for(var i = 0, len = seq.length; i &lt; len; ++i) {","            fn.call(this, seq[i], i, seq);","        }","    }","    else { // must be an object","        for (var key in seq){","            fn.call(this, seq[key], key, seq);","        }","    }","};","","","/** @exports */","if (typeof exports !== 'undefined'){","    exports.hoe = hoe;","}"];
+_$jscoverage['hoe.js'][12]++;
 var hoe = (function (tag) {
-  _$jscoverage['hoe.js'][8]++;
+  _$jscoverage['hoe.js'][13]++;
   var $ele = jQuery(document.createElement(tag));
-  _$jscoverage['hoe.js'][9]++;
+  _$jscoverage['hoe.js'][14]++;
   return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));
 });
-_$jscoverage['hoe.js'][21]++;
+_$jscoverage['hoe.js'][26]++;
 hoe.jquery_plugin = (function () {
-  _$jscoverage['hoe.js'][30]++;
+  _$jscoverage['hoe.js'][35]++;
   function _guess_apply($ele, param) {
-    _$jscoverage['hoe.js'][31]++;
+    _$jscoverage['hoe.js'][36]++;
     var type = jQuery.type(param);
-    _$jscoverage['hoe.js'][32]++;
+    _$jscoverage['hoe.js'][37]++;
     if ((type === "string")) {
-      _$jscoverage['hoe.js'][33]++;
+      _$jscoverage['hoe.js'][38]++;
       $ele.append(param);
     }
     else {
-      _$jscoverage['hoe.js'][35]++;
+      _$jscoverage['hoe.js'][40]++;
       if ((type === "array")) {
-        _$jscoverage['hoe.js'][36]++;
+        _$jscoverage['hoe.js'][41]++;
         for (var i = 0, max = param.length; (i < max); (i++)) {
-          _$jscoverage['hoe.js'][37]++;
+          _$jscoverage['hoe.js'][42]++;
           $ele.append(param[i]);
 }
       }
       else {
-        _$jscoverage['hoe.js'][40]++;
+        _$jscoverage['hoe.js'][45]++;
         if ((type === "object")) {
-          _$jscoverage['hoe.js'][41]++;
+          _$jscoverage['hoe.js'][46]++;
           if (jQuery.isPlainObject(param)) {
-            _$jscoverage['hoe.js'][42]++;
+            _$jscoverage['hoe.js'][47]++;
             for (var name in param) {
-              _$jscoverage['hoe.js'][43]++;
+              _$jscoverage['hoe.js'][48]++;
               $ele.attr(name, param[name]);
 }
           }
           else {
-            _$jscoverage['hoe.js'][46]++;
+            _$jscoverage['hoe.js'][51]++;
             if (((param instanceof jQuery) || (param instanceof Element))) {
-              _$jscoverage['hoe.js'][47]++;
+              _$jscoverage['hoe.js'][52]++;
               $ele.append(param);
             }
             else {
-              _$jscoverage['hoe.js'][50]++;
+              _$jscoverage['hoe.js'][55]++;
               throw Error(("Invalid object: " + param));
             }
           }
         }
         else {
-          _$jscoverage['hoe.js'][54]++;
+          _$jscoverage['hoe.js'][59]++;
           throw Error(("Invalid type: " + type));
         }
       }
     }
 }
-  _$jscoverage['hoe.js'][58]++;
+  _$jscoverage['hoe.js'][63]++;
   for (var i = 0, max = arguments.length; (i < max); (i++)) {
-    _$jscoverage['hoe.js'][59]++;
+    _$jscoverage['hoe.js'][64]++;
     _guess_apply(this, arguments[i]);
 }
-  _$jscoverage['hoe.js'][61]++;
+  _$jscoverage['hoe.js'][66]++;
   return this;
 });
-_$jscoverage['hoe.js'][64]++;
+_$jscoverage['hoe.js'][69]++;
 jQuery.fn.hoe = hoe.jquery_plugin;
-_$jscoverage['hoe.js'][72]++;
+_$jscoverage['hoe.js'][77]++;
 hoe.init_default_tags = ["body", "div", "span", "pre", "p", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "strong", "section", "header", "footer", "form", "label", "input", "select", "button", "table", "thead", "tbody", "tfoot", "tr", "th", "td"];
-_$jscoverage['hoe.js'][86]++;
+_$jscoverage['hoe.js'][91]++;
 hoe.init = (function (namespace, tags) {
-  _$jscoverage['hoe.js'][87]++;
-  namespace = (namespace || window);
-  _$jscoverage['hoe.js'][88]++;
-  tags = (tags || hoe.init_default_tags);
-  _$jscoverage['hoe.js'][90]++;
-  function _create_function(tag) {
-    _$jscoverage['hoe.js'][91]++;
-    return (function () {
   _$jscoverage['hoe.js'][92]++;
-  var $ele = jQuery(document.createElement(tag));
+  namespace = (namespace || window);
   _$jscoverage['hoe.js'][93]++;
+  tags = (tags || hoe.init_default_tags);
+  _$jscoverage['hoe.js'][95]++;
+  function _create_function(tag) {
+    _$jscoverage['hoe.js'][96]++;
+    return (function () {
+  _$jscoverage['hoe.js'][97]++;
+  var $ele = jQuery(document.createElement(tag));
+  _$jscoverage['hoe.js'][98]++;
   return $ele.hoe.apply($ele, arguments);
 });
 }
-  _$jscoverage['hoe.js'][96]++;
+  _$jscoverage['hoe.js'][101]++;
   for (var i = 0, max = tags.length; (i < max); (i++)) {
-    _$jscoverage['hoe.js'][97]++;
+    _$jscoverage['hoe.js'][102]++;
     namespace[tags[i]] = _create_function(tags[i]);
 }
 });
-_$jscoverage['hoe.js'][108]++;
+_$jscoverage['hoe.js'][113]++;
 hoe.inherit = (function (base_type, constructor) {
-  _$jscoverage['hoe.js'][109]++;
+  _$jscoverage['hoe.js'][114]++;
   var new_type;
-  _$jscoverage['hoe.js'][110]++;
+  _$jscoverage['hoe.js'][115]++;
   if (constructor) {
-    _$jscoverage['hoe.js'][111]++;
+    _$jscoverage['hoe.js'][116]++;
     new_type = constructor;
   }
   else {
-    _$jscoverage['hoe.js'][114]++;
+    _$jscoverage['hoe.js'][119]++;
     new_type = (function () {
-  _$jscoverage['hoe.js'][114]++;
+  _$jscoverage['hoe.js'][119]++;
   return base_type.apply(this, arguments);
 });
   }
-  _$jscoverage['hoe.js'][116]++;
+  _$jscoverage['hoe.js'][121]++;
   $.extend(new_type, base_type);
-  _$jscoverage['hoe.js'][117]++;
+  _$jscoverage['hoe.js'][122]++;
   $.extend(new_type.prototype, base_type.prototype);
-  _$jscoverage['hoe.js'][118]++;
+  _$jscoverage['hoe.js'][123]++;
   return new_type;
 });
-_$jscoverage['hoe.js'][128]++;
+_$jscoverage['hoe.js'][133]++;
 hoe.Type = (function (constructor) {
-  _$jscoverage['hoe.js'][129]++;
+  _$jscoverage['hoe.js'][134]++;
   return hoe.inherit(hoe.Type, constructor);
 });
-_$jscoverage['hoe.js'][140]++;
+_$jscoverage['hoe.js'][145]++;
 hoe.Type.prototype.on = (function (observed, event, callback) {
-  _$jscoverage['hoe.js'][141]++;
+  _$jscoverage['hoe.js'][146]++;
   if ((observed instanceof jQuery)) {
-    _$jscoverage['hoe.js'][142]++;
+    _$jscoverage['hoe.js'][147]++;
     observed.bind(event, $.proxy(callback, this));
   }
   else {
-    _$jscoverage['hoe.js'][145]++;
+    _$jscoverage['hoe.js'][150]++;
     if (((typeof observed._hoe_obs) === "undefined")) {
-      _$jscoverage['hoe.js'][146]++;
+      _$jscoverage['hoe.js'][151]++;
       observed._hoe_obs = {};
     }
-    _$jscoverage['hoe.js'][148]++;
+    _$jscoverage['hoe.js'][153]++;
     if ((! (event in observed._hoe_obs))) {
-      _$jscoverage['hoe.js'][149]++;
+      _$jscoverage['hoe.js'][154]++;
       observed._hoe_obs[event] = [];
     }
-    _$jscoverage['hoe.js'][151]++;
+    _$jscoverage['hoe.js'][156]++;
     observed._hoe_obs[event].push({scope: this, fn: callback});
   }
 });
-_$jscoverage['hoe.js'][160]++;
+_$jscoverage['hoe.js'][165]++;
 hoe.Type.prototype.trigger = (function (event) {
-  _$jscoverage['hoe.js'][161]++;
+  _$jscoverage['hoe.js'][166]++;
   if ((this._hoe_obs && this._hoe_obs[event])) {
-    _$jscoverage['hoe.js'][162]++;
+    _$jscoverage['hoe.js'][167]++;
     var callbacks = this._hoe_obs[event];
-    _$jscoverage['hoe.js'][163]++;
+    _$jscoverage['hoe.js'][168]++;
     for (var i = 0, max = callbacks.length; (i < max); (i++)) {
-      _$jscoverage['hoe.js'][164]++;
+      _$jscoverage['hoe.js'][169]++;
       callbacks[i].fn.apply(callbacks[i].scope, Array.prototype.slice.call(arguments, 1));
 }
   }
 });
-_$jscoverage['hoe.js'][179]++;
+_$jscoverage['hoe.js'][184]++;
 hoe.Type.prototype.forEach = (function (seq, fn) {
-  _$jscoverage['hoe.js'][180]++;
+  _$jscoverage['hoe.js'][185]++;
   if ((jQuery.type(seq) == "array")) {
-    _$jscoverage['hoe.js'][181]++;
+    _$jscoverage['hoe.js'][186]++;
     for (var i = 0, len = seq.length; (i < len); (++i)) {
-      _$jscoverage['hoe.js'][182]++;
+      _$jscoverage['hoe.js'][187]++;
       fn.call(this, seq[i], i, seq);
 }
   }
   else {
-    _$jscoverage['hoe.js'][186]++;
+    _$jscoverage['hoe.js'][191]++;
     for (var key in seq) {
-      _$jscoverage['hoe.js'][187]++;
+      _$jscoverage['hoe.js'][192]++;
       fn.call(this, seq[key], key, seq);
 }
   }
 });
-_$jscoverage['hoe.js'][194]++;
+_$jscoverage['hoe.js'][199]++;
 if (((typeof exports) !== "undefined")) {
-  _$jscoverage['hoe.js'][195]++;
+  _$jscoverage['hoe.js'][200]++;
   exports.hoe = hoe;
 }
