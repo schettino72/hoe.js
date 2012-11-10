@@ -9,6 +9,7 @@ tutorial
 README.html
 site/*.html
 test/result.html
+dist
 
 .doit.db
 *.pyc

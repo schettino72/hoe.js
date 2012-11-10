@@ -11,6 +11,7 @@ HOE_JS = 'src/hoe.js'
 
 
 def task_check():
+    """static checker using jshint"""
     for js_file in (HOE_JS, 'test/test.js'):
         yield {
             'name': js_file,
@@ -36,6 +37,7 @@ def task_testdoc():
         }
 
 def task_coverage():
+    """annotate for coverage and run tests"""
     yield {
         'name': 'annotate',
         'actions': ['jscoverage --no-highlight src coverage'],
@@ -54,12 +56,14 @@ def task_coverage():
 
 
 def task_apidoc():
+    """generate API docs using jsdoc"""
     return {
         'actions': ['jsdoc --directory=api src/hoe.js'],
         'file_dep': [HOE_JS],
         }
 
 def task_tutorial():
+    """create tutorial from TodoMVC using docco"""
     return {
         'actions': ['docco sample_todomvc/app.js --output tutorial'],
         'file_dep': [HOE_JS, 'sample_todomvc/app.js'],
@@ -75,6 +79,34 @@ def task_readme():
         }
 
 
+def task_dist():
+    """create distribution files"""
+    version = '0.1.0'
+    version_comment = "// hoe.js version: %s" % version
+    yield {
+        'name': 'min',
+        'actions': [
+            'echo  "' + version_comment + '" > %(targets)s',
+            ('uglifyjs2 %(dependencies)s ' +
+             '--mangle --compress --comments >> %(targets)s'),
+            ],
+        'file_dep': [HOE_JS],
+        'targets': ['dist/hoe-' + version + '.min.js'],
+        'clean': True,
+        }
+
+    yield {
+        'name': 'dev',
+        'actions': [
+            'echo  "' + version_comment + '" > %(targets)s',
+            'cat %(dependencies)s >> %(targets)s',
+            ],
+        'file_dep': [HOE_JS],
+        'targets': ['dist/hoe-' + version + '.js'],
+        'clean': True,
+        }
+
+
 # TODO dev_setup
 # sudo apt-get install nodejs
 # npm install mocha
@@ -82,12 +114,14 @@ def task_readme():
 # npm install jquery
 # npm install -g jshint
 # npm install -g docco
+# npm install -g uglify-js2
 # sudo apt-get install jscoverage
 # sudo apt-get install jsdoc-toolkit
 
 
 ####################### site
 def task_site():
+    """create full html pages from html fragments from site/doc"""
     head = 'site/template/head.html'
     foot = 'site/template/foot.html'
 
@@ -111,12 +145,12 @@ def task_site():
         }
 
 def task_deploy():
-    """not really deploy, just copy site to folder with git repo  for site"""
+    """not really deploy, just copy site to folder with git repo for site"""
     actions = []
     for source in ['site/', 'src', 'components', 'test', 'coverage',
-                   'api', 'tutorial', 'sample_todomvc']:
+                   'api', 'tutorial', 'sample_todomvc', 'dist']:
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['site', 'tutorial', 'testdoc', 'coverage', 'apidoc'],
+        'task_dep': ['site', 'tutorial', 'testdoc', 'coverage', 'apidoc', 'dist'],
         }

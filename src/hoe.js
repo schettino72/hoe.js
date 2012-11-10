@@ -1,3 +1,8 @@
+/** @license
+ *   hoe.js - [http://schettino72.github.com/hoe.js]
+ *   MIT license - Copyright (c) 2012 Eduardo Naufel Schettino
+ */
+
 /**
  * @namespace creates new DOM elements
  * @param {String} tag name of tag to be created
