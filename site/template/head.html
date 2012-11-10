@@ -21,8 +21,18 @@
     body {
         background-color: #2f1c0e; /* brown */
     }
-    body, h1, h2, h3 ,h4, h5, h6 {
+    body, h1, h2, h3 ,h4, h5, h6, a {
         color: #499d49; /* green */
+    }
+    table.credit{
+        background: inherit;
+        border: 0;
+    }
+    table.credit tbody tr:nth-child(even) {
+        background: inherit;
+    }
+    table.credit td {
+        font-size:18px;
     }
     ul {
         margin-left: 20px;
@@ -64,7 +74,7 @@
 
       <ul class="right">
         <li><a href="https://github.com/schettino72/hoe.js">code/bugs</a></li>
-        <li class="has-dropdown" style="background-color:#2284A1">
+        <li class="has-dropdown" style="background-color:#499d49;">
           <a>DOWNLOAD</a>
           <ul class="dropdown">
             <li><a href="dist/hoe-0.1.0.min.js">production (minified)</a></li>
