@@ -84,14 +84,16 @@ suite('hoe', function(){
             var fn = function(){return hoe('div', true);};
             assert.throws(fn, /Invalid type: boolean/);
         });
-        test('invalid parameter type (object)', function(){
-            function MyType(){}
-            var obj = new MyType();
-            var fn = function(){return hoe('div', obj);};
-            assert.throws(fn, /Invalid object:/);
-        });
     });
 
+
+    suite('hoe.partial()', function(){
+        test('simple element', function(){
+            var row  = hoe.partial('div', {'class':'row'});
+            var $ele = row('bla');
+            assert.equal('<div class="row">bla</div>', html_str($ele));
+        });
+    });
 
     suite('hoe.init()', function(){
         test('default create elements on window', function(){
@@ -200,6 +202,27 @@ suite('hoe', function(){
             assert.deepEqual({}, my.x);
             my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
             assert.deepEqual({1:3, 3:5}, my.x);
+        });
+
+        test('map array', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var got = my.map([1,3,5], function(val){return this.x + val;});
+            assert.deepEqual([6,8,10], got);
+        });
+        test('map object', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var got = my.map({1:2, 3:4}, function(val, key){
+                return parseInt(key, 10) + val + this.x;
+            });
+            assert.deepEqual([8, 12], got);
         });
     });
 });

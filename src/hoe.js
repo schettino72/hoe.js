@@ -48,11 +48,8 @@ hoe.jquery_plugin = function() {
                     $ele.attr(name, param[name]);
                 }
             }
-            else if((param instanceof jQuery) || (param instanceof Element)){
-                $ele.append(param);
-            }
             else {
-                throw Error("Invalid object: " + param);
+                $ele.append(param);
             }
         }
         else {
@@ -68,6 +65,23 @@ hoe.jquery_plugin = function() {
 
 jQuery.fn.hoe = hoe.jquery_plugin;
 
+/**
+ * Similar to `hoe()` but instead of returning an element returns
+ * a function that creates new elements including the parameters
+ * passed to partial
+ * @param {String} tag name of tag to be created
+ * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
+ * @returns function
+ */
+hoe.partial = function(tag){
+    var partial_args = Array.prototype.slice.call(arguments, 1);
+    return function(){
+        var $ele = jQuery(document.createElement(tag));
+        $ele.hoe.apply($ele, partial_args);
+        return $ele.hoe.apply($ele, arguments);
+    };
+};
+
 
 /**
  * build functions to create hoe objcts on namespace
@@ -77,10 +91,11 @@ jQuery.fn.hoe = hoe.jquery_plugin;
 hoe.init_default_tags = [
     'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong',
-    'section', 'header', 'footer',
+    'section', 'header', 'footer', 'br',
     'form', 'label', 'input', 'select', 'button',
     'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
 ];
+
 
 /**
  * define factory functions to create DOM elements
@@ -91,15 +106,8 @@ hoe.init_default_tags = [
 hoe.init = function(namespace, tags){
     namespace = namespace || window;
     tags = tags || hoe.init_default_tags;
-
-    function _create_function(tag){
-        return function(){
-            var $ele = jQuery(document.createElement(tag));
-            return $ele.hoe.apply($ele, arguments);
-        };
-    }
     for (var i=0, max=tags.length; i<max; i++){
-        namespace[tags[i]] = _create_function(tags[i]);
+        namespace[tags[i]] = hoe.partial(tags[i]);
     }
 };
 
@@ -192,6 +200,32 @@ hoe.Type.prototype.forEach = function(seq, fn){
             fn.call(this, seq[key], key, seq);
         }
     }
+};
+
+/**
+ * Create an Array iterating through Arrays or plain objects keeping the scope
+ * @param {Array|Object} seq contains items that will be iterated
+ * @param {Function} callback to be called for each item.
+          The callback return value will be inserted in the returned Array
+          The callback the 3 paramaters:
+          1) value
+          2) index/key
+          3) reference to the whole sequence
+ * @return Array
+ */
+hoe.Type.prototype.map = function(seq, fn){
+    var result = [];
+    if (jQuery.type(seq) == 'array'){
+        for(var i = 0, len = seq.length; i < len; ++i) {
+            result.push(fn.call(this, seq[i], i, seq));
+        }
+    }
+    else { // must be an object
+        for (var key in seq){
+            result.push(fn.call(this, seq[key], key, seq));
+        }
+    }
+    return result;
 };
 
 
