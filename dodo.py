@@ -81,7 +81,7 @@ def task_readme():
 
 def task_dist():
     """create distribution files"""
-    version = '0.1.0'
+    version = '0.2.0'
     version_comment = "// hoe.js version: %s" % version
     yield {
         'name': 'min',
