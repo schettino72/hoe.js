@@ -1,0 +1,16 @@
+
+Changes
+=======
+
+
+0.2.0 (*2013-01-27*)
+------------------------
+
+- added hoe.partial
+- added hoe.Type.map
+- added hoe.Type.scope
+- rename hoe.Type.on to hoe.Type.listen
+- rename hoe.Type.trigger to hoe.Type.fire
+
+
+

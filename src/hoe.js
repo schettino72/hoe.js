@@ -92,7 +92,7 @@ hoe.init_default_tags = [
     'body', 'div','span', 'pre', 'p', 'a', 'ul', 'ol', 'li',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong',
     'section', 'header', 'footer', 'br',
-    'form', 'label', 'input', 'select', 'button',
+    'form', 'label', 'input', 'textarea', 'select', 'option', 'button',
     'table', 'thead', 'tbody', 'tfoot', 'tr', 'th','td'
 ];
 
@@ -144,13 +144,13 @@ hoe.Type = function(constructor){
 
 
 /**
- * Attach a callback on this object scope for event from observed
+ * Attach/listen a callback on this object scope for event from observed
  * @param {jQuery|hoe.Type} observed object that trigger events
  * @param {String} event name of the event
  * @param {Function} callback to be executed when event is triggered.
  *                      this will be bound to current object.
  */
-hoe.Type.prototype.on = function(observed, event, callback){
+hoe.Type.prototype.listen = function(observed, event, callback){
     if(observed instanceof jQuery){
         observed.bind(event, $.proxy(callback, this));
     }
@@ -166,11 +166,11 @@ hoe.Type.prototype.on = function(observed, event, callback){
 };
 
 /**
- * Trigger an event for this object
+ * Trigger/Fire an event for this object
  * @param {String} event name of the event
  * @param [arguments] other arguments will be passed to the callback
  */
-hoe.Type.prototype.trigger = function(event){
+hoe.Type.prototype.fire = function(event){
     if (this._hoe_obs && this._hoe_obs[event]){
         var callbacks = this._hoe_obs[event];
         for (var i=0, max=callbacks.length; i<max; i++){
@@ -226,6 +226,16 @@ hoe.Type.prototype.map = function(seq, fn){
         }
     }
     return result;
+};
+
+
+/**
+ * Return function to execute original function in objects scope/context.
+ * Similar to jQuery.proxy().
+ */
+hoe.Type.prototype.scope = function(func){
+    var my_scope = this;
+    return function () {return func.apply(my_scope, arguments);};
 };
 
 

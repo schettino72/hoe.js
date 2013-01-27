@@ -159,20 +159,20 @@ suite('hoe', function(){
             });
             var $ele = hoe('div', "xxx");
             var my = new MyStuff();
-            my.on($ele, 'click', function(){this.x=2;});
+            my.listen($ele, 'click', function(){this.x=2;});
             assert.equal(1, my.x);
             $ele.trigger('click');
             assert.equal(2, my.x);
         });
         test('obj event', function(){
             var Observed = hoe.Type(function(){
-                this.do_x = function(){this.trigger('done', 5);};
+                this.do_x = function(){this.fire('done', 5);};
             });
             var Observer = hoe.Type(function(){
                 this.x = 1;
                 this.ele = new Observed();
                 this.react = function(val){this.x=val;};
-                this.on(this.ele, 'done', this.react);
+                this.listen(this.ele, 'done', this.react);
             });
             var obj = new Observer();
             assert.equal(1, obj.x);
@@ -224,5 +224,16 @@ suite('hoe', function(){
             });
             assert.deepEqual([8, 12], got);
         });
+
+        test('scope object', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var get_on_scope = my.scope(function() {return this.x;});
+            assert.deepEqual(5, get_on_scope());
+        });
+
     });
 });
