@@ -263,6 +263,15 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#fire">fire</a></b>(event, arguments)
+								</div>
+								<div class="description">Trigger/Fire an event for this object</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#forEach">forEach</a></b>(seq, callback)
 								</div>
 								<div class="description">Iterate through Arrays or plain objects keeping the scope</div>
@@ -272,18 +281,27 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#on">on</a></b>(observed, event, callback)
+								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#listen">listen</a></b>(observed, event, callback)
 								</div>
-								<div class="description">Attach a callback on this object scope for event from observed</div>
+								<div class="description">Attach/listen a callback on this object scope for event from observed</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#trigger">trigger</a></b>(event, arguments)
+								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#map">map</a></b>(seq, callback)
 								</div>
-								<div class="description">Trigger an event for this object</div>
+								<div class="description">Create an Array iterating through Arrays or plain objects keeping the scope</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/hoe.Type.html#scope">scope</a></b>(func)
+								</div>
+								<div class="description">Return function to execute original function in objects scope/context.</div>
 							</td>
 						</tr>
 					
@@ -354,6 +372,48 @@ Constructor can be used to create new types.
 					Method Detail
 				</div>
 				
+					<a name="fire"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>fire</b>(event, arguments)
+					
+					</div>
+					<div class="description">
+						Trigger/Fire an event for this object
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>event</b>
+									
+								</dt>
+								<dd>name of the event</dd>
+							
+								<dt>
+									<b>arguments</b>
+									<i>Optional</i>
+								</dt>
+								<dd>other arguments will be passed to the callback</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="forEach"> </a>
 					<div class="fixedFont">
 					
@@ -400,15 +460,15 @@ Constructor can be used to create new types.
 
 					<hr />
 				
-					<a name="on"> </a>
+					<a name="listen"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>on</b>(observed, event, callback)
+					<b>listen</b>(observed, event, callback)
 					
 					</div>
 					<div class="description">
-						Attach a callback on this object scope for event from observed
+						Attach/listen a callback on this object scope for event from observed
 						
 						
 					</div>
@@ -449,15 +509,15 @@ Constructor can be used to create new types.
 
 					<hr />
 				
-					<a name="trigger"> </a>
+					<a name="map"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>trigger</b>(event, arguments)
+					<b>map</b>(seq, callback)
 					
 					</div>
 					<div class="description">
-						Trigger an event for this object
+						Create an Array iterating through Arrays or plain objects keeping the scope
 						
 						
 					</div>
@@ -469,16 +529,65 @@ Constructor can be used to create new types.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>event</b>
+									<span class="light fixedFont">{Array|Object}</span> <b>seq</b>
 									
 								</dt>
-								<dd>name of the event</dd>
+								<dd>contains items that will be iterated</dd>
 							
 								<dt>
-									<b>arguments</b>
-									<i>Optional</i>
+									<span class="light fixedFont">{Function}</span> <b>callback</b>
+									
 								</dt>
-								<dd>other arguments will be passed to the callback</dd>
+								<dd>to be called for each item.
+          The callback return value will be inserted in the returned Array
+          The callback the 3 paramaters:
+          1) value
+          2) index/key
+          3) reference to the whole sequence</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd>Array</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="scope"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>scope</b>(func)
+					
+					</div>
+					<div class="description">
+						Return function to execute original function in objects scope/context.
+Similar to jQuery.proxy().
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>func</b>
+									
+								</dt>
+								<dd></dd>
 							
 							</dl>
 						
@@ -503,7 +612,7 @@ Constructor can be used to create new types.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sat Nov 10 2012 15:34:19 GMT+0800 (CST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sun Jan 27 2013 19:57:53 GMT+0800 (CST)
 		</div>
 	</body>
 </html>

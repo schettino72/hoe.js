@@ -84,14 +84,16 @@ suite('hoe', function(){
             var fn = function(){return hoe('div', true);};
             assert.throws(fn, /Invalid type: boolean/);
         });
-        test('invalid parameter type (object)', function(){
-            function MyType(){}
-            var obj = new MyType();
-            var fn = function(){return hoe('div', obj);};
-            assert.throws(fn, /Invalid object:/);
-        });
     });
 
+
+    suite('hoe.partial()', function(){
+        test('simple element', function(){
+            var row  = hoe.partial('div', {'class':'row'});
+            var $ele = row('bla');
+            assert.equal('<div class="row">bla</div>', html_str($ele));
+        });
+    });
 
     suite('hoe.init()', function(){
         test('default create elements on window', function(){
@@ -157,20 +159,20 @@ suite('hoe', function(){
             });
             var $ele = hoe('div', "xxx");
             var my = new MyStuff();
-            my.on($ele, 'click', function(){this.x=2;});
+            my.listen($ele, 'click', function(){this.x=2;});
             assert.equal(1, my.x);
             $ele.trigger('click');
             assert.equal(2, my.x);
         });
         test('obj event', function(){
             var Observed = hoe.Type(function(){
-                this.do_x = function(){this.trigger('done', 5);};
+                this.do_x = function(){this.fire('done', 5);};
             });
             var Observer = hoe.Type(function(){
                 this.x = 1;
                 this.ele = new Observed();
                 this.react = function(val){this.x=val;};
-                this.on(this.ele, 'done', this.react);
+                this.listen(this.ele, 'done', this.react);
             });
             var obj = new Observer();
             assert.equal(1, obj.x);
@@ -201,5 +203,37 @@ suite('hoe', function(){
             my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
             assert.deepEqual({1:3, 3:5}, my.x);
         });
+
+        test('map array', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var got = my.map([1,3,5], function(val){return this.x + val;});
+            assert.deepEqual([6,8,10], got);
+        });
+        test('map object', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var got = my.map({1:2, 3:4}, function(val, key){
+                return parseInt(key, 10) + val + this.x;
+            });
+            assert.deepEqual([8, 12], got);
+        });
+
+        test('scope object', function(){
+            function MyStuff(){
+                this.x = 5;
+            }
+            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            var my = new MyStuff();
+            var get_on_scope = my.scope(function() {return this.x;});
+            assert.deepEqual(5, get_on_scope());
+        });
+
     });
 });

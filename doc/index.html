@@ -8,8 +8,9 @@
 
   <div class="four panel columns">
 
-    <h4>Why <em>hoe.js</em> ?</h4>
+    <h4><em>hoe.js</em></h4>
     <p><em>hoe.js</em> is a lightweight javascript library designed to streamline the creation of user interface in HTML/javascript.</p>
+    <h4>Why <em>hoe.js</em> ?</h4>
     <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
     <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
     <p><em>hoe.js's</em> goal is to let you write structured code for small components and let you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, just adding some missing pieces:</p>
@@ -28,7 +29,11 @@
       <pre class="prettyprint">
 hoe.init();
 var row = tr(td('col1', {'class': "my_class"}),
-             td(a('col2', {name: 'xxx'})) );
+             td(a('col2', {href: 'xxx'})) );
+//&lt;tr&gt;
+//  &lt;td class="my_class"&gt;col1&lt;/td&gt;
+//  &lt;td&gt;&lt;a href="xxx"&gt;col2&lt;/a&gt;&lt;/td&gt;
+//&lt;/tr&gt;
       </pre>
 
       <p><code>hoe.init()</code> defines function helpers to create most
@@ -44,13 +49,19 @@ var row = tr(td('col1', {'class': "my_class"}),
         <li>DOM element or jQuery object is appended to the element content</li>
         <li>can also take an array of DOM/jQuery</li>
       </ul>
-      <!--
-* init can take 2 arguments
-  1. the namespace where the functions will be created (default: window)
-  2. list of string with tag names which functions will be created
-* you can also use the `hoe()` function where the first argument is a string
-  with tag name, other arguments are same as described above
--->
+
+
+      <h5>hoe.partial()</h5>
+      <pre class="prettyprint">
+var row  = hoe.partial('div', {'class':'row'});
+row('foo');
+//  &lt;div class="row"&gt;foo&lt;/div&gt;
+row('bar');
+//  &lt;div class="row"&gt;bar&lt;/div&gt;
+       </pre>
+
+      <p><code>hoe.partial()</code> is used to create helper functions to generate composed tags and/or include tag attributes.</p>
+
     </div><!-- end panel 'dom' -->
 
 
@@ -93,12 +104,26 @@ var MyType = hoe.inherit(hoe.Type, function(){/*...*/});
 var MyType = hoe.Type(function(){/*...*/});
       </pre>
 
+
+      <h5>hoe.Type.scope</h5>
+      Similar to <code>jQuery.proxy()</code> to be used in the current object scope.
+
+      <pre class="prettyprint">
+var MyStuff = hoe.Type(function(){
+    this.x = 5;
+});
+var my = new MyStuff();
+var get_on_scope = my.scope(function() {return this.x;});
+get_on_scope(); // 5
+</pre>
+
+
       <h5>hoe.Type.forEach</h5>
       Iterate through arrays or objects keeping the context to the current object.
 
       <pre class="prettyprint">
 var MyType = hoe.Type(function(){
-    this.class = 'hoe';
+    this.class = 'my_class';
     this.$ele = div();
 };
 MyType.prototype.add_span = function(content){
@@ -109,10 +134,33 @@ var my = new MyType();
 my.forEach(['ele1', 'ele2'], this.add_span);
 my.$ele.html();
 // &lt;div&gt;
-//    &lt;span class="hoe"&gt;ele1&lt;/span&gt;
-//    &lt;span class="hoe"&gt;ele2&lt;/span&gt;
+//    &lt;span class="my_class"&gt;ele1&lt;/span&gt;
+//    &lt;span class="my_class"&gt;ele2&lt;/span&gt;
 // &lt;/div&gt;
       </pre>
+
+
+      <h5>hoe.Type.map</h5>
+      Iterate through arrays or objects keeping the context to the current object. Returned values in iteration are used to create an array.
+
+      <pre class="prettyprint">
+var MyType = hoe.Type(function(){
+    this.class = 'my_class';
+};
+MyType.prototype.create_span = function(content){
+   return span({'class': this.class}, content);
+}
+
+var my = new MyType();
+var span_array = my.map(['ele1', 'ele2'], this.create_span);
+div(span_array);
+// &lt;div&gt;
+//    &lt;span class="my_class"&gt;ele1&lt;/span&gt;
+//    &lt;span class="my_class"&gt;ele2&lt;/span&gt;
+// &lt;/div&gt;
+      </pre>
+
+
 
     </div><!-- end panel 'prototype' -->
 
@@ -120,19 +168,19 @@ my.$ele.html();
       <h4>Event system</h4>
 
       <h5>DOM events</h5>
-      <code>hoe.Type.on()</code> can be used to bind DOM events keeping the object context.
+      <code>hoe.Type.listen()</code> can be used to bind DOM events keeping the object context.
       <pre class="prettyprint">
-my_obj.on($ele, 'click', function(){alert(this.my_attr)});
+my_obj.listen($ele, 'click', function(){alert(this.my_attr)});
 
 // is the same as plain jQuery
 $ele.bind('click', $.proxy(function(){alert(this.my_attr)}, my_obj));
       </pre>
 
       <h5>object events</h5>
-      Objects can create their own events with <code>hoe.Type.trigger()</code>.
+      Objects can create their own events with <code>hoe.Type.fire()</code>.
 
       <pre class="prettyprint">
-my.trigger('my-custom-event-name', "argument1", {arg: 2});
+my.fire('my-custom-event-name', "argument1", {arg: 2});
       </pre>
 
       <ul>
@@ -146,7 +194,7 @@ events instead of a DOM element.</p>
 
       <pre class="prettyprint">
 var my2 = new MyType();
-my2.on(my, 'my-custom-event-name', function(val){
+my2.listen(my, 'my-custom-event-name', function(val){
      this.ele.append(val);
 });
       </pre>

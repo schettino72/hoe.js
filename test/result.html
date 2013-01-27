@@ -36,11 +36,15 @@ assert.equal('&lt;div&gt;xxx&lt;/div&gt;', html_str($ele));</code></pre></dd>
             <dt>invalid parameter type (bool)</dt>
             <dd><pre><code>var fn = function(){return hoe('div', true);};
 assert.throws(fn, /Invalid type: boolean/);</code></pre></dd>
-            <dt>invalid parameter type (object)</dt>
-            <dd><pre><code>function MyType(){}
-var obj = new MyType();
-var fn = function(){return hoe('div', obj);};
-assert.throws(fn, /Invalid object:/);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>hoe.partial()</h1>
+          <dl>
+            <dt>simple element</dt>
+            <dd><pre><code>var row  = hoe.partial('div', {'class':'row'});
+var $ele = row('bla');
+assert.equal('&lt;div class=&quot;row&quot;&gt;bla&lt;/div&gt;', html_str($ele));</code></pre></dd>
           </dl>
         </section>
         <section class="suite">
@@ -108,19 +112,19 @@ assert.equal(5, Sub.constant_x);</code></pre></dd>
 });
 var $ele = hoe('div', &quot;xxx&quot;);
 var my = new MyStuff();
-my.on($ele, 'click', function(){this.x=2;});
+my.listen($ele, 'click', function(){this.x=2;});
 assert.equal(1, my.x);
 $ele.trigger('click');
 assert.equal(2, my.x);</code></pre></dd>
             <dt>obj event</dt>
             <dd><pre><code>var Observed = hoe.Type(function(){
-    this.do_x = function(){this.trigger('done', 5);};
+    this.do_x = function(){this.fire('done', 5);};
 });
 var Observer = hoe.Type(function(){
     this.x = 1;
     this.ele = new Observed();
     this.react = function(val){this.x=val;};
-    this.on(this.ele, 'done', this.react);
+    this.listen(this.ele, 'done', this.react);
 });
 var obj = new Observer();
 assert.equal(1, obj.x);
@@ -149,6 +153,32 @@ var my = new MyStuff();
 assert.deepEqual({}, my.x);
 my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
 assert.deepEqual({1:3, 3:5}, my.x);</code></pre></dd>
+            <dt>map array</dt>
+            <dd><pre><code>function MyStuff(){
+    this.x = 5;
+}
+$.extend(MyStuff.prototype, hoe.Type.prototype);
+var my = new MyStuff();
+var got = my.map([1,3,5], function(val){return this.x + val;});
+assert.deepEqual([6,8,10], got);</code></pre></dd>
+            <dt>map object</dt>
+            <dd><pre><code>function MyStuff(){
+    this.x = 5;
+}
+$.extend(MyStuff.prototype, hoe.Type.prototype);
+var my = new MyStuff();
+var got = my.map({1:2, 3:4}, function(val, key){
+    return parseInt(key, 10) + val + this.x;
+});
+assert.deepEqual([8, 12], got);</code></pre></dd>
+            <dt>scope object</dt>
+            <dd><pre><code>function MyStuff(){
+    this.x = 5;
+}
+$.extend(MyStuff.prototype, hoe.Type.prototype);
+var my = new MyStuff();
+var get_on_scope = my.scope(function() {return this.x;});
+assert.deepEqual(5, get_on_scope());</code></pre></dd>
           </dl>
         </section>
       </dl>

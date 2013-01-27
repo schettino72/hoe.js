@@ -66,8 +66,8 @@
 		// to update our object's data, so let's attach an event handler.
 		//
 		// The standard way to attach callbacks to events is to use the
-		// method `on`. (This is a `hoe.Type.on` method not the be confused
-		// with jQuery's `on` method). The difference is that this method
+		// method `listen`. This method is similar with jQuery's `on` and
+		// `bind`. The difference is that this method
 		// belongs to the TodoItem object and the callback will be automatically
 		// executed on the object scope (no need to use `$.proxy`).
 		//
@@ -76,7 +76,7 @@
 		// * the jQuery/DOM element that generates the event
 		// * the event name
 		// * the callback -> (will be implemented later)
-		this.on( this.$checkbox, 'change', this.toggleCompleted );
+		this.listen( this.$checkbox, 'change', this.toggleCompleted );
 
 		// Create _label_ for checkbox with todo title and attach a
 		// method to start editing on double click event.
@@ -85,26 +85,26 @@
 		// attributes for a tag being created. If you pass a _String_
 		// it will be append in the content of the element.
 		this.$label = label( this.title );
-		this.on( this.$label, 'dblclick', this.startEdit );
+		this.listen( this.$label, 'dblclick', this.startEdit );
 
 		// Create _button_ to remove the TodoItem.
 		// When a todo item is deleted it needs to be removed from
 		// the TodoApp. Since the TodoItem has no knowlodge of
-		// where it is contained it will just tigger an event,
+		// where it is contained it will just tigger/fire an event,
 		// so that the container can act uppon it.
 		//
-		// The trigger method's first argument is the name of the event.
+		// The fire method's first argument is the name of the event.
 		// All other arguments will be passed to the callback attached
 		// as event handler, here we just pass a reference to the TodoItem
 		// being deleted.
 		var $button = button({ 'class': 'destroy' });
-		this.on( $button, 'click', function(){ this.trigger('delete', this); } );
+		this.listen( $button, 'click', function(){ this.fire('delete', this); } );
 
 		// Here we create the _input_ element to be used when the title
 		// of the TodoItem is being edited.
 		this.$input = input({ 'class': 'edit', value:this.title });
-		this.on( this.$input, 'blur', this.updateTitle );
-		this.on( this.$input, 'keypress', this.updateTitle );
+		this.listen( this.$input, 'blur', this.updateTitle );
+		this.listen( this.$input, 'keypress', this.updateTitle );
 
 		// Now we just need to put all the elements together.
 		// Note how we combine different arguments, plain object for
@@ -137,9 +137,9 @@
 			this.$ele.removeClass( 'editing' );
 			// notify the container element triggering an event
 			if ( !this.title ){
-				this.trigger( 'delete', this );
+				this.fire( 'delete', this );
 			}
-			this.trigger( 'updated' );
+			this.fire( 'updated' );
 		}
 	};
 
@@ -149,7 +149,7 @@
 	TodoItem.prototype.toggleCompleted = function() {
 		this.completed = this.$checkbox.prop( 'checked' );
 		this.$ele.toggleClass( 'completed' );
-		this.trigger( 'toggle', this );
+		this.fire( 'toggle', this );
 	};
 
 
@@ -183,11 +183,11 @@
 	TodoApp.prototype.render = function() {
 		// the input element where new TodoItem can be added
 		this.$input = input({ id: 'new-todo', placeholder: 'What needs to be done?', autofocus: '' });
-		this.on( this.$input, 'keyup', this.addItemCallback );
+		this.listen( this.$input, 'keyup', this.addItemCallback );
 
 		// checkbox to toggle all Todo's at once
 		this.$toggleAll = input({ id:'toggle-all', type:'checkbox' });
-		this.on( this.$toggleAll, 'change', this.toggleAll );
+		this.listen( this.$toggleAll, 'change', this.toggleAll );
 		var $label = label( { 'for': 'toggle-all' }, 'Mark all as complete' );
 
 		// the container for the TodoItem's HTML
@@ -208,7 +208,7 @@
 		// in the object.
 		this.forEach(this.filter_opts, this.render_filter);
 		this.$clear = button({ id: 'clear-completed' });
-		this.on( this.$clear, 'click', this.clearCompleted );
+		this.listen( this.$clear, 'click', this.clearCompleted );
 		this.$footer = footer( this.$todoCount, this.$filters, this.$clear );
 
 		// Put all the parts together.
@@ -225,14 +225,14 @@
 		this.$hide_empty = $( this.$footer ).add( this.$main ).hide();
 
 		// Attach event handler for haschange in the URL
-		this.on($(window), 'hashchange', this.hashChanged);
+		this.listen($(window), 'hashchange', this.hashChanged);
 	};
 
 	// `render_filter` create HTML for filter options.
 	TodoApp.prototype.render_filter = function( data, path ) {
 		var $link = a( {href: '#/' + path }, data.title );
 		$link.toggleClass( 'selected', ( this.filter == path) );
-		this.on( $link, 'click', function() {
+		this.listen( $link, 'click', function() {
 			this.setFilter(path);
 		});
 		this.filter_opts[path].$ele = $link;
@@ -273,9 +273,9 @@
 		// just pass the object as first parameter instead of
 		// a DOM element. Than comes the event name (_string_),
 		// and the callback.
-		this.on( this.todos[id], 'delete', this.deleteItem );
-		this.on( this.todos[id], 'toggle', this.itemToggled );
-		this.on( this.todos[id], 'updated', this.save );
+		this.listen( this.todos[id], 'delete', this.deleteItem );
+		this.listen( this.todos[id], 'toggle', this.itemToggled );
+		this.listen( this.todos[id], 'updated', this.save );
 		this.num_items += 1;
 		this.num_completed += completed ? 1 : 0;
 		this.$todoList.append( this.todos[id].render() );

@@ -1,3 +1,4 @@
+// hoe.js version: 0.2.0
 /** @license
  *   hoe.js - [http://schettino72.github.com/hoe.js]
  *   MIT license - Copyright (c) 2012 Eduardo Naufel Schettino
