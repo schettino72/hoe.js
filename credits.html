@@ -183,6 +183,38 @@
     });
   </script>
 
+  <script src="src/hoe.js"></script>
+  <script>
+var Calculator = hoe.Type(function(){
+    // some data
+    this.sum = 0;
+    // reference to UI elements
+    this.$sum = null;
+});
+
+// create UI
+Calculator.prototype.render = function(){
+   var $plus_one = button('+1');
+   this.listen($plus_one, 'click', this.add_one);
+   this.$sum = strong({style: "margin-left:5px"}, this.sum.toString());
+   return [$plus_one, this.$sum];
+};
+
+// logic - event handler
+Calculator.prototype.add_one = function(){
+   // update data
+   this.sum += 1;
+   // update UI
+   this.$sum.html(this.sum);
+};
+
+$(document).ready(function(){
+  hoe.init(); // create DOM helper functions
+  $('#calculator').html((new Calculator()).render());
+});
+  </script>
+
+
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-29887834-2']);

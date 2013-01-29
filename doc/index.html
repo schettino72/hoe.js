@@ -10,6 +10,7 @@
 
     <h4><em>hoe.js</em></h4>
     <p><em>hoe.js</em> is a lightweight javascript library designed to streamline the creation of user interface in HTML/javascript.</p>
+
     <h4>Why <em>hoe.js</em> ?</h4>
     <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
     <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
@@ -24,24 +25,58 @@
 
   <div class="eight columns">
     <div id="dom" class="panel">
-      <h4>DOM creation</h4>
+
+      <h4>Example</h4>
+      <p><em>hoe.js</em> does not enforce any kind of structure for your code, but it was specially designed to help you create custom UI components. Here is an idiomatic example of how a "component" would look like.</p>
 
       <pre class="prettyprint">
-hoe.init();
-var row = tr(td('col1', {'class': "my_class"}),
-             td(a('col2', {href: 'xxx'})) );
-//&lt;tr&gt;
-//  &lt;td class="my_class"&gt;col1&lt;/td&gt;
-//  &lt;td&gt;&lt;a href="xxx"&gt;col2&lt;/a&gt;&lt;/td&gt;
-//&lt;/tr&gt;
+var Calculator = hoe.Type(function(){
+    // some data
+    this.sum = 0;
+    // reference to UI elements
+    this.$sum = null;
+});
+
+// create UI
+Calculator.prototype.render = function(){
+   var $plus_one = button('+1');
+   this.listen($plus_one, 'click', this.add_one);
+   this.$sum = strong({style: "margin-left:5px"},
+                      this.sum.toString());
+   return [$plus_one, this.$sum];
+};
+
+// logic - event handler
+Calculator.prototype.add_one = function(){
+   // update data
+   this.sum += 1;
+   // update UI
+   this.$sum.html(this.sum);
+};
+
+$(document).ready(function(){
+  hoe.init(); // create DOM helper functions
+  $('#calculator').html((new Calculator()).render());
+});
+      </pre>
+      <div id="calculator" style="border:1px solid black"></div>
+    </div>
+
+
+    <div id="dom" class="panel">
+      <h4>DOM creation</h4>
+
+      <h5>hoe()</h5>
+
+      <pre class="prettyprint">
+var row  = hoe('div', {'class':'row'}, 'foo');
+//  &lt;div class="row"&gt;foo&lt;/div&gt;
       </pre>
 
-      <p><code>hoe.init()</code> defines function helpers to create most
-      commonly used tags.</p>
-
-      <p>The function's name is the <em>tag</em> it creates. In this example
-      <code>tr()</code> <code>td()</code> and <code>a()</code>.
-      It returns a jQuery object and can take any number of arguments where:
+      <p>
+      The first argument is a string with tag name.
+      It returns a jQuery object for the tag.
+      It can take any number of extra arguments where:
       </p>
       <ul>
         <li>plain javascript objects are element attributes</li>
@@ -62,6 +97,25 @@ row('bar');
 
       <p><code>hoe.partial()</code> is used to create helper functions to generate composed tags and/or include tag attributes.</p>
 
+
+      <h5>hoe.init()</h5>
+
+      <p><code>hoe.init()</code> defines function helpers to create most
+      commonly used tags. </p>
+
+      <p>The function's name is the <em>tag</em> it creates. In this example
+      <code>tr()</code> and <code>td()</code> are used.</p>
+
+      <pre class="prettyprint">
+hoe.init();
+var row = tr(td('col1', {'class': "my_class"}));
+//&lt;tr&gt;
+//  &lt;td class="my_class"&gt;col1&lt;/td&gt;
+//&lt;/tr&gt;
+      </pre>
+
+      <p>You can customize the namespace and tags that will
+      be created (check the <a href="api/symbols/hoe.html#.init">API</a>)</p>
     </div><!-- end panel 'dom' -->
 
 
