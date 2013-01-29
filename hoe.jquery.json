@@ -1,0 +1,23 @@
+{
+    "name": "hoe",
+    "title": "hoe.js - javascript for peasants",
+    "description": "lightweight javascript library designed to streamline the creation of user interface in HTML/javascript",
+    "keywords": ["DOM", "ui"],
+    "version": "0.2.0",
+    "author": {
+        "name": "Eduardo Naufel Schettino",
+        "url": "https://github.com/schettino72"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/schettino72/hoe.js/blob/master/LICENSE"
+        }
+    ],
+    "bugs": "https://github.com/schettino72/hoe.js/issues",
+    "homepage": "http://hoejs.schettino72.net",
+    "docs": "http://hoejs.schettino72.net",
+    "dependencies": {
+        "jquery": ">=1.8"
+    }
+}
