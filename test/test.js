@@ -236,4 +236,38 @@ suite('hoe', function(){
         });
 
     });
+
+
+    suite('hoe.UI', function(){
+        test('return value', function(){
+            var MyWidget = hoe.inherit(hoe.UI, function(){});
+            MyWidget.prototype._render = function(){
+                return hoe('span', 'hi');
+            };
+            var widget = new MyWidget();
+            assert.equal('<span>hi</span>', html_str(widget.render()));
+        });
+        test('remember container', function(){
+            var MyWidget = hoe.inherit(hoe.UI, function(){
+                this.text = 'hi';
+            });
+            MyWidget.prototype._render = function(){
+                return hoe('span', this.text);
+            };
+            var $container = hoe('div');
+            var widget = new MyWidget();
+            widget.render($container);
+            assert.equal('<div><span>hi</span></div>', html_str($container));
+
+            // re-render without specifying container
+            widget.text = 'hello';
+            widget.render();
+            assert.equal('<div><span>hello</span></div>', html_str($container));
+
+            // container reference
+            assert.equal('<div><span>hello</span></div>',
+                         html_str(widget.$container));
+        });
+    });
+
 });

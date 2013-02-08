@@ -49,9 +49,12 @@ def task_coverage():
     yield {
         'name': 'test',
         'actions': [
-            MOCHA_CMD + ' --require setup_cov.js --reporter html-cov > coverage/result.html'],
+            MOCHA_CMD + ' --require setup_cov.js --reporter html-cov > coverage/result.html',
+            'echo "check results in coverage/result.html"'
+            ],
         'file_dep': ['coverage/hoe.js', 'test/test.js'],
         'targets': ['coverage/result.html'],
+        'verbosity': 2,
         }
 
 

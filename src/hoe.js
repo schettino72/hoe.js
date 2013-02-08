@@ -239,6 +239,30 @@ hoe.Type.prototype.scope = function(func){
 };
 
 
+/**
+ * UI has a single "render" method that can remember its container element
+ * in the DOM.
+
+ * To use create a type and define a "_render()" method where the DOM
+ * content is returned. Typically the container for this UI is only
+ * specified in the first time it is rendered.
+ * The object has an attribute "$container" with a reference to the container
+ * element.
+ *
+ */
+hoe.UI = hoe.Type();
+hoe.UI.prototype.render = function($container){
+    var content = this._render();
+    if (typeof $container !== 'undefined'){
+        this.$container = $container;
+    }
+    if (this.$container){
+        this.$container.html(content);
+    }
+    return content;
+};
+
+
 /** @exports */
 if (typeof exports !== 'undefined'){
     exports.hoe = hoe;
