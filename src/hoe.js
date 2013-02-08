@@ -263,6 +263,67 @@ hoe.UI.prototype.render = function($container){
 };
 
 
+//////////////////////////////////////////////////////////////////////
+// TODO - split this into a separate file
+// Route, Router, App are helpers to create single page apps
+
+// XXX
+hoe.Route = hoe.Type(function(template, name, endpoint){
+    this.template = template;
+    this.name = name;
+    this.endpoint = endpoint;
+
+    // convert template into list of parts that can have a 'param' or 'fixed'
+    this._parts = this.map(template.substr(1).split('/'), function(part){
+        return part[0] === ':' ? {'param': part.substr(1)} : {'fixed': part};
+    });
+});
+
+
+// check if a path matches this route
+// return an object with param values if matched or null if not matched
+hoe.Route.prototype.match = function(path){
+    var path_parts = path.substr(1).split('/');
+    if (path_parts.length != this._parts.length){
+        return null;
+    }
+    var params = {};
+    for(var i=0, max=path_parts.length; i<max; i++){
+        if (this._parts[i].fixed){
+            if (this._parts[i].fixed != path_parts[i]){
+                return null;
+            }
+        }
+        else {
+            if (!path_parts[i]){
+                return null; // dont accept empty param values
+            }
+            params[this._parts[i].param] = path_parts[i];
+        }
+    }
+    return params;
+};
+
+// create path using given params
+hoe.Route.prototype.build = function(params){
+    var path = "";
+    $.each(this._parts, function(_, part){
+        if (part.fixed){
+            path += '/' + part.fixed;
+        }
+        else {
+            var part_value = params[part.param];
+            if (!part_value){
+                throw Error('Missing param: ' + part.param);
+            }
+            path += '/' + part_value;
+        }
+    });
+    return path;
+};
+
+
+
 /** @exports */
 if (typeof exports !== 'undefined'){
     exports.hoe = hoe;
