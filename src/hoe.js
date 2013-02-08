@@ -323,6 +323,36 @@ hoe.Route.prototype.build = function(params){
 };
 
 
+// XXX
+hoe.Router = hoe.Type(function(){
+    this.routes = {};
+});
+
+hoe.Router.prototype.add = function(route){
+    this.routes[route.name] = route;
+};
+
+hoe.Router.prototype.match = function(path){
+    var result = null;
+    $.each(this.routes, function(_, route){
+        var match = route.match(path);
+        if (match !== null){
+            result = {'route': route, 'params': match};
+            return;
+        }
+    });
+    return result;
+};
+
+hoe.Router.prototype.build = function(name, params){
+    var route = this.routes[name];
+    if (!route){
+        throw Error('Route not found: ' + name);
+    }
+    return route.build(params);
+};
+
+
 
 /** @exports */
 if (typeof exports !== 'undefined'){

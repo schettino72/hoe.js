@@ -302,4 +302,38 @@ suite('hoe', function(){
 
     });
 
+
+    suite('hoe.Router', function(){
+        test('Router.match()', function(){
+            var router = new hoe.Router();
+            var route_a = new hoe.Route('/simple', 'simple_name');
+            var route_b = new hoe.Route('/xxx/:p1', 'b');
+            router.add(route_a);
+            router.add(route_b);
+
+            assert.equal(null, router.match('/simple2'));
+
+            var simple = router.match('/simple');
+            assert.equal('simple_name', simple.route.name);
+            assert.deepEqual({}, simple.params);
+
+            assert.deepEqual({'route': route_b, 'params': {p1:'abc'}},
+                             router.match('/xxx/abc'));
+         });
+
+        test('Router.build()', function(){
+            var router = new hoe.Router();
+            var route_a = new hoe.Route('/simple', 'simple_name');
+            var route_b = new hoe.Route('/xxx/:p1', 'b');
+            router.add(route_a);
+            router.add(route_b);
+
+            assert.equal('/xxx/abc', router.build('b', {p1: 'abc'}));
+            assert.equal('/simple', router.build('simple_name'));
+            var fn = function(){router.build('who');};
+            assert.throws(fn, /Route not found: who/);
+        });
+
+    });
+
 });
