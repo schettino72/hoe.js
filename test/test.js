@@ -282,6 +282,11 @@ suite('hoe', function(){
             assert.equal(null, route.match('/abc'));
         });
 
+        test('Route.match() root', function(){
+            var route = new hoe.Route("/");
+            assert.deepEqual({}, route.match('/'));
+        });
+
         test('Route.match() params', function(){
             var route = new hoe.Route("/with/:p1/and/:p2");
             assert.deepEqual({p1:'abc', p2:'xyz'},

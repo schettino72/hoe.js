@@ -287,9 +287,10 @@ hoe.Route.prototype.match = function(path){
     if (path_parts.length != this._parts.length){
         return null;
     }
+
     var params = {};
     for(var i=0, max=path_parts.length; i<max; i++){
-        if (this._parts[i].fixed){
+        if ('fixed' in this._parts[i]){
             if (this._parts[i].fixed != path_parts[i]){
                 return null;
             }
@@ -332,6 +333,7 @@ hoe.Router.prototype.add = function(route){
     this.routes[route.name] = route;
 };
 
+// return object with 'router' and 'params'
 hoe.Router.prototype.match = function(path){
     var result = null;
     $.each(this.routes, function(_, route){
@@ -350,6 +352,73 @@ hoe.Router.prototype.build = function(name, params){
         throw Error('Route not found: ' + name);
     }
     return route.build(params);
+};
+
+
+// single page application - help setting the URL
+hoe.App = hoe.Type(function(){
+    this.router = new hoe.Router();
+
+    // bind events
+    $('body').on('click', 'a', this.scope(this._handle_click));
+    $(window).bind('popstate', this.scope(this._popstate));
+
+    // avoid chrome bug
+    // https://code.google.com/p/chromium/issues/detail?id=63040
+    this._loaded = false;
+});
+
+
+// based on jquery.pjax.js:handleClick
+// https://github.com/defunkt/jquery-pjax/blob/master/jquery.pjax.js
+hoe.App.prototype._handle_click = function(event) {
+    var link = event.currentTarget;
+
+    // Middle click, cmd click, and ctrl click should open
+    // links in a new tab as normal.
+    if ( event.which > 1 || event.metaKey || event.ctrlKey ||
+         event.shiftKey || event.altKey )
+        return;
+
+    // Ignore cross origin links
+    if ( location.protocol !== link.protocol || location.host !== link.host )
+        return;
+
+    // Ignore anchors on the same page
+    if (link.hash && link.href.replace(link.hash, '') ===
+        location.href.replace(location.hash, ''))
+        return;
+
+    // Ignore empty anchor "foo.html#"
+    if (link.href === location.href + '#')
+        return;
+
+    this.load(link.pathname, true);
+    event.preventDefault();
+};
+
+
+hoe.App.prototype._popstate = function() {
+    if (this._loaded){ // ignore initial event on chrome (bug)
+        this.load(document.location.pathname, false);
+    }
+};
+
+
+// find path in router and loads endpoint
+hoe.App.prototype.load = function(path, push_state){
+    this._loaded = true;
+    var match = this.router.match(path);
+    if (match){
+        match.route.endpoint(match.params);
+    }
+    else {
+        window.alert('404: ' + path);
+    }
+
+    if (push_state){
+        window.history.pushState({}, null, path);
+    }
 };
 
 
