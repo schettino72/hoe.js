@@ -8,11 +8,12 @@ DOIT_CONFIG = {
 
 MOCHA_CMD = 'node_modules/mocha/bin/mocha --ui tdd'
 HOE_JS = 'src/hoe.js'
-
+SRC_FILES = [HOE_JS, 'src/hoe.app.js']
+TEST_FILES = ['test/test.js',]
 
 def task_check():
     """static checker using jshint"""
-    for js_file in (HOE_JS, 'test/test.js'):
+    for js_file in SRC_FILES + TEST_FILES:
         yield {
             'name': js_file,
             'actions': ['jshint --config hint.json ' + js_file],
@@ -24,12 +25,12 @@ def task_test():
     """run unit-tests using mocha"""
     return {
         'actions': [
-            MOCHA_CMD + ' --colors --reporter spec'],
-        'file_dep': [HOE_JS, 'test/test.js'],
+            MOCHA_CMD + ' --colors --reporter spec test/test.js'],
+        'file_dep': SRC_FILES + TEST_FILES,
         }
 
 def task_testdoc():
-    """run unit-tests using mocha"""
+    """run unit-tests & generate HTML report"""
     return {
         'actions': [
             MOCHA_CMD + ' --reporter doc > test/result.html'],
