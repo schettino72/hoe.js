@@ -150,18 +150,24 @@ hoe.Type = function(constructor){
  * @param {Function} callback to be executed when event is triggered.
  *                      this will be bound to current object.
  */
-hoe.Type.prototype.listen = function(observed, event, callback){
-    if(observed instanceof jQuery){
-        observed.bind(event, $.proxy(callback, this));
+hoe.Type.prototype.listen = function(observed, event_name, callback){
+    if (observed instanceof window.HTMLElement){
+        observed.addEventListener(event_name, callback.bind(this));
+        return;
     }
-    else{
+    if (observed instanceof jQuery){
+        observed.bind(event_name, callback.bind(this));
+        return;
+    }
+    // hoe crappy event manager
+    else {
         if (typeof observed._hoe_obs === 'undefined'){
             observed._hoe_obs = {};
         }
-        if (!(event in observed._hoe_obs)){
-            observed._hoe_obs[event] = [];
+        if (!(event_name in observed._hoe_obs)){
+            observed._hoe_obs[event_name] = [];
         }
-        observed._hoe_obs[event].push({scope:this, fn:callback});
+        observed._hoe_obs[event_name].push({scope:this, fn:callback});
     }
 };
 
@@ -170,9 +176,14 @@ hoe.Type.prototype.listen = function(observed, event, callback){
  * @param {String} event name of the event
  * @param [arguments] other arguments will be passed to the callback
  */
-hoe.Type.prototype.fire = function(event){
-    if (this._hoe_obs && this._hoe_obs[event]){
-        var callbacks = this._hoe_obs[event];
+hoe.Type.prototype.fire = function(event_name, detail){
+    if(this instanceof window.HTMLElement){
+        var event = new CustomEvent(event_name, {detail:detail});
+        this.dispatchEvent(event);
+        return;
+    }
+    if (this._hoe_obs && this._hoe_obs[event_name]){
+        var callbacks = this._hoe_obs[event_name];
         for (var i=0, max=callbacks.length; i<max; i++){
             callbacks[i].fn.apply(callbacks[i].scope,
                                   Array.prototype.slice.call(arguments, 1));
@@ -243,6 +254,8 @@ hoe.Type.prototype.scope = function(func){
  * UI has a single "render" method that can remember its container element
  * in the DOM.
 
+ * DEPRECATED - use hoe.Component
+
  * To use create a type and define a "_render()" method where the DOM
  * content is returned. Typically the container for this UI is only
  * specified in the first time it is rendered.
@@ -262,6 +275,14 @@ hoe.UI.prototype.render = function($container){
     return content;
 };
 
+
+// creates a web-component
+hoe.Component = function(tag_name){
+    var proto = Object.create(window.HTMLElement.prototype);
+    $.extend(proto, hoe.Type.prototype);
+    document.register(tag_name, {prototype: proto});
+    return proto;
+};
 
 
 

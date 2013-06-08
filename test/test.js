@@ -9,11 +9,10 @@ var IS_NODE = typeof window === 'undefined';
 
 /*** setup test runner ***/
 function fake_dom(){
-    var jsdom = require("jquery/node_modules/jsdom");
+    var jsdom = require("jsdom");
     var window = jsdom.jsdom('<html><body></body></html>').createWindow();
     global.window = window;
     global.document = window.document;
-    global.Element = window.Element;
     global.$ = global.jQuery = require('jquery').create(window);
 }
 
@@ -272,6 +271,48 @@ suite('hoe', function(){
         });
     });
 
+    suite('hoe.Component', function(){
+        if (IS_NODE) return; // jsdom doesnt support MutationObserver
+        test('create', function(){
+            var MyComponent = hoe.Component('my-comp');
+            MyComponent.readyCallback = function(){
+                $(this).html(this.render());
+            };
+            MyComponent.render = function(){
+                return hoe('div', 'hi');
+            };
+            var widget = hoe('my-comp');
+            assert.equal('<my-comp><div>hi</div></my-comp>', html_str(widget));
+        });
+
+        test('component fire event', function(){
+            var MyComponent = hoe.Component('my-comp');
+            MyComponent.readyCallback = function(){
+                $(this).html('hello');
+            };
+            var $widget = hoe('my-comp');
+            var result;
+            $widget[0].addEventListener('custom_event', function(event){
+                result = "got: " + event.detail;
+            });
+            $widget[0].fire('custom_event', '46');
+            assert.equal('got: 46', result);
+        });
+
+        test('listen event from component', function(){
+            var MyComponent = hoe.Component('my-comp');
+            MyComponent.readyCallback = function(){
+                $(this).html('hello');
+            };
+            var $widget = hoe('my-comp');
+            var my_obj = new (hoe.Type(function(){}))();
+            my_obj.listen($widget[0], 'custom_event', function(event){
+                this.result = "got: " + event.detail;
+            });
+            $widget[0].fire('custom_event', '48');
+            assert.equal('got: 48', my_obj.result);
+        });
+    });
 
     // suite('hoe.Route', function(){
     //     test('Route.match() simple', function(){

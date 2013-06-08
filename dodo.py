@@ -115,6 +115,7 @@ def task_dist():
 # sudo apt-get install nodejs
 # npm install mocha
 # npm install chai
+# npm install jsdom
 # npm install jquery
 # npm install -g jshint
 # npm install -g docco

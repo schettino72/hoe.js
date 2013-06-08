@@ -11,6 +11,7 @@
 
     "globals": {
         "Element": false,
+        "CustomEvent": false,
         "exports": false
     },
     "browser": true,
