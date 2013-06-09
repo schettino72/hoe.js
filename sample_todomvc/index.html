@@ -10,12 +10,15 @@
 	<![endif]-->
 </head>
 <body>
-	<section id="todoapp"></section>
+	<todo-app id="todoapp">
+      <todo-item id="x2" completed="true" >my content</todo-item>
+    </todo-app>
 	<footer id="info">
 		<p>Double-click to edit a todo</p>
 		<p>Created by <a href="https://github.com/schettino72/hoe.js">hoe.js</a></p>
 		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 	</footer>
+    <script src="../components/custom-elements.all.js"></script>
     <script src="../components/jquery.js"></script>
     <script src="../src/hoe.js"></script>
 	<script src="app.js"></script>

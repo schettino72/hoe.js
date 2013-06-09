@@ -35,13 +35,24 @@
 	// An item has 3 properties: `id`, `title` and `completed`.
 	// The TodoItem is created inheriting from `hoe.Type` so
 	// it has some extra features.
-	var TodoItem = hoe.Type( function( id, title, completed ) {
-		this.id = id;
-		this.title = title;
-		this.completed = completed;
+	var TodoItem = hoe.Component( 'todo-item', function (args){
+		if (!this.__loaded_html__){
+			this.$ele = $(this);
+			this.id = args.id
+			this.title = args.title
+			this.completed = args.completed
+		}
+		this.render()
 	});
 
-	// ### render
+	TodoItem.from_html = function(){
+		this.$ele = $(this);
+		this.id = this.$ele.attr('id');
+		this.title = this.$ele.text();
+		this.completed = this.$ele.attr('completed') == true;
+		this.$ele.empty();
+	}
+
 	// `hoe.js` approach is that HTML for "widgets" should be created
 	// directly by javascript.
 	//
@@ -54,7 +65,7 @@
 	// Creating HTML from js lets us simplify by keeping all the code in a single
 	// location and avoid problems like referencing elements by name that might
 	// have changed, have a typo or are simply hard to locate.
-	TodoItem.prototype.render = function() {
+	TodoItem.render = function() {
 		// * create the _input_ element for the checkbox calling the function
 		//	 with the tag name
 		// * HTML attributes are passed as plain objects
@@ -98,7 +109,9 @@
 		// as event handler, here we just pass a reference to the TodoItem
 		// being deleted.
 		var $button = button({ 'class': 'destroy' });
-		this.listen( $button, 'click', function(){ this.fire('delete', this); } );
+		this.listen( $button, 'click', function(){
+			this.fire('delete', this);
+		} );
 
 		// Here we create the _input_ element to be used when the title
 		// of the TodoItem is being edited.
@@ -111,10 +124,10 @@
 		// HTML attributes, DOM elements are appended to the content.
 		// You can pass as many arguments as you wish.
 		var $view = div( {'class': 'view'}, this.$checkbox, this.$label, $button );
-		this.$ele = li( $view, this.$input );
+		this.$ele.append( $view, this.$input );
 
 		// And finally set a class to apply a CSS style.
-		return this.$ele.toggleClass( 'completed', this.completed );
+		this.$ele.css('display', 'block').toggleClass( 'completed', this.completed );
 	};
 
 	// ### Event handlers
@@ -122,13 +135,13 @@
 	//
 	// `startEdit` will display the input element (done through CSS,
 	// so just change the `class` attribute).
-	TodoItem.prototype.startEdit = function() {
+	TodoItem.startEdit = function() {
 		this.$ele.addClass( 'editing' );
 		this.$input.focus();
 	};
 
 	// `updateTitle` when finished editing.
-	TodoItem.prototype.updateTitle = function( e ){
+	TodoItem.updateTitle = function( e ){
 		if ( e.type === 'blur' || e.keyCode === ENTER_KEY ) {
 			// update the Object property
 			this.title = $.trim( this.$input.val() );
@@ -146,7 +159,7 @@
 	// `toggleCompleted`, about the same steps.
 	// Update the object property, update the UI and trigger an event to
 	// notify the container.
-	TodoItem.prototype.toggleCompleted = function() {
+	TodoItem.toggleCompleted = function() {
 		this.completed = this.$checkbox.prop( 'checked' );
 		this.$ele.toggleClass( 'completed' );
 		this.fire( 'toggle', this );
@@ -158,7 +171,7 @@
 	// The constructor defines the object properties, the initial data
 	// is loaded from LocalStorage.
 	// The URL hash can be used to set the initial "view filter".
-	var TodoApp = hoe.Type(function() {
+	var TodoApp = hoe.Component('todo-app', function() {
 		// dict of TodoItem by id
 		this.todos = {};
 		// helper to generate TodoItem id's
@@ -174,16 +187,36 @@
 
 		// Initialization: load data from LocalStorage
 		this.load();
+
+		// add elements from HTML
+		this.forEach(this.extra, function(todo_item){
+			this.addItem(todo_item);
+		});
+
+		this.updateCount();
+		if (this.num_items){
+			this.$hide_empty.show()
+		}
 		// read hash from URL to set initial filter
 		this.hashChanged();
 	});
 
+	TodoApp.from_html = function(){
+		this.extra = [];
+		var $this = $(this);
+		var that = this;
+		$('todo-item', $this).each(function (_, todo_item){
+			that.extra.push(todo_item);
+			$(todo_item).detach(); // dont remove event handlers
+		});
+	}
+
 	// ### render
 	// create HTMl elements and attach events
-	TodoApp.prototype.render = function() {
+	TodoApp.render = function() {
 		// the input element where new TodoItem can be added
 		this.$input = input({ id: 'new-todo', placeholder: 'What needs to be done?', autofocus: '' });
-		this.listen( this.$input, 'keyup', this.addItemCallback );
+		this.listen( this.$input, 'keyup', this.createItemCallback );
 
 		// checkbox to toggle all Todo's at once
 		this.$toggleAll = input({ id:'toggle-all', type:'checkbox' });
@@ -217,19 +250,21 @@
 		// creation functioins, but use an existing element.
 		// Plain objects become HTML attributes, string and other DOM
 		// elements are append to the content.
-		$( '#todoapp' ).hoe( header( {id:'header'}, h1( 'todos' ), this.$input ),
-							 this.$main.attr( 'id', 'main' ),
-							 this.$footer.attr( 'id', 'footer' ) );
+		$(this).hoe( header( {id:'header'}, h1( 'todos' ), this.$input ),
+					 this.$main.attr( 'id', 'main' ),
+					 this.$footer.attr( 'id', 'footer' ) );
+		$(this).css('display', 'block');
 
 		// Create a group of elements that will be hidden when todo list is empty.
 		this.$hide_empty = $( this.$footer ).add( this.$main ).hide();
 
 		// Attach event handler for haschange in the URL
 		this.listen($(window), 'hashchange', this.hashChanged);
+
 	};
 
 	// `render_filter` create HTML for filter options.
-	TodoApp.prototype.render_filter = function( data, path ) {
+	TodoApp.render_filter = function( data, path ) {
 		var $link = a( {href: '#/' + path }, data.title );
 		$link.toggleClass( 'selected', ( this.filter == path) );
 		this.listen( $link, 'click', function() {
@@ -241,7 +276,7 @@
 
 	// ### hashChanged
 	// Read hash from URL and apply filter
-	TodoApp.prototype.hashChanged = function() {
+	TodoApp.hashChanged = function() {
 		if ( location.hash ) {
 			this.setFilter(location.hash.substring(2));
 		}
@@ -249,7 +284,7 @@
 
 	// ### setFilter
 	// Change view to display only todo items that match the filter.
-	TodoApp.prototype.setFilter = function( path ) {
+	TodoApp.setFilter = function( path ) {
 		// uptate propery
 		this.filter = path;
 		// update UI
@@ -261,24 +296,34 @@
 		this.save();
 	};
 
-	// ### addItem
-	// Adds the TodoItem to the TodoApp and renders it.
+	// ### createItem
+	// Create new TodoItem and add them to the TodoApp.
 	// This is used on initialization for items read from LocalStorage
 	// and for items added through the UI.
-	TodoApp.prototype.addItem = function( id, title, completed ) {
-		// create a new TodoItem
-		this.todos[id] = new TodoItem( id, title, completed );
+	TodoApp.createItem = function( id, title, completed ) {
+		var item = TodoItem.New({id:id, title:title, completed:completed});
+		this.addItem(item);
+	}
+
+	// ### addItem
+	// Adds the TodoItem to the TodoApp and renders it.
+	TodoApp.addItem = function( item ) {
+		var id = item.id;
+		if (id in this.todos) return;
+		this.todos[id] = item;
 		// Attach event handlers to TodoItem events.
 		// The API is the same as used by DOM events,
 		// just pass the object as first parameter instead of
 		// a DOM element. Than comes the event name (_string_),
 		// and the callback.
-		this.listen( this.todos[id], 'delete', this.deleteItem );
+		this.listen( this.todos[id], 'delete', function(event){
+			this.deleteItem(event.detail);
+		});
 		this.listen( this.todos[id], 'toggle', this.itemToggled );
 		this.listen( this.todos[id], 'updated', this.save );
 		this.num_items += 1;
-		this.num_completed += completed ? 1 : 0;
-		this.$todoList.append( this.todos[id].render() );
+		this.num_completed += item.completed ? 1 : 0;
+		this.$todoList.append( this.todos[id] );
 		this.filterItem( this.todos[id] );
 	};
 
@@ -286,7 +331,7 @@
 	// ### updateCount
 	// Whenever an item is added or edited we need to refresh
 	// the footer displaying the summary of items/completed.
-	TodoApp.prototype.updateCount = function() {
+	TodoApp.updateCount = function() {
 		var left = this.num_items - this.num_completed;
 		var left_str = ( left == 1 ) ? ' item left' : ' items left';
 		this.$toggleAll.prop( 'checked', (this.num_completed === this.num_items) );
@@ -296,13 +341,13 @@
 		this.save();
 	};
 
-	// ### addItemCallback
+	// ### createItemCallback
 	// Called when a new TodoItem is created from the UI
-	TodoApp.prototype.addItemCallback = function( e ) {
+	TodoApp.createItemCallback = function( e ) {
 		var title = $.trim( this.$input.val() );
 		if ( e.which === ENTER_KEY && title ) {
 			var id = this.next_id++;
-			this.addItem( id, title, false );
+			this.createItem( id, title, false );
 			this.$input.val( '' );
 			this.$hide_empty.show();
 			this.updateCount();
@@ -310,33 +355,34 @@
 	};
 
 	// ### deleteItem
-	TodoApp.prototype.deleteItem = function( item ) {
-		item.$ele.remove();
+	TodoApp.deleteItem = function( item ) {
 		this.num_items -= 1;
 		this.num_completed -= item.completed ? 1 : 0;
 		if ( this.num_items === 0 ){
 			this.$hide_empty.hide();
 		}
 		delete this.todos[item.id];
+		$(item).remove();
 		this.updateCount();
 	};
 
 	// ### filterItem
 	// Apply filter to a single item setting its visibility.
-	TodoApp.prototype.filterItem = function ( item ) {
-		item.$ele.toggle(( item.completed != this.filter_opts[this.filter].value ));
+	TodoApp.filterItem = function ( item ) {
+		$(item).toggle(( item.completed != this.filter_opts[this.filter].value ));
 	};
 
 	// ### itemToggled
 	// Event handler for TodoItem. Updates counter and applly filter on item
-	TodoApp.prototype.itemToggled = function( item ) {
+	TodoApp.itemToggled = function( event ) {
+		var item = event.detail;
 		this.num_completed += item.completed ? 1 : -1;
 		this.filterItem( item );
 		this.updateCount();
 	};
 
 	// ### toggleAll
-	TodoApp.prototype.toggleAll = function() {
+	TodoApp.toggleAll = function() {
 		var checked = this.$toggleAll.prop( 'checked' );
 		this.forEach( this.todos, function( item ){
 			if ( item.completed !== checked ){
@@ -349,7 +395,7 @@
 	// ### clearCompleted
 	// Delete all TodoItem that are completed.
 	// Note: items are deleted one by one...
-	TodoApp.prototype.clearCompleted = function(){
+	TodoApp.clearCompleted = function(){
 		this.forEach( this.todos, function( item ){
 			if ( item.completed ){
 				this.deleteItem( item );
@@ -359,7 +405,7 @@
 
 	// ### load
 	// This app saves the session data using LocaStorage.
-	TodoApp.prototype.load = function() {
+	TodoApp.load = function() {
 		var store = localStorage.getItem( 'todos-hoejs' );
 		if ( store ) {
 			// load list of TodoItem, filter, and next_id from LocaStorage
@@ -371,9 +417,8 @@
 			// add the items read from the store
 			this.forEach( data.todos, function( value, key ) {
 				this.$hide_empty.show();
-				this.addItem( key, value[0], value[1] );
+				this.createItem( key, value[0], value[1] );
 			});
-			this.updateCount();
 			return;
 		}
 		this.render();
@@ -381,7 +426,7 @@
 
 	// ### save
 	// save whole TodoApp on LocalStorage
-	TodoApp.prototype.save = function() {
+	TodoApp.save = function() {
 		var todos = {};
 		this.forEach( this.todos, function( v, k ) {
 			todos[k] = [ v.title, v.completed ];
@@ -390,8 +435,4 @@
 		localStorage.setItem( 'todos-hoejs', JSON.stringify( data ) );
 	};
 
-	// ## create the application
-	// This tipically should be done in a separate file. But just following
-	// TodoMVC guidelines...
-	new TodoApp();
 })( window );
