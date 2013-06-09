@@ -312,6 +312,49 @@ suite('hoe', function(){
             $widget[0].fire('custom_event', '48');
             assert.equal('got: 48', my_obj.result);
         });
+
+        // complete example of a web component that can be created
+        // declarative (HTML) or programatically (JS)
+        test('init', function(){
+            var MyComponent = hoe.Component('my-comp', function(data){
+                if (!this.__loaded_html__){
+                    this.content = data.content || '';
+                    this.num = data.num || '1';
+                }
+                this.render();
+            });
+            MyComponent.render = function(){
+                $(this).html('<span>XXX ' + this.content +
+                             this.num + ' ---</span>');
+            };
+            MyComponent.from_html = function(){
+                this.num = $(this).attr('num') || '';
+                this.content = $(this).text();
+                 // remove parsed content
+                $(this).empty();
+            };
+
+            // create component from HTML
+            var $from_html = $('<my-comp num="5">hello from HTML</my-comp>');
+            assert.equal(
+                '<my-comp num="5"><span>XXX hello from HTML5 ---' +
+                    '</span></my-comp>',
+                html_str($from_html));
+
+            // create componet from JS
+            var $from_js = MyComponent.New({num:'6', content:'JS'});
+            assert.equal(
+                '<my-comp><span>XXX JS6 ---</span></my-comp>',
+                html_str($from_js));
+
+            // create componet from JS using default values
+            var $from_jsd = MyComponent.New({});
+            assert.equal(
+                '<my-comp><span>XXX 1 ---</span></my-comp>',
+                html_str($from_jsd));
+        });
+
+
     });
 
     // suite('hoe.Route', function(){

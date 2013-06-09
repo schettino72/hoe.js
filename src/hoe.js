@@ -277,10 +277,48 @@ hoe.UI.prototype.render = function($container){
 
 
 // creates a web-component
-hoe.Component = function(tag_name){
+// init_func must be used for initialization and creating the
+// initial content for the element/component
+hoe.Component = function(tag_name, init_func){
     var proto = Object.create(window.HTMLElement.prototype);
     $.extend(proto, hoe.Type.prototype);
-    document.register(tag_name, {prototype: proto});
+
+    // to be subclassed to get info from HTML when creating object
+    // note it is called BEFORE init_func
+    proto.from_html = function(){
+        return;
+    };
+
+    // from web-components specification.
+    // this wrapper is used to detect whether the element is being created
+    // by parsing a HTML tag or programatically in js.
+    //
+    // If created by js it doesnt do anything, because creating its content
+    // should be done with a "init" function that are able to
+    // take new parameters.
+    // See the "New" function below
+    proto.readyCallback = function(){
+        if (this.parentNode){
+            this.from_html();
+            // this info might be useful for components
+            this.__loaded_html__ = true;
+            if (init_func){
+                init_func.call(this);
+            }
+        }
+     };
+
+    // helper to create new elements from js
+    proto.New = function (args) {
+        var obj = new proto.Constructor();
+        if (init_func){
+            init_func.call(obj, args);
+        }
+        return obj;
+	};
+
+    // register tag/element and save reference to constructor
+    proto.Constructor = document.register(tag_name, {prototype: proto});
     return proto;
 };
 
