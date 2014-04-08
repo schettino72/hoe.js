@@ -13,12 +13,12 @@ function fake_dom(){
     var window = jsdom.jsdom('<html><body></body></html>').createWindow();
     global.window = window;
     global.document = window.document;
-    global.$ = global.jQuery = require('jquery').create(window);
+    global.$ = global.jQuery = require('jQuery').create(window);
 }
 
 if (IS_NODE){ // running on node
     var chai = require('chai');
-    chai.Assertion.includeStack = true;
+    chai.config.includeStack = true;
 
     // setup DOM + jQuery
     fake_dom();

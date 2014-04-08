@@ -68,8 +68,9 @@ def task_apidoc():
 
 def task_tutorial():
     """create tutorial from TodoMVC using docco"""
+    docco = 'node_modules/docco/bin/docco'
     return {
-        'actions': ['docco sample_todomvc/app.js --output tutorial'],
+        'actions': [docco + ' sample_todomvc/app.js --output tutorial'],
         'file_dep': [HOE_JS, 'sample_todomvc/app.js'],
         'targets': ['tutorial'],
         }
@@ -87,11 +88,12 @@ def task_dist():
     """create distribution files"""
     version = '0.2.0'
     version_comment = "// hoe.js version: %s" % version
+    uglify = 'node_modules/uglify-js2/bin/uglifyjs2'
     yield {
         'name': 'min',
         'actions': [
             'echo  "' + version_comment + '" > %(targets)s',
-            ('uglifyjs2 %(dependencies)s ' +
+            (uglify + ' %(dependencies)s ' +
              '--mangle --compress --comments >> %(targets)s'),
             ],
         'file_dep': [HOE_JS],
@@ -112,16 +114,11 @@ def task_dist():
 
 
 # TODO dev_setup
+# pip install -r py_requirements.txt
 # sudo apt-get install nodejs
-# npm install mocha
-# npm install chai
-# npm install jsdom
-# npm install jquery
-# npm install -g jshint
-# npm install -g docco
-# npm install -g uglify-js2
 # sudo apt-get install jscoverage
 # sudo apt-get install jsdoc-toolkit
+# npm install
 
 
 ####################### site
