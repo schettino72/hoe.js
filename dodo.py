@@ -28,6 +28,7 @@ def task_test():
             MOCHA_CMD + ' --colors --reporter spec test/test.js'],
         'file_dep': SRC_FILES + TEST_FILES,
         }
+# karma start --single-run
 
 def task_testdoc():
     """run unit-tests & generate HTML report"""
@@ -119,6 +120,7 @@ def task_dist():
 # sudo apt-get install jscoverage
 # sudo apt-get install jsdoc-toolkit
 # npm install
+# sudo npm install -g karma-cli jshint
 
 
 ####################### site
