@@ -1,18 +1,58 @@
 /** @license
  *   hoe.js - [http://schettino72.github.com/hoe.js]
  *   MIT license - Copyright (c) 2012 Eduardo Naufel Schettino
+ *
+ * Supports IE 9+ (needs CustomEvent polyfill)
  */
+
 
 /**
  * @namespace creates new DOM elements
  * @param {String} tag name of tag to be created
  * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
- * @returns {jQuery}
+ * @returns {DOMElement}
  */
 var hoe = function(tag){
-    var $ele = jQuery(document.createElement(tag));
-    return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));
+    var $ele = document.createElement(tag);
+    hoe.set($ele, Array.prototype.slice.call(arguments, 1));
+    return $ele;
 };
+
+
+hoe._guess_apply = function ($ele, param){
+    /*
+       to arguments based on type:
+       - string: append text
+       - plain object: set html attributes
+       - DOM element: append elements
+       - array: append elements
+    */
+    var type = typeof(param);
+    if(type === "string"){
+        $ele.appendChild(document.createTextNode(param));
+    }
+    else if(Array.isArray(param)){
+        hoe._set_this.apply($ele, param);
+    }
+    else if (type === "object") {
+        if (param.constructor === Object){
+            for(var name in param){
+                $ele.setAttribute(name, param[name]);
+            }
+        }
+        else if (typeof jQuery !== 'undefined' &&
+                 param.constructor === jQuery){
+            $ele.appendChild(param.get(0));
+        }
+        else { // must be a DOM element
+            $ele.appendChild(param);
+        }
+    }
+    else {
+        throw Error("Invalid type: " + type);
+    }
+};
+
 
 /**
  * Exposed to any jQuery object as 'hoe' plugin.
@@ -21,64 +61,41 @@ var hoe = function(tag){
  * @param {String} [param] append as text to element content
  * @param {Object} [param] set as html element attributes
  * @param {DOMElement[]|jQuery[]} [param] append param into element content
- * @returns {jQuery}
+ * @returns {DOMElement}
  */
-hoe.jquery_plugin = function() {
-    /*
-       to arguments based on type:
-       - string: append text
-       - plain object: set html attributes
-       - DOM element & jQuery object: append elements
-       - array: append elements
-    */
-
-    function _guess_apply($ele, param){
-        var type = jQuery.type(param);
-        if(type === "string"){
-            $ele.append(param);
-        }
-        else if(type === "array"){
-            for(var i=0, max=param.length; i<max; i++) {
-                $ele.append(param[i]);
-            }
-        }
-        else if (type === "object") {
-            if (jQuery.isPlainObject(param)){
-                for(var name in param){
-                    $ele.attr(name, param[name]);
-                }
-            }
-            else {
-                $ele.append(param);
-            }
-        }
-        else {
-            throw Error("Invalid type: " + type);
-        }
-    }
-
-    for(var i=0, max=arguments.length; i<max; i++) {
-        _guess_apply(this, arguments[i]);
-    }
-    return this;
+hoe.set = function($ele) {
+    hoe._set_this.apply($ele, Array.prototype.slice.call(arguments, 1));
 };
 
-jQuery.fn.hoe = hoe.jquery_plugin;
+hoe._set_this = function() {
+    for(var i=0, max=arguments.length; i<max; i++) {
+        hoe._guess_apply(this, arguments[i]);
+    }
+};
+
+
+// short-cut to empty element content before applying hoe.set
+hoe.html = function($ele){
+    $ele.innerHTML = '';
+    hoe._set_this.apply($ele, Array.prototype.slice.call(arguments, 1));
+};
+
 
 /**
  * Similar to `hoe()` but instead of returning an element returns
  * a function that creates new elements including the parameters
  * passed to partial
  * @param {String} tag name of tag to be created
- * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
+ * @param [param[]] can take any number of params, {@link hoe.set}
  * @returns function
  */
 hoe.partial = function(tag){
     var partial_args = Array.prototype.slice.call(arguments, 1);
     return function(){
-        var $ele = jQuery(document.createElement(tag));
-        $ele.hoe.apply($ele, partial_args);
-        return $ele.hoe.apply($ele, arguments);
+        var $ele = hoe(tag);
+        hoe._set_this.apply($ele, partial_args);
+        hoe._set_this.apply($ele, arguments);
+        return $ele;
     };
 };
 
@@ -112,6 +129,18 @@ hoe.init = function(namespace, tags){
 };
 
 
+// extend object with other objects
+hoe.extend = function(out) {
+    var keys;
+    for (var i = 1; i < arguments.length; i++) {
+        keys = Object.keys(arguments[i]);
+        for (var j=0, max=keys.length; j<max; j++) {
+            out[keys[j]] = arguments[i][keys[j]];
+        }
+    }
+    return out;
+};
+
 /**
  * create new type by inheriting from other types
  * @param {Object} base_type Type to inherit from
@@ -126,8 +155,13 @@ hoe.inherit = function (base_type, constructor){
     else{
         new_type = function(){return base_type.apply(this, arguments);};
     }
-    $.extend(new_type, base_type);
-    $.extend(new_type.prototype, base_type.prototype);
+    new_type.prototype = Object.create(base_type.prototype);
+    new_type.prototype.constructor = new_type;
+    hoe.extend(new_type, base_type);
+    // var keys = Object.keys(base_type);
+    // for (var i=0, max=keys.length; i<max; i++){
+    //     new_type[keys[i]] = base_type[keys[i]];
+    // };
     return new_type;
 };
 
@@ -145,7 +179,7 @@ hoe.Type = function(constructor){
 
 /**
  * Attach/listen a callback on this object scope for event from observed
- * @param {jQuery|hoe.Type} observed object that trigger events
+ * @param {HTMLElement|hoe.Type} observed object that trigger events
  * @param {String} event name of the event
  * @param {Function} callback to be executed when event is triggered.
  *                      this will be bound to current object.
@@ -155,11 +189,7 @@ hoe.Type.prototype.listen = function(observed, event_name, callback){
         observed.addEventListener(event_name, callback.bind(this));
         return;
     }
-    if (observed instanceof jQuery){
-        observed.bind(event_name, callback.bind(this));
-        return;
-    }
-    // hoe crappy event manager
+    // hoe's crappy event manager
     else {
         if (typeof observed._hoe_obs === 'undefined'){
             observed._hoe_obs = {};
@@ -201,7 +231,7 @@ hoe.Type.prototype.fire = function(event_name, detail){
           3) reference to the whole sequence
  */
 hoe.Type.prototype.forEach = function(seq, fn){
-    if (jQuery.type(seq) == 'array'){
+    if (Array.isArray(seq)){
         for(var i = 0, len = seq.length; i < len; ++i) {
             fn.call(this, seq[i], i, seq);
         }
@@ -226,7 +256,7 @@ hoe.Type.prototype.forEach = function(seq, fn){
  */
 hoe.Type.prototype.map = function(seq, fn){
     var result = [];
-    if (jQuery.type(seq) == 'array'){
+    if (Array.isArray(seq)){
         for(var i = 0, len = seq.length; i < len; ++i) {
             result.push(fn.call(this, seq[i], i, seq));
         }
@@ -240,13 +270,13 @@ hoe.Type.prototype.map = function(seq, fn){
 };
 
 
+
 /**
  * Return function to execute original function in objects scope/context.
  * Similar to jQuery.proxy().
  */
 hoe.Type.prototype.scope = function(func){
-    var my_scope = this;
-    return function () {return func.apply(my_scope, arguments);};
+    return func.bind(this);
 };
 
 
@@ -270,7 +300,7 @@ hoe.UI.prototype.render = function($container){
     }
     var content = this._render();
     if (this.$container && content !== null){
-        this.$container.html(content);
+        hoe.html(this.$container, content);
     }
     return content;
 };
@@ -281,7 +311,7 @@ hoe.UI.prototype.render = function($container){
 // initial content for the element/component
 hoe.Component = function(tag_name, init_func){
     var proto = Object.create(window.HTMLElement.prototype);
-    $.extend(proto, hoe.Type.prototype);
+    hoe.extend(proto, hoe.Type.prototype);
 
     // to be subclassed to get info from HTML when creating object
     // note it is called BEFORE init_func

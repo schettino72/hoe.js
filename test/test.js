@@ -38,7 +38,7 @@ var assert = chai.assert;
 
 // TODO extend chai
 function html_str($ele){
-    return $('<div>').html($ele).html();
+    return $ele.outerHTML;
 }
 
 
@@ -48,13 +48,13 @@ suite('hoe', function(){
             var $ele = hoe('div');
             assert.equal('<div></div>', html_str($ele));
         });
-        test('element attributes', function(){
-            var $ele = hoe('div', {name: 'xxx'});
-            assert.equal('<div name="xxx"></div>', html_str($ele));
-        });
         test('string content', function(){
             var $ele = hoe('div', 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
+        });
+        test('element attributes', function(){
+            var $ele = hoe('div', {name: 'xxx'});
+            assert.equal('<div name="xxx"></div>', html_str($ele));
         });
         test('many arguments', function(){
             var $ele = hoe('div', {name: 'xxx'}, 'yyy', 'zzz');
@@ -65,21 +65,27 @@ suite('hoe', function(){
             assert.equal('<div><span></span></div>', html_str($ele));
         });
         test('dom element', function(){
-            var $ele = hoe('div', $('<span>').get(0));
+            var $ele = hoe('div', hoe('span'));
             assert.equal('<div><span></span></div>', html_str($ele));
         });
         test('array element', function(){
             var $ele = hoe('div', [
                 'hi',
-                $('<span>hoe</span>'),
+                hoe('span', 'hoe'),
                 'hu'
             ]);
             assert.equal('<div>hi<span>hoe</span>hu</div>', html_str($ele));
         });
-        test('modify existing jQuery element', function(){
-            var $ele = $('<div>');
-            $ele.hoe('xxx');
+        test('modify existing element', function(){
+            var $ele = hoe('div');
+            hoe.set($ele, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
+        });
+        test('reset/modify existing element', function(){
+            var $ele = hoe('div', 'xxx');
+            assert.equal('<div>xxx</div>', html_str($ele));
+            hoe.html($ele, 'yyy');
+            assert.equal('<div>yyy</div>', html_str($ele));
         });
         test('invalid parameter type (bool)', function(){
             var fn = function(){return hoe('div', true);};
@@ -139,7 +145,7 @@ suite('hoe', function(){
             assert.equal(3, obj.three());
             assert.equal(5, Sub.constant_x);
         });
-        test('new constructor', function(){
+        test('same constructor', function(){
             function Base(){
                 this.x = 1;
             }
@@ -162,7 +168,7 @@ suite('hoe', function(){
             var my = new MyStuff();
             my.listen($ele, 'click', function(){this.x=2;});
             assert.equal(1, my.x);
-            $ele.trigger('click');
+            $ele.dispatchEvent(new CustomEvent('click'));
             assert.equal(2, my.x);
         });
         test('obj event', function(){
@@ -185,20 +191,18 @@ suite('hoe', function(){
 
     suite('hoe.Type functional', function(){
         test('forEach array', function(){
-            function MyStuff(){
+            var MyStuff = hoe.Type(function(){
                 this.x = [];
-            }
-            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            });
             var my = new MyStuff();
             assert.deepEqual([], my.x);
             my.forEach([1,3,5], function(val){this.x.push(val+1);});
             assert.deepEqual([2,4,6], my.x);
         });
         test('forEach object', function(){
-            function MyStuff(){
+            var MyStuff = hoe.Type(function(){
                 this.x = {};
-            }
-            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            });
             var my = new MyStuff();
             assert.deepEqual({}, my.x);
             my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
@@ -206,19 +210,17 @@ suite('hoe', function(){
         });
 
         test('map array', function(){
-            function MyStuff(){
+            var MyStuff = hoe.Type(function(){
                 this.x = 5;
-            }
-            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            });
             var my = new MyStuff();
             var got = my.map([1,3,5], function(val){return this.x + val;});
             assert.deepEqual([6,8,10], got);
         });
         test('map object', function(){
-            function MyStuff(){
+            var MyStuff = hoe.Type(function(){
                 this.x = 5;
-            }
-            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            });
             var my = new MyStuff();
             var got = my.map({1:2, 3:4}, function(val, key){
                 return parseInt(key, 10) + val + this.x;
@@ -227,10 +229,9 @@ suite('hoe', function(){
         });
 
         test('scope object', function(){
-            function MyStuff(){
+            var MyStuff = hoe.Type(function(){
                 this.x = 5;
-            }
-            $.extend(MyStuff.prototype, hoe.Type.prototype);
+            });
             var my = new MyStuff();
             var get_on_scope = my.scope(function() {return this.x;});
             assert.deepEqual(5, get_on_scope());
@@ -276,7 +277,7 @@ suite('hoe', function(){
         test('create', function(){
             var MyComponent = hoe.Component('my-comp');
             MyComponent.readyCallback = function(){
-                $(this).html(this.render());
+                hoe.html(this, this.render());
             };
             MyComponent.render = function(){
                 return hoe('div', 'hi');
@@ -288,28 +289,28 @@ suite('hoe', function(){
         test('component fire event', function(){
             var MyComponent = hoe.Component('my-comp');
             MyComponent.readyCallback = function(){
-                $(this).html('hello');
+                hoe.html(this, 'hello');
             };
             var $widget = hoe('my-comp');
             var result;
-            $widget[0].addEventListener('custom_event', function(event){
+            $widget.addEventListener('custom_event', function(event){
                 result = "got: " + event.detail;
             });
-            $widget[0].fire('custom_event', '46');
+            $widget.fire('custom_event', '46');
             assert.equal('got: 46', result);
         });
 
         test('listen event from component', function(){
             var MyComponent = hoe.Component('my-comp');
             MyComponent.readyCallback = function(){
-                $(this).html('hello');
+                hoe.html(this, 'hello');
             };
             var $widget = hoe('my-comp');
             var my_obj = new (hoe.Type(function(){}))();
-            my_obj.listen($widget[0], 'custom_event', function(event){
+            my_obj.listen($widget, 'custom_event', function(event){
                 this.result = "got: " + event.detail;
             });
-            $widget[0].fire('custom_event', '48');
+            $widget.fire('custom_event', '48');
             assert.equal('got: 48', my_obj.result);
         });
 
@@ -324,14 +325,15 @@ suite('hoe', function(){
                 this.render();
             });
             MyComponent.render = function(){
-                $(this).html('<span>XXX ' + this.content +
-                             this.num + ' ---</span>');
+                hoe.html(this,
+                         hoe('span', 'XXX ' + this.content +
+                             this.num + ' ---'));
             };
             MyComponent.from_html = function(){
-                this.num = $(this).attr('num') || '';
-                this.content = $(this).text();
+                this.num = this.getAttribute('num') || '';
+                this.content = this.textContent;
                  // remove parsed content
-                $(this).empty();
+                hoe.html(this);
             };
 
             // create component from HTML
@@ -339,7 +341,16 @@ suite('hoe', function(){
             assert.equal(
                 '<my-comp num="5"><span>XXX hello from HTML5 ---' +
                     '</span></my-comp>',
-                html_str($from_html));
+                html_str($from_html[0]));
+
+            // FIXME
+            // create component from HTML using hoe
+            // var $from_hoe = hoe('my-comp', {'num':"4"}, 'hello from HTML');
+            // $('body').append($from_hoe);
+            // assert.equal(
+            //     '<my-comp num="4"><span>XXX hello from HTML5 ---' +
+            //         '</span></my-comp>',
+            //     html_str($from_hoe));
 
             // create componet from JS
             var $from_js = MyComponent.New({num:'6', content:'JS'});
