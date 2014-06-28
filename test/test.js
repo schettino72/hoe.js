@@ -49,7 +49,7 @@ suite('hoe', function(){
             assert.equal('<div></div>', html_str($ele));
         });
         test('string content', function(){
-            var $ele = hoe('div', 'xxx');
+            var $ele = hoe('div', null, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
         });
         test('element attributes', function(){
@@ -60,44 +60,28 @@ suite('hoe', function(){
             var $ele = hoe('div', {name: 'xxx'}, 'yyy', 'zzz');
             assert.equal('<div name="xxx">yyyzzz</div>', html_str($ele));
         });
-        test('jquery element', function(){
-            var $ele = hoe('div', $('<span>'));
-            assert.equal('<div><span></span></div>', html_str($ele));
-        });
         test('dom element', function(){
-            var $ele = hoe('div', hoe('span'));
+            var $ele = hoe('div', null, hoe('span'));
             assert.equal('<div><span></span></div>', html_str($ele));
         });
-        test('array element', function(){
-            var $ele = hoe('div', [
-                'hi',
-                hoe('span', 'hoe'),
-                'hu'
-            ]);
-            assert.equal('<div>hi<span>hoe</span>hu</div>', html_str($ele));
-        });
-        test('modify existing element', function(){
+        test('hoe.append()', function(){
             var $ele = hoe('div');
-            hoe.set($ele, 'xxx');
+            hoe.append($ele, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
         });
-        test('reset/modify existing element', function(){
-            var $ele = hoe('div', 'xxx');
+        test('hoe.html() replace element content', function(){
+            var $ele = hoe('div', null, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
             hoe.html($ele, 'yyy');
             assert.equal('<div>yyy</div>', html_str($ele));
-        });
-        test('invalid parameter type (bool)', function(){
-            var fn = function(){return hoe('div', true);};
-            assert.throws(fn, /Invalid type: boolean/);
         });
     });
 
 
     suite('hoe.partial()', function(){
         test('simple element', function(){
-            var row  = hoe.partial('div', {'class':'row'});
-            var $ele = row('bla');
+            var row  = hoe.partial('div', {'class':'row'}, 'b');
+            var $ele = row(null, 'l', 'a');
             assert.equal('<div class="row">bla</div>', html_str($ele));
         });
     });
@@ -108,7 +92,7 @@ suite('hoe', function(){
             assert.isUndefined(window.div);
             hoe.init();
             assert.isDefined(window.div);
-            var $ele = window.div('xxx');
+            var $ele = window.div(null, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
 
             // delete stuff added to window
@@ -123,7 +107,7 @@ suite('hoe', function(){
             hoe.init(my_namespace, ['span']);
             assert.isUndefined(window.span);
             assert.isUndefined(my_namespace.div);
-            var $ele = my_namespace.span('xxx');
+            var $ele = my_namespace.span(null, 'xxx');
             assert.equal('<span>xxx</span>', html_str($ele));
         });
     });
@@ -164,7 +148,7 @@ suite('hoe', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = 1;
             });
-            var $ele = hoe('div', "xxx");
+            var $ele = hoe('div', null, "xxx");
             var my = new MyStuff();
             my.listen($ele, 'click', function(){this.x=2;});
             assert.equal(1, my.x);
@@ -244,7 +228,7 @@ suite('hoe', function(){
         test('return value', function(){
             var MyWidget = hoe.inherit(hoe.UI, function(){});
             MyWidget.prototype._render = function(){
-                return hoe('span', 'hi');
+                return hoe('span', null, 'hi');
             };
             var widget = new MyWidget();
             assert.equal('<span>hi</span>', html_str(widget.render()));
@@ -254,7 +238,7 @@ suite('hoe', function(){
                 this.text = 'hi';
             });
             MyWidget.prototype._render = function(){
-                return hoe('span', this.text);
+                return hoe('span', null, this.text);
             };
             var $container = hoe('div');
             var widget = new MyWidget();
@@ -280,7 +264,7 @@ suite('hoe', function(){
                 hoe.html(this, this.render());
             };
             MyComponent.render = function(){
-                return hoe('div', 'hi');
+                return hoe('div', null, 'hi');
             };
             var widget = hoe('my-comp');
             assert.equal('<my-comp><div>hi</div></my-comp>', html_str(widget));
@@ -326,7 +310,7 @@ suite('hoe', function(){
             });
             MyComponent.render = function(){
                 hoe.html(this,
-                         hoe('span', 'XXX ' + this.content +
+                         hoe('span', null, 'XXX ' + this.content +
                              this.num + ' ---'));
             };
             MyComponent.from_html = function(){

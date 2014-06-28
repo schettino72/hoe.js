@@ -1,0 +1,23 @@
+<!-- use this to play around or do manual tests -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>hoe.js performance</title>
+</head>
+<body>
+
+  <button onclick="javascript:profile(go_html)">html</button>
+  <button onclick="javascript:profile(go_dom)">dom</button>
+  <button onclick="javascript:profile(go_hoe)">hoe</button>
+  <div id="test-space"></div>
+
+  <script src="../components/jquery.js"></script>
+  <script src="../components/dom4.js"></script>
+  <script src="../src/hoe.js"></script>
+
+  <script src="perf.js">  </script>
+</body>
+</html>
+
+
+

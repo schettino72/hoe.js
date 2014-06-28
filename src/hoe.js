@@ -9,75 +9,101 @@
 /**
  * @namespace creates new DOM elements
  * @param {String} tag name of tag to be created
- * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
+ * @param {Object} [attrs] set as html element attributes
+ * @param {DOMElement|string} append as nodes into element
  * @returns {DOMElement}
  */
-var hoe = function(tag){
+var hoe = function(tag, attrs){
+    // create element
     var $ele = document.createElement(tag);
-    hoe.set($ele, Array.prototype.slice.call(arguments, 1));
+
+    // add attributes
+    if (attrs){
+        for(var name in attrs){
+            $ele.setAttribute(name, attrs[name]);
+        }
+    }
+
+    // add child nodes
+    for(var i=2, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(typeof(param) === "string"){
+            $ele.appendChild(document.createTextNode(param));
+        }
+        else {
+            $ele.appendChild(param)
+        }
+    }
     return $ele;
 };
 
 
-hoe._guess_apply = function ($ele, param){
-    /*
-       to arguments based on type:
-       - string: append text
-       - plain object: set html attributes
-       - DOM element: append elements
-       - array: append elements
-    */
-    var type = typeof(param);
-    if(type === "string"){
-        $ele.appendChild(document.createTextNode(param));
-    }
-    else if(Array.isArray(param)){
-        hoe._set_this.apply($ele, param);
-    }
-    else if (type === "object") {
-        if (param.constructor === Object){
-            for(var name in param){
-                $ele.setAttribute(name, param[name]);
-            }
+/**
+ * @param {DOMElement} $ele element that will contain append elements
+ * @param {DOMElement|string} append as nodes into element
+ */
+hoe.append = function($ele){
+    for(var i=1, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(typeof(param) === "string"){
+            $ele.appendChild(document.createTextNode(param));
         }
-        else if (typeof jQuery !== 'undefined' &&
-                 param.constructor === jQuery){
-            $ele.appendChild(param.get(0));
-        }
-        else { // must be a DOM element
-            $ele.appendChild(param);
+        else {
+            $ele.appendChild(param)
         }
     }
-    else {
-        throw Error("Invalid type: " + type);
+};
+
+/**
+ * Shortcut to replace content of a node
+ */
+hoe.html = function($ele){
+    $ele.innerHTML = '';
+    for(var i=1, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(typeof(param) === "string"){
+            $ele.appendChild(document.createTextNode(param));
+        }
+        else {
+            $ele.appendChild(param)
+        }
     }
 };
 
 
 /**
- * Exposed to any jQuery object as 'hoe' plugin.
- * Guess which jQuery method should be applied to object,
- * operation depends on param type.
- * @param {String} [param] append as text to element content
- * @param {Object} [param] set as html element attributes
- * @param {DOMElement[]|jQuery[]} [param] append param into element content
- * @returns {DOMElement}
+ * Creates a DocumentFragment from a list of nodes
  */
-hoe.set = function($ele) {
-    hoe._set_this.apply($ele, Array.prototype.slice.call(arguments, 1));
-};
-
-hoe._set_this = function() {
-    for(var i=0, max=arguments.length; i<max; i++) {
-        hoe._guess_apply(this, arguments[i]);
+hoe.fragment = function(nodes){
+    var $ele = document.createDocumentFragment();
+    for(var i=0, max=nodes.length; i<max; i++){
+        var param = nodes[i];
+        if(typeof(param) === "string"){
+            $ele.appendChild(document.createTextNode(param));
+        }
+        else {
+            $ele.appendChild(param)
+        }
     }
+    return $ele;
 };
 
 
-// short-cut to empty element content before applying hoe.set
-hoe.html = function($ele){
-    $ele.innerHTML = '';
-    hoe._set_this.apply($ele, Array.prototype.slice.call(arguments, 1));
+
+// extend object with other objects
+hoe.extend = function(out) {
+    var keys, arg;
+    for (var i = 1; i < arguments.length; i++) {
+        var arg = arguments[i];
+        if (!arg){
+            continue;
+        }
+        keys = Object.keys(arg);
+        for (var j=0, max=keys.length; j<max; j++) {
+            out[keys[j]] = arg[keys[j]];
+        }
+    }
+    return out;
 };
 
 
@@ -86,15 +112,14 @@ hoe.html = function($ele){
  * a function that creates new elements including the parameters
  * passed to partial
  * @param {String} tag name of tag to be created
- * @param [param[]] can take any number of params, {@link hoe.set}
  * @returns function
  */
-hoe.partial = function(tag){
-    var partial_args = Array.prototype.slice.call(arguments, 1);
-    return function(){
-        var $ele = hoe(tag);
-        hoe._set_this.apply($ele, partial_args);
-        hoe._set_this.apply($ele, arguments);
+hoe.partial = function(tag, partial_attrs){
+    var partial_nodes = Array.prototype.slice.call(arguments, 2);
+    return function(this_attrs){
+        var attrs = hoe.extend({}, partial_attrs, this_attrs);
+        var $ele = hoe(tag, attrs, hoe.fragment(partial_nodes),
+                       hoe.fragment(Array.prototype.slice.call(arguments, 1)));
         return $ele;
     };
 };
@@ -129,18 +154,6 @@ hoe.init = function(namespace, tags){
 };
 
 
-// extend object with other objects
-hoe.extend = function(out) {
-    var keys;
-    for (var i = 1; i < arguments.length; i++) {
-        keys = Object.keys(arguments[i]);
-        for (var j=0, max=keys.length; j<max; j++) {
-            out[keys[j]] = arguments[i][keys[j]];
-        }
-    }
-    return out;
-};
-
 /**
  * create new type by inheriting from other types
  * @param {Object} base_type Type to inherit from
@@ -158,10 +171,6 @@ hoe.inherit = function (base_type, constructor){
     new_type.prototype = Object.create(base_type.prototype);
     new_type.prototype.constructor = new_type;
     hoe.extend(new_type, base_type);
-    // var keys = Object.keys(base_type);
-    // for (var i=0, max=keys.length; i<max; i++){
-    //     new_type[keys[i]] = base_type[keys[i]];
-    // };
     return new_type;
 };
 
