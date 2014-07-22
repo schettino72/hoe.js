@@ -27,11 +27,11 @@ var hoe = function(tag, attrs){
     // add child nodes
     for(var i=2, max=arguments.length; i<max; i++){
         var param = arguments[i];
-        if(typeof(param) === "string"){
-            $ele.appendChild(document.createTextNode(param));
+        if(param instanceof Node){
+            $ele.appendChild(param);
         }
         else {
-            $ele.appendChild(param)
+            $ele.appendChild(document.createTextNode(param));
         }
     }
     return $ele;
@@ -49,7 +49,7 @@ hoe.append = function($ele){
             $ele.appendChild(document.createTextNode(param));
         }
         else {
-            $ele.appendChild(param)
+            $ele.appendChild(param);
         }
     }
 };
@@ -65,8 +65,22 @@ hoe.html = function($ele){
             $ele.appendChild(document.createTextNode(param));
         }
         else {
-            $ele.appendChild(param)
+            $ele.appendChild(param);
         }
+    }
+};
+
+
+/**
+ * Remove element from DOM
+ */
+hoe.remove = function($ele){
+    if ($ele.parentNode !== null){
+        $ele.parentNode.removeChild($ele);
+        return true;
+    }
+    else {
+        return false;
     }
 };
 
@@ -82,7 +96,7 @@ hoe.fragment = function(nodes){
             $ele.appendChild(document.createTextNode(param));
         }
         else {
-            $ele.appendChild(param)
+            $ele.appendChild(param);
         }
     }
     return $ele;
@@ -94,7 +108,7 @@ hoe.fragment = function(nodes){
 hoe.extend = function(out) {
     var keys, arg;
     for (var i = 1; i < arguments.length; i++) {
-        var arg = arguments[i];
+        arg = arguments[i];
         if (!arg){
             continue;
         }

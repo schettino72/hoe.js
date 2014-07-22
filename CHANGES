@@ -5,7 +5,10 @@ Changes
 0.4.0
 --------
 
-- removed dependency on jQuery
+- removed dependency on jQuery, hoe() returns a HTML Node
+- added hoe.extend()
+- hoe() signature change, 2 argument must be attributes
+- added html manipulation function html(), fragment(), append(), remove()
 
 
 0.3.0 (*2014-06-23*)

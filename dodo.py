@@ -28,8 +28,16 @@ def task_test():
             MOCHA_CMD + ' --colors --reporter spec test/test.js'],
         'file_dep': SRC_FILES + TEST_FILES,
         }
-# karma start --single-run
 
+
+def task_karma():
+    return {
+        'actions': ['karma start --single-run'],
+        'file_dep': SRC_FILES + TEST_FILES,
+        }
+
+
+# FIXME use karma
 def task_testdoc():
     """run unit-tests & generate HTML report"""
     return {
@@ -38,6 +46,8 @@ def task_testdoc():
         'file_dep': [HOE_JS, 'test/test.js'],
         }
 
+
+# FIXME use karma
 def task_coverage():
     """annotate for coverage and run tests"""
     yield {
