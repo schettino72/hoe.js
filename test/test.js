@@ -321,20 +321,23 @@ suite('hoe', function(){
             };
 
             // create component from HTML
-            var $from_html = $('<my-comp num="5">hello from HTML</my-comp>');
+            var original_html = '<my-comp num="5">hello from HTML</my-comp>';
+            var $from_html = hoe('div');
+            $from_html.innerHTML = original_html;
+            // the node needs to be cloned because innerHTML returns stale content
+            var created = $from_html.cloneNode(true).children[0];
             assert.equal(
                 '<my-comp num="5"><span>XXX hello from HTML5 ---' +
                     '</span></my-comp>',
-                html_str($from_html[0]));
+                html_str(created));
 
-            // FIXME
             // create component from HTML using hoe
-            // var $from_hoe = hoe('my-comp', {'num':"4"}, 'hello from HTML');
-            // $('body').append($from_hoe);
-            // assert.equal(
-            //     '<my-comp num="4"><span>XXX hello from HTML5 ---' +
-            //         '</span></my-comp>',
-            //     html_str($from_hoe));
+            var $from_hoe = hoe('my-comp', {'num':"4"}, 'hello from HTML');
+            document.body.appendChild($from_hoe);
+            assert.equal(
+                '<my-comp num="4"><span>XXX hello from HTML4 ---' +
+                    '</span></my-comp>',
+                html_str($from_hoe));
 
             // create componet from JS
             var $from_js = MyComponent.New({num:'6', content:'JS'});
