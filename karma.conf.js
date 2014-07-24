@@ -3,7 +3,7 @@
 // Generate with `karma init karma.conf.js`
 
 module.exports = function(config) {
-  config.set({
+  var config_data = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -30,14 +30,12 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-      
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-    
     },
 
 
@@ -75,5 +73,17 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
-  });
+  }
+
+    // change config to perform coverage
+    if (process.env.KARMA_MODE == 'coverage'){
+        config_data.preprocessors = {'src/*.js': ['coverage']};
+        config_data.reporters.push('coverage');
+        config_data.coverageReporter = {
+            type: 'html',
+            dir: 'coverage/'
+        };
+    }
+
+  config.set(config_data);
 };

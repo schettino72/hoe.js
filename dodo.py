@@ -7,9 +7,11 @@ DOIT_CONFIG = {
 
 
 MOCHA_CMD = 'node_modules/mocha/bin/mocha --ui tdd'
+KARMA_CMD = 'karma start karma.conf.js --single-run'
 HOE_JS = 'src/hoe.js'
 SRC_FILES = [HOE_JS, 'src/hoe.app.js']
 TEST_FILES = ['test/test.js',]
+
 
 def task_check():
     """static checker using jshint"""
@@ -22,18 +24,16 @@ def task_check():
 
 
 def task_test():
-    """run unit-tests using mocha"""
     return {
-        'actions': [
-            MOCHA_CMD + ' --colors --reporter spec test/test.js'],
+        'actions': [KARMA_CMD],
         'file_dep': SRC_FILES + TEST_FILES,
         }
 
 
-def task_karma():
+def task_coverage():
+    """annotate for coverage and run tests"""
     return {
-        'actions': ['karma start --single-run'],
-        'file_dep': SRC_FILES + TEST_FILES,
+        'actions': ['env KARMA_MODE=coverage ' + KARMA_CMD],
         }
 
 
@@ -44,29 +44,6 @@ def task_testdoc():
         'actions': [
             MOCHA_CMD + ' --reporter doc > test/result.html'],
         'file_dep': [HOE_JS, 'test/test.js'],
-        }
-
-
-# FIXME use karma
-def task_coverage():
-    """annotate for coverage and run tests"""
-    yield {
-        'name': 'annotate',
-        'actions': ['jscoverage --no-highlight src coverage'],
-        'file_dep': [HOE_JS],
-        'targets': ['coverage/hoe.js'],
-        }
-    # XXX no reasonable terminal coverage result
-    # XXX doesnt report tests failed
-    yield {
-        'name': 'test',
-        'actions': [
-            MOCHA_CMD + ' --require setup_cov.js --reporter html-cov > coverage/result.html',
-            'echo "check results in coverage/result.html"'
-            ],
-        'file_dep': ['coverage/hoe.js', 'test/test.js'],
-        'targets': ['coverage/result.html'],
-        'verbosity': 2,
         }
 
 
@@ -127,7 +104,6 @@ def task_dist():
 # TODO dev_setup
 # pip install -r py_requirements.txt
 # sudo apt-get install nodejs
-# sudo apt-get install jscoverage
 # sudo apt-get install jsdoc-toolkit
 # npm install
 # sudo npm install -g karma-cli jshint

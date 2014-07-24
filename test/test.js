@@ -324,7 +324,8 @@ suite('hoe', function(){
             var original_html = '<my-comp num="5">hello from HTML</my-comp>';
             var $from_html = hoe('div');
             $from_html.innerHTML = original_html;
-            // the node needs to be cloned because innerHTML returns stale content
+            // the node needs to be cloned because innerHTML
+            // returns stale content
             var created = $from_html.cloneNode(true).children[0];
             assert.equal(
                 '<my-comp num="5"><span>XXX hello from HTML5 ---' +
@@ -333,7 +334,6 @@ suite('hoe', function(){
 
             // create component from HTML using hoe
             var $from_hoe = hoe('my-comp', {'num':"4"}, 'hello from HTML');
-            document.body.appendChild($from_hoe);
             assert.equal(
                 '<my-comp num="4"><span>XXX hello from HTML4 ---' +
                     '</span></my-comp>',
