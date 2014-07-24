@@ -174,39 +174,39 @@ suite('hoe', function(){
 
 
     suite('hoe.Type functional', function(){
-        test('forEach array', function(){
+        test('forArray', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = [];
             });
             var my = new MyStuff();
             assert.deepEqual([], my.x);
-            my.forEach([1,3,5], function(val){this.x.push(val+1);});
+            my.forArray([1,3,5], function(val){this.x.push(val+1);});
             assert.deepEqual([2,4,6], my.x);
         });
-        test('forEach object', function(){
+        test('forDict', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = {};
             });
             var my = new MyStuff();
             assert.deepEqual({}, my.x);
-            my.forEach({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
+            my.forDict({1:2, 3:4}, function(val, key){this.x[key]=val+1;});
             assert.deepEqual({1:3, 3:5}, my.x);
         });
 
-        test('map array', function(){
+        test('mapArray', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = 5;
             });
             var my = new MyStuff();
-            var got = my.map([1,3,5], function(val){return this.x + val;});
+            var got = my.mapArray([1,3,5], function(val){return this.x + val;});
             assert.deepEqual([6,8,10], got);
         });
-        test('map object', function(){
+        test('mapDict', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = 5;
             });
             var my = new MyStuff();
-            var got = my.map({1:2, 3:4}, function(val, key){
+            var got = my.mapDict({1:2, 3:4}, function(val, key){
                 return parseInt(key, 10) + val + this.x;
             });
             assert.deepEqual([8, 12], got);

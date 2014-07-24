@@ -253,16 +253,16 @@ hoe.Type.prototype.fire = function(event_name, detail){
           2) index/key
           3) reference to the whole sequence
  */
-hoe.Type.prototype.forEach = function(seq, fn){
-    if (Array.isArray(seq)){
-        for(var i = 0, len = seq.length; i < len; ++i) {
-            fn.call(this, seq[i], i, seq);
-        }
+hoe.Type.prototype.forArray = function(seq, fn){
+    for(var i = 0, len = seq.length; i < len; ++i) {
+        fn.call(this, seq[i], i, seq);
     }
-    else { // must be an object
-        for (var key in seq){
-            fn.call(this, seq[key], key, seq);
-        }
+};
+
+// smilar to in each but iterate over key/values
+hoe.Type.prototype.forDict = function(seq, fn){
+    for (var key in seq){
+        fn.call(this, seq[key], key, seq);
     }
 };
 
@@ -277,17 +277,19 @@ hoe.Type.prototype.forEach = function(seq, fn){
           3) reference to the whole sequence
  * @return Array
  */
-hoe.Type.prototype.map = function(seq, fn){
+hoe.Type.prototype.mapArray = function(seq, fn){
     var result = [];
-    if (Array.isArray(seq)){
-        for(var i = 0, len = seq.length; i < len; ++i) {
-            result.push(fn.call(this, seq[i], i, seq));
-        }
+    for(var i = 0, len = seq.length; i < len; ++i) {
+        result.push(fn.call(this, seq[i], i, seq));
     }
-    else { // must be an object
-        for (var key in seq){
-            result.push(fn.call(this, seq[key], key, seq));
-        }
+    return result;
+};
+
+
+hoe.Type.prototype.mapDict = function(seq, fn){
+    var result = [];
+    for (var key in seq){
+        result.push(fn.call(this, seq[key], key, seq));
     }
     return result;
 };

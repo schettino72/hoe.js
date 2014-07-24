@@ -5,10 +5,14 @@ Changes
 0.4.0
 --------
 
+* backward-incopatible, most part of the API completely changed!
+
 - removed dependency on jQuery, hoe() returns a HTML Node
 - added hoe.extend()
 - hoe() signature change, 2 argument must be attributes
 - added html manipulation function html(), fragment(), append(), remove()
+- `forEach()` replaced by `forArray()` and `forDict()`
+- `map()` replaced by `mapArray()` and `mapDict()`
 
 
 0.3.0 (*2014-06-23*)
