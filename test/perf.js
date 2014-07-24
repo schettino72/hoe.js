@@ -1,3 +1,6 @@
+// performance tests for creating HTML elements
+// use chrome dev tools - profile
+
 
 function go_hoe(){
     var test = document.getElementById('test-space');
@@ -44,7 +47,7 @@ function go_dom(){
 
 
 function profile(fn, repeat){
-    $('#test-space').empty();
+    document.getElementById('test-space').innerHTML = '';
     repeat = repeat || 10000;
     console.profile();
     for (var i=0; i<repeat; i++){

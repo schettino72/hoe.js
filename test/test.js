@@ -5,31 +5,6 @@
 "use strict"; // ecmascript 5
 
 
-var IS_NODE = typeof window === 'undefined';
-
-/*** setup test runner ***/
-function fake_dom(){
-    var jsdom = require("jsdom");
-    var window = jsdom.jsdom('<html><body></body></html>').createWindow();
-    global.window = window;
-    global.document = window.document;
-    global.$ = global.jQuery = require('jQuery').create(window);
-}
-
-if (IS_NODE){ // running on node
-    var chai = require('chai');
-    chai.config.includeStack = true;
-
-    // setup DOM + jQuery
-    fake_dom();
-
-    if (!global.HOE_PATH){
-        global.HOE_PATH = '../src/hoe.js';
-        global.HOE_APP_PATH = '../src/hoe.app.js';
-    }
-    var hoe = require(global.HOE_PATH).hoe;
-}
-
 var assert = chai.assert;
 
 
@@ -257,7 +232,6 @@ suite('hoe', function(){
     });
 
     suite('hoe.Component', function(){
-        if (IS_NODE) return; // jsdom doesnt support MutationObserver
         test('create', function(){
             var MyComponent = hoe.Component('my-comp');
             MyComponent.readyCallback = function(){

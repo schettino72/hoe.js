@@ -381,10 +381,3 @@ hoe.Component = function(tag_name, init_func){
     proto.Constructor = document.register(tag_name, {prototype: proto});
     return proto;
 };
-
-
-
-/** @exports */
-if (typeof exports !== 'undefined'){
-    exports.hoe = hoe;
-}
