@@ -77,7 +77,10 @@ module.exports = function(config) {
 
     // change config to perform coverage
     if (process.env.KARMA_MODE == 'coverage'){
-        config_data.preprocessors = {'src/*.js': ['coverage']};
+        config_data.preprocessors = {
+            'src/*.js': ['coverage'],
+            'test/test_*.js': ['coverage']
+        };
         config_data.reporters.push('coverage');
         config_data.coverageReporter = {
             type: 'html',

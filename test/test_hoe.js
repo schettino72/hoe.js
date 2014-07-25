@@ -39,16 +39,44 @@ suite('hoe', function(){
             var $ele = hoe('div', null, hoe('span'));
             assert.equal('<div><span></span></div>', html_str($ele));
         });
-        test('hoe.append()', function(){
+    });
+
+    suite('hoe DOM helpers', function(){
+        test('hoe.append(text)', function(){
             var $ele = hoe('div');
             hoe.append($ele, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
+        });
+        test('hoe.append(node)', function(){
+            var $ele = hoe('div');
+            hoe.append($ele, hoe('span', null, 'xxx'));
+            assert.equal('<div><span>xxx</span></div>', html_str($ele));
         });
         test('hoe.html() replace element content', function(){
             var $ele = hoe('div', null, 'xxx');
             assert.equal('<div>xxx</div>', html_str($ele));
             hoe.html($ele, 'yyy');
             assert.equal('<div>yyy</div>', html_str($ele));
+        });
+
+        test('hoe.remove()', function(){
+            var $parent = hoe('div', null, 'xxx');
+            var $child = hoe('span', null, 'foo');
+            $parent.appendChild($child);
+            assert.equal('<div>xxx<span>foo</span></div>', html_str($parent));
+            assert.isTrue(hoe.remove($child));
+            assert.equal('<div>xxx</div>', html_str($parent));
+        });
+
+        test('hoe.remove() detached element', function(){
+            var $ele = hoe('div', null, 'xxx');
+            assert.isFalse(hoe.remove($ele));
+        });
+
+        test('hoe.fragment()', function(){
+            var $frag = hoe.fragment([hoe('span', null, 'xxx'), 'yyy']);
+            var $ele = hoe('div', null, $frag);
+            assert.equal('<div><span>xxx</span>yyy</div>', html_str($ele));
         });
     });
 
@@ -100,6 +128,7 @@ suite('hoe', function(){
             });
             var obj = new Sub();
             assert.equal(2, obj.y);
+            assert.equal(1, (new Base()).x);
             assert.equal("undefined", typeof obj.x);
             assert.equal(3, obj.three());
             assert.equal(5, Sub.constant_x);
@@ -118,7 +147,16 @@ suite('hoe', function(){
         });
     });
 
-    suite('hoe.Type event system', function(){
+    suite('hoe.Type', function(){
+        test('scope object', function(){
+            var MyStuff = hoe.Type(function(){
+                this.x = 5;
+            });
+            var my = new MyStuff();
+            var get_on_scope = my.scope(function() {return this.x;});
+            assert.deepEqual(5, get_on_scope());
+        });
+
         test('DOM event', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = 1;
@@ -130,6 +168,7 @@ suite('hoe', function(){
             $ele.dispatchEvent(new CustomEvent('click'));
             assert.equal(2, my.x);
         });
+
         test('obj event', function(){
             var Observed = hoe.Type(function(){
                 this.do_x = function(){this.fire('done', 5);};
@@ -187,15 +226,6 @@ suite('hoe', function(){
             assert.deepEqual([8, 12], got);
         });
 
-        test('scope object', function(){
-            var MyStuff = hoe.Type(function(){
-                this.x = 5;
-            });
-            var my = new MyStuff();
-            var get_on_scope = my.scope(function() {return this.x;});
-            assert.deepEqual(5, get_on_scope());
-        });
-
     });
 
 
@@ -233,10 +263,9 @@ suite('hoe', function(){
 
     suite('hoe.Component', function(){
         test('create', function(){
-            var MyComponent = hoe.Component('my-comp');
-            MyComponent.readyCallback = function(){
+            var MyComponent = hoe.Component('my-comp', function(){
                 hoe.html(this, this.render());
-            };
+            });
             MyComponent.render = function(){
                 return hoe('div', null, 'hi');
             };
@@ -245,10 +274,9 @@ suite('hoe', function(){
         });
 
         test('component fire event', function(){
-            var MyComponent = hoe.Component('my-comp');
-            MyComponent.readyCallback = function(){
+            hoe.Component('my-comp', function(){
                 hoe.html(this, 'hello');
-            };
+            });
             var $widget = hoe('my-comp');
             var result;
             $widget.addEventListener('custom_event', function(event){
@@ -259,10 +287,9 @@ suite('hoe', function(){
         });
 
         test('listen event from component', function(){
-            var MyComponent = hoe.Component('my-comp');
-            MyComponent.readyCallback = function(){
+            hoe.Component('my-comp', function(){
                 hoe.html(this, 'hello');
-            };
+            });
             var $widget = hoe('my-comp');
             var my_obj = new (hoe.Type(function(){}))();
             my_obj.listen($widget, 'custom_event', function(event){
@@ -288,7 +315,7 @@ suite('hoe', function(){
                              this.num + ' ---'));
             };
             MyComponent.from_html = function(){
-                this.num = this.getAttribute('num') || '';
+                this.num = this.getAttribute('num');
                 this.content = this.textContent;
                  // remove parsed content
                 hoe.html(this);
@@ -328,75 +355,4 @@ suite('hoe', function(){
 
 
     });
-
-    // suite('hoe.Route', function(){
-    //     test('Route.match() simple', function(){
-    //         var route = new hoe.Route("/simple");
-    //         assert.deepEqual({}, route.match('/simple'));
-    //         assert.equal(null, route.match('/simple2'));
-    //         assert.equal(null, route.match('/simple/'));
-    //         assert.equal(null, route.match('/simple/123'));
-    //         assert.equal(null, route.match('simple'));
-    //         assert.equal(null, route.match('/abc'));
-    //     });
-
-    //     test('Route.match() root', function(){
-    //         var route = new hoe.Route("/");
-    //         assert.deepEqual({}, route.match('/'));
-    //     });
-
-    //     test('Route.match() params', function(){
-    //         var route = new hoe.Route("/with/:p1/and/:p2");
-    //         assert.deepEqual({p1:'abc', p2:'xyz'},
-    //                          route.match('/with/abc/and/xyz'));
-    //         assert.equal(null, route.match('/fooooo/abc/and/xyz'));
-    //         assert.equal(null, route.match('/with/abc/and'));
-    //         assert.equal(null, route.match('/with/abc/and/'));
-    //     });
-
-    //     test('Route.build()', function(){
-    //         var route = new hoe.Route("/with/:p1/and/:p2");
-    //         assert.equal('/with/abc/and/xyz',
-    //                      route.build({p1:'abc', p2:'xyz'}));
-
-    //         var fn = function(){route.build({p1:'abc', xxx:'xyz'});};
-    //         assert.throws(fn, /Missing param: p2/);
-    //     });
-
-    // });
-
-
-    // suite('hoe.Router', function(){
-    //     test('Router.match()', function(){
-    //         var router = new hoe.Router();
-    //         var route_a = new hoe.Route('/simple', 'simple_name');
-    //         var route_b = new hoe.Route('/xxx/:p1', 'b');
-    //         router.add(route_a);
-    //         router.add(route_b);
-
-    //         assert.equal(null, router.match('/simple2'));
-
-    //         var simple = router.match('/simple');
-    //         assert.equal('simple_name', simple.route.name);
-    //         assert.deepEqual({}, simple.params);
-
-    //         assert.deepEqual({'route': route_b, 'params': {p1:'abc'}},
-    //                          router.match('/xxx/abc'));
-    //      });
-
-    //     test('Router.build()', function(){
-    //         var router = new hoe.Router();
-    //         var route_a = new hoe.Route('/simple', 'simple_name');
-    //         var route_b = new hoe.Route('/xxx/:p1', 'b');
-    //         router.add(route_a);
-    //         router.add(route_b);
-
-    //         assert.equal('/xxx/abc', router.build('b', {p1: 'abc'}));
-    //         assert.equal('/simple', router.build('simple_name'));
-    //         var fn = function(){router.build('who');};
-    //         assert.throws(fn, /Route not found: who/);
-    //     });
-
-    // });
-
 });

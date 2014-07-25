@@ -9,7 +9,7 @@ DOIT_CONFIG = {
 KARMA_CMD = 'karma start karma.conf.js --single-run'
 HOE_JS = 'src/hoe.js'
 SRC_FILES = [HOE_JS, 'src/hoe.app.js']
-TEST_FILES = ['test/test.js',]
+TEST_FILES = ['test/test_hoe.js', 'test/test_hoe.app.js']
 
 
 def task_check():
@@ -33,6 +33,8 @@ def task_coverage():
     """annotate for coverage and run tests"""
     return {
         'actions': ['env KARMA_MODE=coverage ' + KARMA_CMD],
+        'file_dep': SRC_FILES + TEST_FILES,
+        'uptodate': [False],
         }
 
 

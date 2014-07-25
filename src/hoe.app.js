@@ -13,7 +13,7 @@ hoe.Route = hoe.Type(function(template, name, endpoint){
     this.endpoint = endpoint;
 
     // convert template into list of parts that can have a 'param' or 'fixed'
-    this._parts = this.map(template.substr(1).split('/'), function(part){
+    this._parts = this.mapArray(template.substr(1).split('/'), function(part){
         return part[0] === ':' ? {'param': part.substr(1)} : {'fixed': part};
     });
 });
@@ -47,7 +47,7 @@ hoe.Route.prototype.match = function(path){
 // create path using given params
 hoe.Route.prototype.build = function(params){
     var path = "";
-    $.each(this._parts, function(_, part){
+    this._parts.forEach(function(part){
         if (part.fixed){
             path += '/' + part.fixed;
         }
@@ -75,7 +75,7 @@ hoe.Router.prototype.add = function(route){
 // return object with 'router' and 'params'
 hoe.Router.prototype.match = function(path){
     var result = null;
-    $.each(this.routes, function(_, route){
+    hoe.Type.prototype.forDict(this.routes, function(route){
         var match = route.match(path);
         if (match !== null){
             result = {'route': route, 'params': match};
