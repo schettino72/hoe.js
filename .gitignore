@@ -1,6 +1,5 @@
 # installed
 node_modules
-mocha
 
 # output from test/doc
 coverage
@@ -8,7 +7,6 @@ api
 tutorial
 README.html
 site/*.html
-test/result.html
 dist
 
 .doit.db

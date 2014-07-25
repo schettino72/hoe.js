@@ -6,7 +6,6 @@ DOIT_CONFIG = {
     }
 
 
-MOCHA_CMD = 'node_modules/mocha/bin/mocha --ui tdd'
 KARMA_CMD = 'karma start karma.conf.js --single-run'
 HOE_JS = 'src/hoe.js'
 SRC_FILES = [HOE_JS, 'src/hoe.app.js']
@@ -34,16 +33,6 @@ def task_coverage():
     """annotate for coverage and run tests"""
     return {
         'actions': ['env KARMA_MODE=coverage ' + KARMA_CMD],
-        }
-
-
-# FIXME use karma
-def task_testdoc():
-    """run unit-tests & generate HTML report"""
-    return {
-        'actions': [
-            MOCHA_CMD + ' --reporter doc > test/result.html'],
-        'file_dep': [HOE_JS, 'test/test.js'],
         }
 
 
@@ -142,5 +131,5 @@ def task_deploy():
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['site', 'tutorial', 'testdoc', 'coverage', 'apidoc', 'dist'],
+        'task_dep': ['site', 'tutorial', 'coverage', 'apidoc', 'dist'],
         }

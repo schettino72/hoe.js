@@ -1,6 +1,6 @@
 /*jshint globalstrict:true */
-/*global global, require */
-/*global suite, test*/
+/*global hoe */
+/*global chai, suite, test*/
 
 "use strict"; // ecmascript 5
 
