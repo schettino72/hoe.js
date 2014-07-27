@@ -1,3 +1,7 @@
+/*global console */
+/*global hoe */
+/*exported go_hoe, go_html, go_dom, profile*/
+
 // performance tests for creating HTML elements
 // use chrome dev tools - profile
 
@@ -17,7 +21,9 @@ function go_hoe(){
 
 function go_html(){
     var test = document.getElementById('test-space');
-    test.innerHTML = '<div class="content"><h2>My title</h2><ul><li>item 1</li><li>item 2</li><li>item 3</li></ul></div>';
+    test.innerHTML = ('<div class="content"><h2>My title</h2><ul>' +
+                      '<li>item 1</li><li>item 2</li><li>item 3</li>' +
+                      '</ul></div>');
 }
 
 

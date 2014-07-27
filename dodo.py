@@ -8,8 +8,8 @@ DOIT_CONFIG = {
 
 KARMA_CMD = 'karma start karma.conf.js --single-run'
 HOE_JS = 'src/hoe.js'
-SRC_FILES = [HOE_JS, 'src/hoe.app.js']
-TEST_FILES = ['test/test_hoe.js', 'test/test_hoe.app.js']
+SRC_FILES = glob('src/*.js')
+TEST_FILES = glob('test/*.js')
 
 
 def task_check():
