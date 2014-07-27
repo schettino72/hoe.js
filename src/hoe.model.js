@@ -6,6 +6,10 @@ hoe.Property = function(default_, nullable){
     this.nullable = nullable===false ? false : true;
 };
 
+hoe.Property.prototype.set = function(val){
+    return val;
+};
+
 hoe.Property.prototype.check_type = function(val){
     //undefined is never accepted
     if (val === undefined){
@@ -15,12 +19,11 @@ hoe.Property.prototype.check_type = function(val){
 
 
 
-hoe.PropertyString = function(){
+
+hoe.PropertyString = hoe.inherit(hoe.Property, function(){
     hoe.Property.apply(this, arguments);
     this.type = 'string';
-};
-hoe.PropertyString.prototype = Object.create(hoe.Property.prototype);
-hoe.PropertyString.prototype.constructor = hoe.PropertyString;
+});
 
 hoe.PropertyString.prototype.check_type = function(val){
     if (!(typeof val === 'string' || val instanceof String)){
@@ -30,12 +33,10 @@ hoe.PropertyString.prototype.check_type = function(val){
 
 
 
-hoe.PropertyNumber = function(){
+hoe.PropertyNumber = hoe.inherit(hoe.Property, function(){
     hoe.Property.apply(this, arguments);
     this.type = 'number';
-};
-hoe.PropertyNumber.prototype = Object.create(hoe.Property.prototype);
-hoe.PropertyNumber.prototype.constructor = hoe.PropertyNumber;
+});
 
 hoe.PropertyNumber.prototype.check_type = function(val){
     if (!(typeof val === 'number' || val instanceof Number)){
@@ -45,22 +46,43 @@ hoe.PropertyNumber.prototype.check_type = function(val){
 
 
 
+hoe.PropertyDate = hoe.inherit(hoe.Property, function(){
+    hoe.Property.apply(this, arguments);
+    this.type = 'Date';
+});
+
+// we accept a date object or any constructor parameter for a date
+hoe.PropertyDate.prototype.set = function(val){
+    if (!(val instanceof Date)){
+        return new Date(val);
+    }
+    return val;
+};
+
+hoe.PropertyDate.prototype.check_type = function(val){
+    if (!(val instanceof Date)){
+        throw Error('Invalid value type, not a Date');
+    }
+};
 
 
 
 
+hoe.Model = hoe.Type(function(data){
+    this.init_model(data);
+});
 
-
-hoe.model_set = function (obj, desc, data){
+hoe.Model.prototype.init_model = function(data){
+    var desc = this.Properties;
     var consumed = 0; // count number of data items used
     for (var k in desc){
         // set value
         if (k in data){
-            obj[k] = data[k];
+            this[k] = desc[k].set(data[k]);
             consumed++;
         }
         else {
-            obj[k] = desc[k].default;
+            this[k] = desc[k].default;
         }
 
         // validate type value
@@ -71,7 +93,7 @@ hoe.model_set = function (obj, desc, data){
         }
         else {
             // check correct type
-            desc[k].check_type(obj[k]);
+            desc[k].check_type(this[k]);
         }
     }
 
@@ -79,4 +101,12 @@ hoe.model_set = function (obj, desc, data){
     if (Object.keys(data).length != consumed){
         throw Error('Some data do not belong to model description.');
     }
+};
+
+hoe.Model.prototype.as_plain = function(){
+    var data = {};
+    for (var k in this.Properties){
+        data[k] = this[k];
+    }
+    return data;
 };
