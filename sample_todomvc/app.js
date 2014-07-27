@@ -49,6 +49,7 @@ var APP; // easy debug
     TodoItem.from_html = function(){
         this.id = this.getAttribute('id');
         this.title = this.textContent;
+        // FIXME
         this.completed = this.getAttribute('completed') == true;
         this.innerHTML = '';
     }

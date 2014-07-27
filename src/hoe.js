@@ -339,6 +339,9 @@ hoe.UI.prototype.render = function($container){
 // creates a web-component
 // init_func must be used for initialization and creating the
 // initial content for the element/component
+
+// TODO: clearly define init_func. maybe split in two
+// where one of them is used only if from_html not used
 hoe.Component = function(tag_name, init_func){
     var proto = Object.create(window.HTMLElement.prototype);
     hoe.extend(proto, hoe.Type.prototype);
@@ -378,6 +381,7 @@ hoe.Component = function(tag_name, init_func){
 	};
 
     // register tag/element and save reference to constructor
+    // TODO - why not hoe.constructor?
     proto.Constructor = document.register(tag_name, {prototype: proto});
     return proto;
 };
