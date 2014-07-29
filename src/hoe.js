@@ -306,7 +306,8 @@ hoe.Type.prototype.mapDict = function(seq, fn){
  * Similar to jQuery.proxy().
  */
 hoe.Type.prototype.scope = function(func){
-    return func.bind(this);
+    var args = [this].concat(Array.prototype.slice.call(arguments, 1));
+    return func.bind.apply(func, args);
 };
 
 

@@ -157,6 +157,17 @@ suite('hoe', function(){
             assert.deepEqual(5, get_on_scope());
         });
 
+        test('scope with args', function(){
+            var MyStuff = hoe.Type(function(){
+                this.x = 5;
+            });
+            var my = new MyStuff();
+            var get_on_scope = my.scope(function(a, b, c) {
+                return [this.x, a, b, c];
+            });
+            assert.deepEqual([5, 'a', 'b', 3], get_on_scope('a', 'b', 3));
+        });
+
         test('DOM event', function(){
             var MyStuff = hoe.Type(function(){
                 this.x = 1;
