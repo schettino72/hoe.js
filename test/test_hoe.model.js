@@ -76,6 +76,12 @@ suite('hoe.model', function(){
             assert.equal(my_date.getTime(), prop.set(7).getTime());
         });
 
+        test('to_plain() converts to int', function(){
+            var prop = new hoe.PropertyDate();
+            var my_date = new Date(7);
+            assert.equal(prop.to_plain(my_date), my_date.valueOf());
+        });
+
         test('check_type() can not pass unrecognized property', function(){
             var prop = new hoe.PropertyDate();
             function fn(){

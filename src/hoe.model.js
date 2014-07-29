@@ -10,6 +10,10 @@ hoe.Property.prototype.set = function(val){
     return val;
 };
 
+hoe.Property.prototype.to_plain = function(val){
+    return val;
+};
+
 hoe.Property.prototype.check_type = function(val){
     //undefined is never accepted
     if (val === undefined){
@@ -71,6 +75,13 @@ hoe.PropertyDate.prototype.set = function(val){
     return val;
 };
 
+hoe.PropertyDate.prototype.to_plain = function(val){
+    if (val === null){
+        return null;
+    }
+    return val.valueOf();
+};
+
 hoe.PropertyDate.prototype.check_type = function(val){
     if (!(val instanceof Date)){
         throw Error('Invalid value type, not a Date');
@@ -117,8 +128,9 @@ hoe.Model.prototype.init_model = function(data){
 
 hoe.Model.prototype.as_plain = function(){
     var data = {};
-    for (var k in this.Properties){
-        data[k] = this[k];
+    var desc = this.Properties;
+    for (var k in desc){
+        data[k] = desc[k].to_plain(this[k]);
     }
     return data;
 };
