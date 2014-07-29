@@ -58,6 +58,16 @@ suite('hoe.model', function(){
         });
     });
 
+    suite('hoe.ProertyBoolean', function(){
+        test('check_type() fails', function(){
+            var prop = new hoe.PropertyBoolean();
+            function fn(){
+                prop.check_type('34');
+            }
+            assert.throws(fn, Error, /Invalid value type, not a Boolean/);
+        });
+    });
+
     suite('hoe.ProertyDate', function(){
         test('set() can convert int to date', function(){
             var prop = new hoe.PropertyDate();

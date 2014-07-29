@@ -45,6 +45,18 @@ hoe.PropertyNumber.prototype.check_type = function(val){
 };
 
 
+hoe.PropertyBoolean = hoe.inherit(hoe.Property, function(){
+    hoe.Property.apply(this, arguments);
+    this.type = 'boolean';
+});
+
+hoe.PropertyBoolean.prototype.check_type = function(val){
+    if (!(typeof val === 'boolean' || val instanceof Boolean)){
+        throw Error('Invalid value type, not a Boolean');
+    }
+};
+
+
 
 hoe.PropertyDate = hoe.inherit(hoe.Property, function(){
     hoe.Property.apply(this, arguments);
@@ -86,7 +98,7 @@ hoe.Model.prototype.init_model = function(data){
         }
 
         // validate type value
-        if (data[k] === null){
+        if (this[k] === null){
             if (desc[k].nullable===false){
                 throw Error('Value can not be null.');
             }
