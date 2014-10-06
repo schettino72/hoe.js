@@ -240,47 +240,14 @@ suite('hoe', function(){
     });
 
 
-    suite('hoe.UI', function(){
-        test('return value', function(){
-            var MyWidget = hoe.inherit(hoe.UI, function(){});
-            MyWidget.prototype._render = function(){
-                return hoe('span', null, 'hi');
-            };
-            var widget = new MyWidget();
-            assert.equal('<span>hi</span>', html_str(widget.render()));
-        });
-        test('remember container', function(){
-            var MyWidget = hoe.inherit(hoe.UI, function(){
-                this.text = 'hi';
-            });
-            MyWidget.prototype._render = function(){
-                return hoe('span', null, this.text);
-            };
-            var $container = hoe('div');
-            var widget = new MyWidget();
-            widget.render($container);
-            assert.equal('<div><span>hi</span></div>', html_str($container));
-
-            // re-render without specifying container
-            widget.text = 'hello';
-            widget.render();
-            assert.equal('<div><span>hello</span></div>', html_str($container));
-
-            // container reference
-            assert.equal('<div><span>hello</span></div>',
-                         html_str(widget.$container));
-        });
-    });
 
     suite('hoe.Component', function(){
         suite('create / init', function(){
             // complete example of a web component that can be created
             // declarative (HTML) or programatically (JS)
             var MyComponent = hoe.Component('my-comp-init', function(data){
-                if (!this.__loaded_html__){
-                    this.content = data.content || '';
-                    this.num = data.num || '1';
-                }
+                this.content = data.content || '';
+                this.num = data.num || '1';
                 this.render();
             });
             MyComponent.render = function(){
@@ -289,10 +256,12 @@ suite('hoe', function(){
                              this.num + ' ---'));
             };
             MyComponent.from_html = function(){
-                this.num = this.getAttribute('num');
-                this.content = this.textContent;
+                var args = {};
+                args.num = this.getAttribute('num');
+                args.content = this.textContent;
                 // remove parsed content
                 hoe.html(this);
+                return args;
             };
 
             test('create componet from JS', function(){
@@ -310,7 +279,8 @@ suite('hoe', function(){
             });
 
             test('create component from HTML using hoe', function(){
-                var $from_hoe = hoe('my-comp-init', {'num':"4"}, 'hello from HTML');
+                var $from_hoe = hoe('my-comp-init', {'num':"4"},
+                                    'hello from HTML');
                 assert.equal(
                     '<my-comp-init num="4"><span>XXX hello from HTML4 ---' +
                         '</span></my-comp-init>',
@@ -318,7 +288,8 @@ suite('hoe', function(){
             });
 
             test('create component from HTML (innerHTML)', function(){
-                var original_html = '<my-comp-init num="5">hello from HTML</my-comp-init>';
+                var original_html = ('<my-comp-init num="5">' +
+                                     'hello from HTML</my-comp-init>');
                 var $from_html = hoe('div');
                 $from_html.innerHTML = original_html;
                 // the node needs to be cloned because innerHTML

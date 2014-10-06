@@ -1,17 +1,21 @@
-/*global location, localStorage, $, hoe */
-/*global input, label, button, ul, li, div, h1, section, header, footer, strong, a, span */
+/*global location, localStorage, hoe */
+/*global input, label, button, ul, li, div */
+/*global h1, section, header, footer, strong, a, span */
 
 // hoe.js Tutorial - TodoMVC
 // =============================
 //
 // In this tutorial we will create a simple TODO application,
 // it is based on <http://todomvc.com/>.
-// You can take a look at the full [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification) - but not required.
+// You can take a look at the full
+// [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification)
+// - but not required.
 //
 // Before we start you can play with it [here](../sample_todomvc/index.html).
 //
 // To run locally grab the source files for HTML, CSS and other dependencies
-// from the [github repo](https://github.com/schettino72/hoe.js/tree/gh-pages/sample_todomvc).
+// from the github
+// [repo](https://github.com/schettino72/hoe.js/tree/gh-pages/sample_todomvc).
 //
 var APP; // easy debug
 
@@ -33,26 +37,40 @@ var APP; // easy debug
     // a TODO application, anyway this helps us structure the
     // the code in an easy way to understand and modify.
     //
-    // ### constructor
-    // An item has 3 properties: `id`, `title` and `completed`.
-    // The TodoItem is created inheriting from `hoe.Type` so
-    // it has some extra features.
-    var TodoItem = hoe.Component( 'todo-item', function (args){
-        if (!this.__loaded_html__){
-            this.id = args.id
-            this.title = args.title
-            this.completed = args.completed
-        }
-        this.render()
+    // ## hoe.Component
+    // Creates a [CustomElement](https://github.com/Polymer/CustomElements).
+    // A CustomElment can be created in two ways:
+    //
+    // 1) programatically create by javascript
+    // 2) by HTML tags
+    //
+    // `hoe.Component` takes two parameters, the tag name and an initializer
+    // function
+    var TodoItem = hoe.Component('todo-item', function (args){
+        // ### initializer
+        // An item has 3 properties: `id`, `title` and `completed`.
+        // The TodoItem is created inheriting from `hoe.Type` so
+        // it has some extra features (more on this features later on).
+        this.id = args.id;
+        this.title = args.title;
+        this.completed = args.completed;
+        this.render();
     });
 
+    // ## from_html
+    // When an custom element is created from HTML, use `from_html()`
+    // to extract data from it and return an object that will be passed
+    // as argument to the initializer.
     TodoItem.from_html = function(){
-        this.id = this.getAttribute('id');
-        this.title = this.textContent;
-        // FIXME
-        this.completed = this.getAttribute('completed') == true;
+        var args = {};
+        args.id = this.getAttribute('id');
+        args.title = this.textContent;
+        args.completed = this.getAttribute('completed') === true;
+        // remove title from DOM as actual DOM nodes will be
+        // added later
         this.innerHTML = '';
-    }
+        return args;
+    };
 
     // `hoe.js` approach is that HTML for "widgets" should be created
     // directly by javascript.
@@ -63,12 +81,13 @@ var APP; // easy debug
     // and modify the element. So how much separation are you really getting
     // from this? Anyway, it is possible to use templates if you wish...
     //
-    // Creating HTML from js lets us simplify by keeping all the code in a single
-    // location and avoid problems like referencing elements by name that might
-    // have changed, have a typo or are simply hard to locate.
+    // Creating HTML from js lets us simplify by keeping all the code
+    // in a single location and avoid problems like referencing elements
+    // by name that might have changed, have a typo or are simply
+    // hard to locate.
     TodoItem.render = function() {
         // * create the _input_ element for the checkbox calling the function
-        //       with the tag name
+        //   with the tag name
         // * HTML attributes are passed as plain objects
         // * the returned value is a jQuery object
         this.$checkbox = input({ 'class': 'toggle', type: 'checkbox' });
@@ -124,7 +143,8 @@ var APP; // easy debug
         // Note how we combine different arguments, plain object for
         // HTML attributes, DOM elements are appended to the content.
         // You can pass as many arguments as you wish.
-        var $view = div( {'class': 'view'}, this.$checkbox, this.$label, $button );
+        var $view = div( {'class': 'view'},
+                         this.$checkbox, this.$label, $button );
         this.appendChild( $view);
         this.appendChild( this.$input );
 
@@ -134,7 +154,8 @@ var APP; // easy debug
     };
 
     // ### Event handlers
-    // Now we need to create the methods used as event handlers for each operation.
+    // Now we need to create the methods used as event handlers
+    // for each operation.
     //
     // `startEdit` will display the input element (done through CSS,
     // so just change the `class` attribute).
@@ -206,19 +227,23 @@ var APP; // easy debug
         this.hashChanged();
     });
 
+    // It is possible to directly modify the object instead of passing
+    // arguments to the initializer
     TodoApp.from_html = function(){
         this.extra = [];
         var items = this.getElementsByTagName('todo-item');
         this.forArray(items, function (todo_item){
             this.extra.push(todo_item);
         });
-    }
+    };
 
     // ### render
     // create HTMl elements and attach events
     TodoApp.render = function() {
         // the input element where new TodoItem can be added
-        this.$input = input({ id: 'new-todo', placeholder: 'What needs to be done?', autofocus: '' });
+        this.$input = input({ id: 'new-todo',
+                              placeholder: 'What needs to be done?',
+                              autofocus: '' });
         this.listen( this.$input, 'keyup', this.createItemCallback );
 
         // checkbox to toggle all Todo's at once
@@ -262,8 +287,6 @@ var APP; // easy debug
         );
         this.style.display = 'block';
 
-        // Create a group of elements that will be hidden when todo list is empty.
-        // FIXME group mentioned above was deleted. need to create a function for that
         this.$footer.style.display = 'none';
         this.$main.style.display = 'none';
 
@@ -297,9 +320,10 @@ var APP; // easy debug
         // uptate propery
         this.filter = path;
         // update UI
-        Array.forEach(this.$filters.getElementsByTagName('a'), function(v){
-            v.classList.remove('selected');
-        });
+        var $items = this.$filters.getElementsByTagName('a');
+        for(var i=0,max=$items.length;i<max;i++){
+            $items[i].classList.remove('selected');
+        }
         this.filter_opts[path].$ele.classList.add( 'selected' );
         // apply filter to all TodoItem one by one.
         this.forDict( this.todos, this.filterItem );
@@ -314,7 +338,7 @@ var APP; // easy debug
     TodoApp.createItem = function( id, title, completed ) {
         var item = TodoItem.New({id:id, title:title, completed:completed});
         this.addItem(item);
-    }
+    };
 
     // ### addItem
     // Adds the TodoItem to the TodoApp and renders it.
@@ -384,7 +408,8 @@ var APP; // easy debug
     // ### filterItem
     // Apply filter to a single item setting its visibility.
     TodoApp.filterItem = function ( item ) {
-        item.style.display = ( item.completed != this.filter_opts[this.filter].value ) ? '' : 'none';
+        var display = item.completed != this.filter_opts[this.filter].value;
+        item.style.display = display ? '' : 'none';
     };
 
     // ### itemToggled
@@ -397,7 +422,7 @@ var APP; // easy debug
     };
 
     // ### toggleAll
-    TodoApp.toggleAll = function(event) {
+    TodoApp.toggleAll = function() {
         var checked = this.$toggleAll.checked;
         this.forDict( this.todos, function( item ){
             if ( item.completed !== checked ){
@@ -434,7 +459,8 @@ var APP; // easy debug
                 this.$footer.style.display = '';
                 this.$main.style.display = '';
                 if (typeof value[1] != 'boolean'){
-                    throw 'db fucked up';
+                    value[1] = false;
+                    //throw 'db corrupted!';
                 }
                 this.createItem( key, value[0], value[1]);
             });

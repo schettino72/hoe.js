@@ -35,10 +35,11 @@ var hoe = function(tag, attrs){
         }
     }
 
-    // CustomElements integration
-    // createdCallback should be called only after content and attributes are set
+    // CustomElements integration:
+    // createdCallback should be called only after
+    // element's content and attributes are set.
     if('createdCallback' in $ele){
-        $ele.createdCallback(true);
+        $ele.__init__();
     }
     return $ele;
 };
@@ -312,38 +313,9 @@ hoe.Type.prototype.scope = function(func){
 };
 
 
-/**
- * UI has a single "render" method that can remember its container element
- * in the DOM.
-
- * DEPRECATED - use hoe.Component
-
- * To use create a type and define a "_render()" method where the DOM
- * content is returned. Typically the container for this UI is only
- * specified in the first time it is rendered.
- * The object has an attribute "$container" with a reference to the container
- * element.
- *
- */
-hoe.UI = hoe.Type();
-hoe.UI.prototype.render = function($container){
-    if (typeof $container !== 'undefined'){
-        this.$container = $container;
-    }
-    var content = this._render();
-    if (this.$container && content !== null){
-        hoe.html(this.$container, content);
-    }
-    return content;
-};
-
-
 // creates a web-component
 // init_func must be used for initialization and creating the
 // initial content for the element/component
-
-// TODO: clearly define init_func. maybe split in two
-// where one of them is used only if from_html not used
 hoe.Component = function(tag_name, init_func){
     var proto = Object.create(window.HTMLElement.prototype);
     hoe.extend(proto, hoe.Type.prototype);
@@ -351,7 +323,7 @@ hoe.Component = function(tag_name, init_func){
     // to be subclassed to get info from HTML when creating object
     // note it is called BEFORE init_func
     proto.from_html = function(){
-        return;
+        return {};
     };
 
     // from web-components specification.
@@ -362,28 +334,39 @@ hoe.Component = function(tag_name, init_func){
     // should be done with a "init" function that are able to
     // take new parameters.
     // See the "New" function below
-    proto.createdCallback = function(force_ready){
-        if (this.parentNode || force_ready){
-            this.from_html();
-            // this info might be useful for components
-            this.__loaded_html__ = true;
-            if (init_func){
-                init_func.call(this);
-            }
+    proto.attachedCallback = function(){
+        // make sure element is initialized before it is attached to DOM
+        this.__init__();
+    };
+
+    proto.createdCallback = function(){
+        // if element has a parent when created means it is created through
+        // HTML. This is not 100% reliable in some cases (not sure why)
+        // even HTML elements reach this point without a parentNode.
+        if (this.parentNode){
+            this.__init__();
         }
      };
 
-    // helper to create new elements from js
-    proto.New = function (args) {
-        var obj = new proto.Constructor();
-        if (init_func){
-            init_func.call(obj, args);
+    // initialize the Element with some housekeeping
+    proto.__init__ = function(){
+        if (!this.__initialized__){
+            init_func.call(this, this.from_html());
+            this.__initialized__ = true;
+            this.__from_html__ = true;
         }
+    };
+
+    // when creating elements from js you should use this function
+    proto.New = function (args) {
+        var obj = new proto.constructor();
+        obj.__initialized__ = true;
+        obj.__from_html__ = false;
+        init_func.call(obj, args);
         return obj;
-	};
+    };
 
     // register tag/element and save reference to constructor
-    // TODO - why not hoe.constructor?
-    proto.Constructor = document.registerElement(tag_name, {prototype: proto});
+    proto.constructor = document.registerElement(tag_name, {prototype: proto});
     return proto;
 };

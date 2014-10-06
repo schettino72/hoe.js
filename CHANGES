@@ -7,7 +7,8 @@ Changes
 ---------------------
 
 - update to polymer-platorm 0.4.2
-
+- removed hoe.UI
+- changes API for hoe.Component creation/initialization
 
 0.4.0 (*2014-07-30*)
 -----------------------
@@ -36,6 +37,3 @@ Changes
 - added hoe.Type.scope
 - rename hoe.Type.on to hoe.Type.listen
 - rename hoe.Type.trigger to hoe.Type.fire
-
-
-

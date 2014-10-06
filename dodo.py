@@ -1,25 +1,24 @@
 from glob import glob
 
+from doitweb import JsHint
+
+
 DOIT_CONFIG = {
-    'default_tasks': ['check', 'test'],
+    'default_tasks': ['jshint', 'test'],
     'verbosity': 2,
     }
 
 
-KARMA_CMD = 'karma start karma.conf.js --single-run'
+KARMA_CMD = 'node_modules/karma/bin/karma start karma.conf.js --single-run'
 HOE_JS = 'src/hoe.js'
 SRC_FILES = glob('src/*.js')
 TEST_FILES = glob('test/*.js')
 
 
-def task_check():
+def task_jshint():
     """static checker using jshint"""
-    for js_file in SRC_FILES + TEST_FILES:
-        yield {
-            'name': js_file,
-            'actions': ['jshint --config hint.json ' + js_file],
-            'file_dep': ['hint.json', js_file],
-            }
+    hint = JsHint(config='hint.json')
+    yield hint.tasks(SRC_FILES + TEST_FILES + ['sample_todomvc/app.js'])
 
 
 def task_test():
@@ -38,12 +37,15 @@ def task_coverage():
         }
 
 
-def task_apidoc():
-    """generate API docs using jsdoc"""
-    return {
-        'actions': ['jsdoc --directory=api src/hoe.js'],
-        'file_dep': [HOE_JS],
-        }
+# requires => sudo apt-get install jsdoc-toolkit
+# XXX this is buggy, cant handle generating docs for hoe.Component
+# def task_apidoc():
+#     """generate API docs using jsdoc"""
+#     return {
+#         'actions': ['jsdoc --directory=api src/hoe.js'],
+#         'file_dep': [HOE_JS],
+#         }
+
 
 def task_tutorial():
     """create tutorial from TodoMVC using docco"""
@@ -54,16 +56,15 @@ def task_tutorial():
         'targets': ['tutorial'],
         }
 
+
 def task_readme():
     """convert README.md into html"""
+    # this is just to check markdown formatting... the output is not used
     return {
         'actions': ['markdown_py README.md > README.html'],
         'file_dep': ['README.md'],
         'targets': ['README.hmtl'],
         }
-
-
-
 
 
 
@@ -133,11 +134,11 @@ def task_deploy():
     """not really deploy, just copy site to folder with git repo for site"""
     actions = []
     for source in ['site/', 'src', 'components', 'test', 'coverage',
-                   'api', 'tutorial', 'sample_todomvc', 'dist']:
+                   'tutorial', 'sample_todomvc', 'dist']:
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['site', 'tutorial', 'coverage', 'apidoc', 'dist'],
+        'task_dep': ['site', 'tutorial', 'coverage', 'dist'],
         }
 
 
@@ -145,10 +146,6 @@ def task_deploy():
 
 ################## setup  ###################
 # sudo apt-get install nodejs
-# sudo apt-get install jsdoc-toolkit
-# npm install
-# sudo npm install -g karma-cli jshint
-
 
 def task_dev_setup():
     """install setup third-part packages"""
