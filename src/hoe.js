@@ -35,9 +35,10 @@ var hoe = function(tag, attrs){
         }
     }
 
-    // readyCallback should be called only after content and attributes are set
-    if('readyCallback' in $ele){
-        $ele.readyCallback(true);
+    // CustomElements integration
+    // createdCallback should be called only after content and attributes are set
+    if('createdCallback' in $ele){
+        $ele.createdCallback(true);
     }
     return $ele;
 };
@@ -361,7 +362,7 @@ hoe.Component = function(tag_name, init_func){
     // should be done with a "init" function that are able to
     // take new parameters.
     // See the "New" function below
-    proto.readyCallback = function(force_ready){
+    proto.createdCallback = function(force_ready){
         if (this.parentNode || force_ready){
             this.from_html();
             // this info might be useful for components
@@ -383,6 +384,6 @@ hoe.Component = function(tag_name, init_func){
 
     // register tag/element and save reference to constructor
     // TODO - why not hoe.constructor?
-    proto.Constructor = document.register(tag_name, {prototype: proto});
+    proto.Constructor = document.registerElement(tag_name, {prototype: proto});
     return proto;
 };

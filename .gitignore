@@ -1,8 +1,12 @@
 # installed
 node_modules
+bower_components
+
+# build
+components
+coverage
 
 # output from test/doc
-coverage
 api
 tutorial
 README.html

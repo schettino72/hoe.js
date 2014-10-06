@@ -63,6 +63,17 @@ def task_readme():
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
 def task_dist():
     """create distribution files"""
     version = '0.2.0'
@@ -91,13 +102,6 @@ def task_dist():
         'clean': True,
         }
 
-
-# TODO dev_setup
-# pip install -r py_requirements.txt
-# sudo apt-get install nodejs
-# sudo apt-get install jsdoc-toolkit
-# npm install
-# sudo npm install -g karma-cli jshint
 
 
 ####################### site
@@ -135,3 +139,46 @@ def task_deploy():
         'actions': actions,
         'task_dep': ['site', 'tutorial', 'coverage', 'apidoc', 'dist'],
         }
+
+
+
+
+################## setup  ###################
+# sudo apt-get install nodejs
+# sudo apt-get install jsdoc-toolkit
+# npm install
+# sudo npm install -g karma-cli jshint
+
+
+def task_dev_setup():
+    """install setup third-part packages"""
+    yield {
+        'name': 'npm',
+        'actions': ['npm install'],
+        'file_dep': ['package.json'],
+        'targets': ['node_modules'],
+        }
+
+    yield {
+        'name': 'bower',
+        'actions': ['bower install'],
+        'file_dep': ['bower.json'],
+        'targets': ['bower_components'],
+        }
+
+
+    # build/move used files from bower_components to components folder
+    components = {
+        'chai.js': 'chai/chai.js',
+        'mocha.css': 'mocha/mocha.css',
+        'mocha.js': 'mocha/mocha.js',
+        'polymer-platform.js': 'polymer-platform/platform.js',
+        }
+    for dst, src in components.items():
+        yield {
+            'name': 'bower-{}'.format(dst),
+            'actions': ['mkdir -p components',
+                        'cp %(dependencies)s %(targets)s'],
+            'file_dep': ['bower_components/{}'.format(src)],
+            'targets': ['components/{}'.format(dst)],
+            }

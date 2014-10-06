@@ -273,47 +273,10 @@ suite('hoe', function(){
     });
 
     suite('hoe.Component', function(){
-        test('create', function(){
-            var MyComponent = hoe.Component('my-comp', function(){
-                hoe.html(this, this.render());
-            });
-            MyComponent.render = function(){
-                return hoe('div', null, 'hi');
-            };
-            var widget = hoe('my-comp');
-            assert.equal('<my-comp><div>hi</div></my-comp>', html_str(widget));
-        });
-
-        test('component fire event', function(){
-            hoe.Component('my-comp', function(){
-                hoe.html(this, 'hello');
-            });
-            var $widget = hoe('my-comp');
-            var result;
-            $widget.addEventListener('custom_event', function(event){
-                result = "got: " + event.detail;
-            });
-            $widget.fire('custom_event', '46');
-            assert.equal('got: 46', result);
-        });
-
-        test('listen event from component', function(){
-            hoe.Component('my-comp', function(){
-                hoe.html(this, 'hello');
-            });
-            var $widget = hoe('my-comp');
-            var my_obj = new (hoe.Type(function(){}))();
-            my_obj.listen($widget, 'custom_event', function(event){
-                this.result = "got: " + event.detail;
-            });
-            $widget.fire('custom_event', '48');
-            assert.equal('got: 48', my_obj.result);
-        });
-
-        // complete example of a web component that can be created
-        // declarative (HTML) or programatically (JS)
-        test('init', function(){
-            var MyComponent = hoe.Component('my-comp', function(data){
+        suite('create / init', function(){
+            // complete example of a web component that can be created
+            // declarative (HTML) or programatically (JS)
+            var MyComponent = hoe.Component('my-comp-init', function(data){
                 if (!this.__loaded_html__){
                     this.content = data.content || '';
                     this.num = data.num || '1';
@@ -328,42 +291,71 @@ suite('hoe', function(){
             MyComponent.from_html = function(){
                 this.num = this.getAttribute('num');
                 this.content = this.textContent;
-                 // remove parsed content
+                // remove parsed content
                 hoe.html(this);
             };
 
-            // create component from HTML
-            var original_html = '<my-comp num="5">hello from HTML</my-comp>';
-            var $from_html = hoe('div');
-            $from_html.innerHTML = original_html;
-            // the node needs to be cloned because innerHTML
-            // returns stale content
-            var created = $from_html.cloneNode(true).children[0];
-            assert.equal(
-                '<my-comp num="5"><span>XXX hello from HTML5 ---' +
-                    '</span></my-comp>',
-                html_str(created));
+            test('create componet from JS', function(){
+                var $from_js = MyComponent.New({num:'6', content:'JS'});
+                assert.equal(
+                    '<my-comp-init><span>XXX JS6 ---</span></my-comp-init>',
+                    html_str($from_js));
+            });
 
-            // create component from HTML using hoe
-            var $from_hoe = hoe('my-comp', {'num':"4"}, 'hello from HTML');
-            assert.equal(
-                '<my-comp num="4"><span>XXX hello from HTML4 ---' +
-                    '</span></my-comp>',
-                html_str($from_hoe));
+            test('create componet from JS using default values', function(){
+                var $from_jsd = MyComponent.New({});
+                assert.equal(
+                    '<my-comp-init><span>XXX 1 ---</span></my-comp-init>',
+                    html_str($from_jsd));
+            });
 
-            // create componet from JS
-            var $from_js = MyComponent.New({num:'6', content:'JS'});
-            assert.equal(
-                '<my-comp><span>XXX JS6 ---</span></my-comp>',
-                html_str($from_js));
+            test('create component from HTML using hoe', function(){
+                var $from_hoe = hoe('my-comp-init', {'num':"4"}, 'hello from HTML');
+                assert.equal(
+                    '<my-comp-init num="4"><span>XXX hello from HTML4 ---' +
+                        '</span></my-comp-init>',
+                    html_str($from_hoe));
+            });
 
-            // create componet from JS using default values
-            var $from_jsd = MyComponent.New({});
-            assert.equal(
-                '<my-comp><span>XXX 1 ---</span></my-comp>',
-                html_str($from_jsd));
+            test('create component from HTML (innerHTML)', function(){
+                var original_html = '<my-comp-init num="5">hello from HTML</my-comp-init>';
+                var $from_html = hoe('div');
+                $from_html.innerHTML = original_html;
+                // the node needs to be cloned because innerHTML
+                // returns stale content
+                var created = $from_html.cloneNode(true).children[0];
+                assert.equal(
+                    '<my-comp-init num="5"><span>XXX hello from HTML5 ---' +
+                        '</span></my-comp-init>',
+                    html_str(created));
+            });
         });
 
+        test('component fire event', function(){
+            hoe.Component('my-comp-fire', function(){
+                hoe.html(this, 'hello');
+            });
+            var $widget = hoe('my-comp-fire');
+            var result;
+            $widget.addEventListener('custom_event', function(event){
+                result = "got: " + event.detail;
+            });
+            $widget.fire('custom_event', '46');
+            assert.equal('got: 46', result);
+        });
+
+        test('listen event from component', function(){
+            hoe.Component('my-comp-listen', function(){
+                hoe.html(this, 'hello');
+            });
+            var $widget = hoe('my-comp-listen');
+            var my_obj = new (hoe.Type(function(){}))();
+            my_obj.listen($widget, 'custom_event', function(event){
+                this.result = "got: " + event.detail;
+            });
+            $widget.fire('custom_event', '48');
+            assert.equal('got: 48', my_obj.result);
+        });
 
     });
 });

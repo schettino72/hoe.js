@@ -1,0 +1,38 @@
+{
+  "name": "hoe",
+  "version": "0.4.0",
+  "homepage": "https://github.com/schettino72/hoe.js",
+  "authors": [
+    "schettino72 <schettino72@gmail.com>"
+  ],
+  "description": "hoe.js is a lightweight javascript library designed to streamline the creation of user interface in HTML/javascript.",
+  "main": "hoe.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "HTML",
+    "DOM",
+    "UI"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "bower.json",
+    "dodo.py",
+    ".gitignore",
+    "hint.json",
+    "karma.conf.js",
+    "package.json",
+    "py_requirements.txt",
+    "test",
+    "TODO.txt",
+    ".travis.yml"
+  ],
+  "devDependencies": {
+    "mocha": "~1.21.4",
+    "chai": "~1.9.1"
+  },
+  "dependencies": {
+    "polymer-platform": "~0.4.2"
+  }
+}
