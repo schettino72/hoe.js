@@ -1,3 +1,4 @@
+import json
 from glob import glob
 
 from doitweb import JsHint
@@ -73,36 +74,62 @@ def task_readme():
 
 
 
-
+def get_bower_version():
+    with open('bower.json') as bower:
+        return {'version': json.load(bower)['version']}
 
 def task_dist():
-    """create distribution files"""
-    version = '0.2.0'
-    version_comment = "// hoe.js version: %s" % version
-    uglify = 'node_modules/uglify-js2/bin/uglifyjs2'
+    """create distribution
+
+    save files on `dist` folder. This folder should contain the branch
+    `releases`. Tags for bower releases should be made from the `releases`
+    branch.
+    """
+    # get version number from bower.json
     yield {
-        'name': 'min',
-        'actions': [
-            'echo  "' + version_comment + '" > %(targets)s',
-            (uglify + ' %(dependencies)s ' +
-             '--mangle --compress --comments >> %(targets)s'),
-            ],
-        'file_dep': [HOE_JS],
-        'targets': ['dist/hoe-' + version + '.min.js'],
-        'clean': True,
+        'name': 'version',
+        'actions': [get_bower_version],
+        'file_dep': ['bower.json'],
         }
 
+    # concat files for source distribution
+    sources = ['src/hoe.model.js', 'src/hoe.js'] # hoe.app.js is unreleased
     yield {
         'name': 'dev',
         'actions': [
-            'echo  "' + version_comment + '" > %(targets)s',
+            'echo  "// hoe.js version: %(version)s" > %(targets)s',
             'cat %(dependencies)s >> %(targets)s',
             ],
-        'file_dep': [HOE_JS],
-        'targets': ['dist/hoe-' + version + '.js'],
+        'file_dep': sources,
+        'getargs': {'version': ('dist:version', 'version')},
+        'targets': ['dist/hoe.js'],
         'clean': True,
         }
 
+    # create minified file for distribution
+    uglify = 'node_modules/uglify-js/bin/uglifyjs'
+    yield {
+        'name': 'min',
+        'actions': [
+            'echo  "// hoe.js version: %(version)s" > %(targets)s',
+            (uglify + ' %(dependencies)s ' +
+             '--mangle --compress --comments >> %(targets)s'),
+            ],
+        'file_dep': ['dist/hoe.js'],
+        'getargs': {'version': ('dist:version', 'version')},
+        'targets': ['dist/hoe.min.js'],
+        'clean': True,
+        }
+
+    # copy other files to be included in bower package
+    files = ['README.md', 'LICENSE', 'CHANGES']
+    for fname in files:
+        yield {
+            'name': 'cp-{}'.format(fname),
+            'actions': ['cp %(dependencies)s %(targets)s'],
+            'file_dep': [fname],
+            'targets': ['dist/{}'.format(fname)],
+            }
 
 
 ####################### site
