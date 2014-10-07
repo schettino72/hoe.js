@@ -1,0 +1,40 @@
+
+Changes
+=======
+
+
+0.5.0 (*2012-10-07*)
+-----------------------
+
+- update to polymer-platorm 0.4.2
+- removed hoe.UI
+- changes API for hoe.Component creation/initialization
+
+
+0.4.0 (*2014-07-30*)
+-----------------------
+
+* backward-incompatible, most part of the API completely changed!
+
+- removed dependency on jQuery, hoe() returns a HTML Node
+- added hoe.extend()
+- hoe() signature change, secondnd argument must be attributes
+- added html manipulation function html(), fragment(), append(), remove()
+- `forEach()` replaced by `forArray()` and `forDict()`
+- `map()` replaced by `mapArray()` and `mapDict()`
+
+
+0.3.0 (*2014-06-23*)
+-----------------------
+
+- added hoe.Component
+- added hoe.UI
+
+0.2.0 (*2013-01-27*)
+------------------------
+
+- added hoe.partial
+- added hoe.Type.map
+- added hoe.Type.scope
+- rename hoe.Type.on to hoe.Type.listen
+- rename hoe.Type.trigger to hoe.Type.fire
