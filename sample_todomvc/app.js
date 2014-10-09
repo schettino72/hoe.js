@@ -9,7 +9,7 @@
 // it is based on <http://todomvc.com/>.
 // You can take a look at the full
 // [specification](https://github.com/addyosmani/todomvc/wiki/App-Specification)
-// - but not required.
+// , but not required.
 //
 // Before we start you can play with it [here](../sample_todomvc/index.html).
 //

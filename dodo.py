@@ -38,16 +38,6 @@ def task_coverage():
         }
 
 
-# requires => sudo apt-get install jsdoc-toolkit
-# XXX this is buggy, cant handle generating docs for hoe.Component
-# def task_apidoc():
-#     """generate API docs using jsdoc"""
-#     return {
-#         'actions': ['jsdoc --directory=api src/hoe.js'],
-#         'file_dep': [HOE_JS],
-#         }
-
-
 def task_tutorial():
     """create tutorial from TodoMVC using docco"""
     docco = 'node_modules/docco/bin/docco'
@@ -160,12 +150,12 @@ def task_site():
 def task_deploy():
     """not really deploy, just copy site to folder with git repo for site"""
     actions = []
-    for source in ['site/', 'src', 'components', 'test', 'coverage',
-                   'tutorial', 'sample_todomvc', 'dist']:
+    for source in ['site/', 'src', 'components', 'test',
+                   'tutorial', 'sample_todomvc']:
         actions.append('rsync -avP %s ../hoe-website/' % source)
     return {
         'actions': actions,
-        'task_dep': ['site', 'tutorial', 'coverage', 'dist'],
+        'task_dep': ['site', 'tutorial'],
         }
 
 

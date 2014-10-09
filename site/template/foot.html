@@ -20,45 +20,57 @@
   <!-- foundation includes jQuerys -->
   <script src="javascripts/foundation.min.js"></script>
   <!-- Initialize JS Plugins -->
-  <script src="javascripts/app.js"></script>
+  <!-- loading js gives an error (not easy to debug). not using any js anyway-->
+  <!-- <script src="javascripts/app.js"></script> -->
 
   <script src="google-code-prettify/prettify.js"></script>
-  <script type="text/javascript">
-    $(function(){
-      prettyPrint();
-    });
-  </script>
-
+  <script src="components/polymer-platform.js"></script>
   <script src="src/hoe.js"></script>
-  <script>
-var Calculator = hoe.Type(function(){
+
+  <script id="counter-code">
+hoe.init(); // create DOM helper functions
+
+var Counter = hoe.Component('hoe-counter', function(args){
     // some data
-    this.sum = 0;
+    args = args || {};
+    if (args['initial-value']){
+       this.sum = parseInt(args['initial-value']);
+    } else {
+       this.sum = 0;
+    }
     // reference to UI elements
     this.$sum = null;
+    this.render();
 });
 
+// create Element from HTML text
+Counter.from_html = function(){
+  return {'initial-value': this.getAttribute('intial-value')};
+};
+
 // create UI
-Calculator.prototype.render = function(){
-   var $plus_one = button('+1');
+Counter.render = function(){
+   var $plus_one = button(null, '+1');
    this.listen($plus_one, 'click', this.add_one);
    this.$sum = strong({style: "margin-left:5px"}, this.sum.toString());
-   return [$plus_one, this.$sum];
+   hoe.html(this, $plus_one, this.$sum);
 };
 
 // logic - event handler
-Calculator.prototype.add_one = function(){
+Counter.add_one = function(){
    // update data
    this.sum += 1;
    // update UI
-   this.$sum.html(this.sum);
+   hoe.html(this.$sum, this.sum);
 };
+</script>
 
-$(document).ready(function(){
-  hoe.init(); // create DOM helper functions
-  $('#calculator').html((new Calculator()).render());
-});
-  </script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $('#counter-pre').text($('#counter-code').text());
+     prettyPrint();
+  });
+</script>
 
 
 <script type="text/javascript">

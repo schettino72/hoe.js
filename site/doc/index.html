@@ -29,37 +29,9 @@
       <h4>Example</h4>
       <p><em>hoe.js</em> does not enforce any kind of structure for your code, but it was specially designed to help you create custom UI components. Here is an idiomatic example of how a "component" would look like.</p>
 
-      <pre class="prettyprint">
-var Calculator = hoe.Type(function(){
-    // some data
-    this.sum = 0;
-    // reference to UI elements
-    this.$sum = null;
-});
-
-// create UI
-Calculator.prototype.render = function(){
-   var $plus_one = button('+1');
-   this.listen($plus_one, 'click', this.add_one);
-   this.$sum = strong({style: "margin-left:5px"},
-                      this.sum.toString());
-   return [$plus_one, this.$sum];
-};
-
-// logic - event handler
-Calculator.prototype.add_one = function(){
-   // update data
-   this.sum += 1;
-   // update UI
-   this.$sum.html(this.sum);
-};
-
-$(document).ready(function(){
-  hoe.init(); // create DOM helper functions
-  $('#calculator').html((new Calculator()).render());
-});
+      <pre id="counter-pre" class="prettyprint">
       </pre>
-      <div id="calculator" style="border:1px solid black"></div>
+      <hoe-counter initial-value="2" style="display:block;border:1px solid black"></hoe-counter>
     </div>
 
 
