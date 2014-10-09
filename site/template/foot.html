@@ -20,7 +20,7 @@
   <!-- foundation includes jQuerys -->
   <script src="javascripts/foundation.min.js"></script>
   <!-- Initialize JS Plugins -->
-  <!-- loading js gives an error (not easy to debug). not using any js anyway-->
+  <!-- polymer breaks Foundation: https://github.com/Polymer/platform/issues/69 -->
   <!-- <script src="javascripts/app.js"></script> -->
 
   <script src="google-code-prettify/prettify.js"></script>
@@ -38,14 +38,18 @@ var Counter = hoe.Component('hoe-counter', function(args){
     } else {
        this.sum = 0;
     }
-    // reference to UI elements
+    // reference to UI child elements
     this.$sum = null;
+    // set style
+    this.style.display = 'block';
+    this.style.border= '1px solid black';
+    // render element
     this.render();
 });
 
 // create Element from HTML text
 Counter.from_html = function(){
-  return {'initial-value': this.getAttribute('intial-value')};
+  return {'initial-value': this.getAttribute('initial-value')};
 };
 
 // create UI
