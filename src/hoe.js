@@ -52,11 +52,11 @@ var hoe = function(tag, attrs){
 hoe.append = function($ele){
     for(var i=1, max=arguments.length; i<max; i++){
         var param = arguments[i];
-        if(typeof(param) === "string"){
-            $ele.appendChild(document.createTextNode(param));
+        if(param instanceof Node){
+            $ele.appendChild(param);
         }
         else {
-            $ele.appendChild(param);
+            $ele.appendChild(document.createTextNode(param));
         }
     }
 };
@@ -68,11 +68,11 @@ hoe.html = function($ele){
     $ele.innerHTML = '';
     for(var i=1, max=arguments.length; i<max; i++){
         var param = arguments[i];
-        if(typeof(param) === "string"){
-            $ele.appendChild(document.createTextNode(param));
+        if(param instanceof Node){
+            $ele.appendChild(param);
         }
         else {
-            $ele.appendChild(param);
+            $ele.appendChild(document.createTextNode(param));
         }
     }
 };
