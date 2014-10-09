@@ -66,21 +66,12 @@
 
     <section>
       <ul class="left">
-        <li><a href="tutorial/app.html">tutorial</a></li>
-        <li><a href="api/index.html">API</a></li>
+        <li><a href="tutorial/app.html">TodoMVC</a></li>
         <li><a href="test.html">test</a></li>
-        <li><a class="soon has-tip" title="coming soon...">compare</a></li>
       </ul>
 
       <ul class="right">
         <li><a href="https://github.com/schettino72/hoe.js">code/bugs</a></li>
-        <li class="has-dropdown" style="background-color:#499d49;">
-          <a>DOWNLOAD</a>
-          <ul class="dropdown">
-            <li><a href="dist/hoe-0.2.0.min.js">production (minified)</a></li>
-            <li><a href="dist/hoe-0.2.0.js">development</a></li>
-          </ul>
-        </li>
       </ul>
     </section>
   </nav>
@@ -109,45 +100,61 @@
   <!-- foundation includes jQuerys -->
   <script src="javascripts/foundation.min.js"></script>
   <!-- Initialize JS Plugins -->
-  <script src="javascripts/app.js"></script>
+  <!-- polymer breaks Foundation: https://github.com/Polymer/platform/issues/69 -->
+  <!-- <script src="javascripts/app.js"></script> -->
 
   <script src="google-code-prettify/prettify.js"></script>
-  <script type="text/javascript">
-    $(function(){
-      prettyPrint();
-    });
-  </script>
-
+  <script src="components/polymer-platform.js"></script>
   <script src="src/hoe.js"></script>
-  <script>
-var Calculator = hoe.Type(function(){
+
+  <script id="counter-code">
+hoe.init(); // create DOM helper functions
+
+var Counter = hoe.Component('hoe-counter', function(args){
     // some data
-    this.sum = 0;
-    // reference to UI elements
+    args = args || {};
+    if (args['initial-value']){
+       this.sum = parseInt(args['initial-value']);
+    } else {
+       this.sum = 0;
+    }
+    // reference to UI child elements
     this.$sum = null;
+    // set style
+    this.style.display = 'block';
+    this.style.border= '1px solid black';
+    // render element
+    this.render();
 });
 
+// create Element from HTML text
+Counter.from_html = function(){
+  return {'initial-value': this.getAttribute('initial-value')};
+};
+
 // create UI
-Calculator.prototype.render = function(){
-   var $plus_one = button('+1');
+Counter.render = function(){
+   var $plus_one = button(null, '+1');
    this.listen($plus_one, 'click', this.add_one);
    this.$sum = strong({style: "margin-left:5px"}, this.sum.toString());
-   return [$plus_one, this.$sum];
+   hoe.html(this, $plus_one, this.$sum);
 };
 
 // logic - event handler
-Calculator.prototype.add_one = function(){
+Counter.add_one = function(){
    // update data
    this.sum += 1;
    // update UI
-   this.$sum.html(this.sum);
+   hoe.html(this.$sum, this.sum);
 };
+</script>
 
-$(document).ready(function(){
-  hoe.init(); // create DOM helper functions
-  $('#calculator').html((new Calculator()).render());
-});
-  </script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $('#counter-pre').text($('#counter-code').text());
+     prettyPrint();
+  });
+</script>
 
 
 <script type="text/javascript">

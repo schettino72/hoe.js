@@ -3,6 +3,8 @@
   <meta charset="utf-8">
   <title>hoe.js Tests</title>
   <link rel="stylesheet" href="../components/mocha.css" />
+<script src="../components/polymer-platform.js"></script>
+<!--  <script src="../components/polymer-platform.js"></script> -->
 </head>
 <body>
   <div id="mocha"></div>
@@ -10,10 +12,13 @@
   <script src="../components/mocha.js"></script>
   <script>mocha.setup('tdd')</script>
 
-  <script src="../components/jquery.js"></script>
   <script src="../src/hoe.js"></script>
+  <script src="../src/hoe.model.js"></script>
+  <script src="../src/hoe.app.js"></script>
 
-  <script src="test.js"></script>
+  <script src="test_hoe.js"></script>
+  <script src="test_hoe.model.js"></script>
+  <script src="test_hoe.app.js"></script>
   <script>
     mocha.run();
   </script>

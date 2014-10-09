@@ -3,18 +3,16 @@
 <head>
   <meta charset="utf-8">
   <title>hoe.js</title>
-  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
 </head>
 <body>
 
-  <script src="../components/jquery.js"></script>
   <script src="../src/hoe.js"></script>
 
   <script>
-    $(function(){
+    document.addEventListener('DOMContentLoaded', function(){
         hoe.init();
-        $('body').append(
-            div('this is used for quick manual tests. edit the code...')
+        document.body.appendChild(
+            div(null, 'this is used for quick manual tests. edit the code...')
         );
     });
   </script>

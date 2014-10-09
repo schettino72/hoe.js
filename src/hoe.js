@@ -1,84 +1,147 @@
 /** @license
  *   hoe.js - [http://schettino72.github.com/hoe.js]
  *   MIT license - Copyright (c) 2012 Eduardo Naufel Schettino
+ *
+ * Supports IE 9+ (needs CustomEvent polyfill)
  */
+
 
 /**
  * @namespace creates new DOM elements
  * @param {String} tag name of tag to be created
- * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
- * @returns {jQuery}
+ * @param {Object} [attrs] set as html element attributes
+ * @param {DOMElement|string} append as nodes into element
+ * @returns {DOMElement}
  */
-var hoe = function(tag){
-    var $ele = jQuery(document.createElement(tag));
-    return $ele.hoe.apply($ele, Array.prototype.slice.call(arguments, 1));
+var hoe = function(tag, attrs){
+    // create element
+    var $ele = document.createElement(tag);
+
+    // add attributes
+    if (attrs){
+        for(var name in attrs){
+            $ele.setAttribute(name, attrs[name]);
+        }
+    }
+
+    // add child nodes
+    for(var i=2, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(param instanceof Node){
+            $ele.appendChild(param);
+        }
+        else {
+            $ele.appendChild(document.createTextNode(param));
+        }
+    }
+
+    // CustomElements integration:
+    // createdCallback should be called only after
+    // element's content and attributes are set.
+    if('createdCallback' in $ele){
+        $ele.__init__();
+    }
+    return $ele;
+};
+
+
+/**
+ * @param {DOMElement} $ele element that will contain append elements
+ * @param {DOMElement|string} append as nodes into element
+ */
+hoe.append = function($ele){
+    for(var i=1, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(param instanceof Node){
+            $ele.appendChild(param);
+        }
+        else {
+            $ele.appendChild(document.createTextNode(param));
+        }
+    }
 };
 
 /**
- * Exposed to any jQuery object as 'hoe' plugin.
- * Guess which jQuery method should be applied to object,
- * operation depends on param type.
- * @param {String} [param] append as text to element content
- * @param {Object} [param] set as html element attributes
- * @param {DOMElement[]|jQuery[]} [param] append param into element content
- * @returns {jQuery}
+ * Shortcut to replace content of a node
  */
-hoe.jquery_plugin = function() {
-    /*
-       to arguments based on type:
-       - string: append text
-       - plain object: set html attributes
-       - DOM element & jQuery object: append elements
-       - array: append elements
-    */
-
-    function _guess_apply($ele, param){
-        var type = jQuery.type(param);
-        if(type === "string"){
-            $ele.append(param);
-        }
-        else if(type === "array"){
-            for(var i=0, max=param.length; i<max; i++) {
-                $ele.append(param[i]);
-            }
-        }
-        else if (type === "object") {
-            if (jQuery.isPlainObject(param)){
-                for(var name in param){
-                    $ele.attr(name, param[name]);
-                }
-            }
-            else {
-                $ele.append(param);
-            }
+hoe.html = function($ele){
+    $ele.innerHTML = '';
+    for(var i=1, max=arguments.length; i<max; i++){
+        var param = arguments[i];
+        if(param instanceof Node){
+            $ele.appendChild(param);
         }
         else {
-            throw Error("Invalid type: " + type);
+            $ele.appendChild(document.createTextNode(param));
         }
     }
-
-    for(var i=0, max=arguments.length; i<max; i++) {
-        _guess_apply(this, arguments[i]);
-    }
-    return this;
 };
 
-jQuery.fn.hoe = hoe.jquery_plugin;
+
+/**
+ * Remove element from DOM
+ */
+hoe.remove = function($ele){
+    if ($ele.parentNode !== null){
+        $ele.parentNode.removeChild($ele);
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+
+
+/**
+ * Creates a DocumentFragment from a list of nodes
+ */
+hoe.fragment = function(nodes){
+    var $ele = document.createDocumentFragment();
+    for(var i=0, max=nodes.length; i<max; i++){
+        var param = nodes[i];
+        if(typeof(param) === "string"){
+            $ele.appendChild(document.createTextNode(param));
+        }
+        else {
+            $ele.appendChild(param);
+        }
+    }
+    return $ele;
+};
+
+
+
+// extend object with other objects
+hoe.extend = function(out) {
+    var keys, arg;
+    for (var i = 1; i < arguments.length; i++) {
+        arg = arguments[i];
+        if (!arg){
+            continue;
+        }
+        keys = Object.keys(arg);
+        for (var j=0, max=keys.length; j<max; j++) {
+            out[keys[j]] = arg[keys[j]];
+        }
+    }
+    return out;
+};
+
 
 /**
  * Similar to `hoe()` but instead of returning an element returns
  * a function that creates new elements including the parameters
  * passed to partial
  * @param {String} tag name of tag to be created
- * @param [param[]] can take any number of params, {@link hoe.jquery_plugin}
  * @returns function
  */
-hoe.partial = function(tag){
-    var partial_args = Array.prototype.slice.call(arguments, 1);
-    return function(){
-        var $ele = jQuery(document.createElement(tag));
-        $ele.hoe.apply($ele, partial_args);
-        return $ele.hoe.apply($ele, arguments);
+hoe.partial = function(tag, partial_attrs){
+    var partial_nodes = Array.prototype.slice.call(arguments, 2);
+    return function(this_attrs){
+        var attrs = hoe.extend({}, partial_attrs, this_attrs);
+        var $ele = hoe(tag, attrs, hoe.fragment(partial_nodes),
+                       hoe.fragment(Array.prototype.slice.call(arguments, 1)));
+        return $ele;
     };
 };
 
@@ -126,8 +189,9 @@ hoe.inherit = function (base_type, constructor){
     else{
         new_type = function(){return base_type.apply(this, arguments);};
     }
-    $.extend(new_type, base_type);
-    $.extend(new_type.prototype, base_type.prototype);
+    new_type.prototype = Object.create(base_type.prototype);
+    new_type.prototype.constructor = new_type;
+    hoe.extend(new_type, base_type);
     return new_type;
 };
 
@@ -145,23 +209,25 @@ hoe.Type = function(constructor){
 
 /**
  * Attach/listen a callback on this object scope for event from observed
- * @param {jQuery|hoe.Type} observed object that trigger events
+ * @param {HTMLElement|hoe.Type} observed object that trigger events
  * @param {String} event name of the event
  * @param {Function} callback to be executed when event is triggered.
  *                      this will be bound to current object.
  */
-hoe.Type.prototype.listen = function(observed, event, callback){
-    if(observed instanceof jQuery){
-        observed.bind(event, $.proxy(callback, this));
+hoe.Type.prototype.listen = function(observed, event_name, callback){
+    if (observed instanceof window.HTMLElement){
+        observed.addEventListener(event_name, callback.bind(this));
+        return;
     }
-    else{
+    // hoe's crappy event manager
+    else {
         if (typeof observed._hoe_obs === 'undefined'){
             observed._hoe_obs = {};
         }
-        if (!(event in observed._hoe_obs)){
-            observed._hoe_obs[event] = [];
+        if (!(event_name in observed._hoe_obs)){
+            observed._hoe_obs[event_name] = [];
         }
-        observed._hoe_obs[event].push({scope:this, fn:callback});
+        observed._hoe_obs[event_name].push({scope:this, fn:callback});
     }
 };
 
@@ -170,9 +236,14 @@ hoe.Type.prototype.listen = function(observed, event, callback){
  * @param {String} event name of the event
  * @param [arguments] other arguments will be passed to the callback
  */
-hoe.Type.prototype.fire = function(event){
-    if (this._hoe_obs && this._hoe_obs[event]){
-        var callbacks = this._hoe_obs[event];
+hoe.Type.prototype.fire = function(event_name, detail){
+    if(this instanceof window.HTMLElement){
+        var event = new CustomEvent(event_name, {detail:detail});
+        this.dispatchEvent(event);
+        return;
+    }
+    if (this._hoe_obs && this._hoe_obs[event_name]){
+        var callbacks = this._hoe_obs[event_name];
         for (var i=0, max=callbacks.length; i<max; i++){
             callbacks[i].fn.apply(callbacks[i].scope,
                                   Array.prototype.slice.call(arguments, 1));
@@ -189,16 +260,16 @@ hoe.Type.prototype.fire = function(event){
           2) index/key
           3) reference to the whole sequence
  */
-hoe.Type.prototype.forEach = function(seq, fn){
-    if (jQuery.type(seq) == 'array'){
-        for(var i = 0, len = seq.length; i < len; ++i) {
-            fn.call(this, seq[i], i, seq);
-        }
+hoe.Type.prototype.forArray = function(seq, fn){
+    for(var i = 0, len = seq.length; i < len; ++i) {
+        fn.call(this, seq[i], i, seq);
     }
-    else { // must be an object
-        for (var key in seq){
-            fn.call(this, seq[key], key, seq);
-        }
+};
+
+// smilar to in each but iterate over key/values
+hoe.Type.prototype.forDict = function(seq, fn){
+    for (var key in seq){
+        fn.call(this, seq[key], key, seq);
     }
 };
 
@@ -213,20 +284,23 @@ hoe.Type.prototype.forEach = function(seq, fn){
           3) reference to the whole sequence
  * @return Array
  */
-hoe.Type.prototype.map = function(seq, fn){
+hoe.Type.prototype.mapArray = function(seq, fn){
     var result = [];
-    if (jQuery.type(seq) == 'array'){
-        for(var i = 0, len = seq.length; i < len; ++i) {
-            result.push(fn.call(this, seq[i], i, seq));
-        }
-    }
-    else { // must be an object
-        for (var key in seq){
-            result.push(fn.call(this, seq[key], key, seq));
-        }
+    for(var i = 0, len = seq.length; i < len; ++i) {
+        result.push(fn.call(this, seq[i], i, seq));
     }
     return result;
 };
+
+
+hoe.Type.prototype.mapDict = function(seq, fn){
+    var result = [];
+    for (var key in seq){
+        result.push(fn.call(this, seq[key], key, seq));
+    }
+    return result;
+};
+
 
 
 /**
@@ -234,12 +308,65 @@ hoe.Type.prototype.map = function(seq, fn){
  * Similar to jQuery.proxy().
  */
 hoe.Type.prototype.scope = function(func){
-    var my_scope = this;
-    return function () {return func.apply(my_scope, arguments);};
+    var args = [this].concat(Array.prototype.slice.call(arguments, 1));
+    return func.bind.apply(func, args);
 };
 
 
-/** @exports */
-if (typeof exports !== 'undefined'){
-    exports.hoe = hoe;
-}
+// creates a web-component
+// init_func must be used for initialization and creating the
+// initial content for the element/component
+hoe.Component = function(tag_name, init_func){
+    var proto = Object.create(window.HTMLElement.prototype);
+    hoe.extend(proto, hoe.Type.prototype);
+
+    // to be subclassed to get info from HTML when creating object
+    // note it is called BEFORE init_func
+    proto.from_html = function(){
+        return {};
+    };
+
+    // from web-components specification.
+    // this wrapper is used to detect whether the element is being created
+    // by parsing a HTML tag or programatically in js.
+    //
+    // If created by js it doesnt do anything, because creating its content
+    // should be done with a "init" function that are able to
+    // take new parameters.
+    // See the "New" function below
+    proto.attachedCallback = function(){
+        // make sure element is initialized before it is attached to DOM
+        this.__init__();
+    };
+
+    proto.createdCallback = function(){
+        // if element has a parent when created means it is created through
+        // HTML. This is not 100% reliable in some cases (not sure why)
+        // even HTML elements reach this point without a parentNode.
+        if (this.parentNode){
+            this.__init__();
+        }
+     };
+
+    // initialize the Element with some housekeeping
+    proto.__init__ = function(){
+        if (!this.__initialized__){
+            init_func.call(this, this.from_html());
+            this.__initialized__ = true;
+            this.__from_html__ = true;
+        }
+    };
+
+    // when creating elements from js you should use this function
+    proto.New = function (args) {
+        var obj = new proto.constructor();
+        obj.__initialized__ = true;
+        obj.__from_html__ = false;
+        init_func.call(obj, args);
+        return obj;
+    };
+
+    // register tag/element and save reference to constructor
+    proto.constructor = document.registerElement(tag_name, {prototype: proto});
+    return proto;
+};

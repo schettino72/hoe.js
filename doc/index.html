@@ -9,57 +9,47 @@
   <div class="four panel columns">
 
     <h4><em>hoe.js</em></h4>
-    <p><em>hoe.js</em> is a lightweight javascript library designed to streamline the creation of user interface in HTML/javascript.</p>
+    <p><em>hoe.js</em> is a lightweight javascript library designed to
+    streamline the creation of user interface in HTML/javascript.</p>
 
     <h4>Why <em>hoe.js</em> ?</h4>
-    <p>From one side you have toolkits like jQuery that simplifies DOM manipulation but lacks support for creating complex UI.</p>
-    <p>On the other side you have MVC frameworks that often impose a very heavy-weight mechanism to create applications.</p>
-    <p><em>hoe.js's</em> goal is to let you write structured code for small components and let you scale up your application without "getting into your way". It relies on javascript protoypes and jQuery, just adding some missing pieces:</p>
+    <p>From one side you have toolkits like jQuery that simplifies
+    DOM manipulation but lacks support for creating complex UI.</p>
+    <p>On the other side you have MVC frameworks that often impose a very
+    heavy-weight mechanism to create applications.</p>
+    <p><em>hoe.js's</em> goal is to let you write structured code for small
+    components and let you scale up your application without "getting into
+    your way". It relies on javascript prototypes and optionally
+    <a href="https://dvcs.w3.org/hg/webcomponents/raw-file/tip/spec/custom/index.html">
+    CustomElements</a>, just adding some missing pieces:</p>
     <ul class="side-nav" style="padding:0;">
       <li><a href="#dom">DOM creation</a></li>
       <li><a href="#prototype">prototype helpers</a></li>
       <li><a href="#event">event system</a></li>
+      <li><a href="#custom-elements">CustomElements integration</a></li>
     </ul>
+
+    <h4>Installation</h4>
+    <p>Install using bower</p>
+    <pre class="prettyprint">$ bower install hoe</pre>
   </div>
 
 
   <div class="eight columns">
-    <div id="dom" class="panel">
+    <div id="example" class="panel">
 
       <h4>Example</h4>
-      <p><em>hoe.js</em> does not enforce any kind of structure for your code, but it was specially designed to help you create custom UI components. Here is an idiomatic example of how a "component" would look like.</p>
+      <p><em>hoe.js</em> does not enforce any kind of structure for your code,
+      but it was specially designed to help you create custom UI components.
+      Here is the code to create CustomElement that can
+      be used on HTML and programmatically on javascript.</p>
 
-      <pre class="prettyprint">
-var Calculator = hoe.Type(function(){
-    // some data
-    this.sum = 0;
-    // reference to UI elements
-    this.$sum = null;
-});
-
-// create UI
-Calculator.prototype.render = function(){
-   var $plus_one = button('+1');
-   this.listen($plus_one, 'click', this.add_one);
-   this.$sum = strong({style: "margin-left:5px"},
-                      this.sum.toString());
-   return [$plus_one, this.$sum];
-};
-
-// logic - event handler
-Calculator.prototype.add_one = function(){
-   // update data
-   this.sum += 1;
-   // update UI
-   this.$sum.html(this.sum);
-};
-
-$(document).ready(function(){
-  hoe.init(); // create DOM helper functions
-  $('#calculator').html((new Calculator()).render());
-});
+      <pre id="counter-pre" class="prettyprint">
       </pre>
-      <div id="calculator" style="border:1px solid black"></div>
+      <hoe-counter initial-value="2"></hoe-counter>
+
+      <p>This could be used in HTML:</p>
+      <pre class="prettyprint">&lt;hoe-counter initial-value="2"&gt;&lt;/hoe-counter&gt;</pre>
     </div>
 
 
@@ -75,27 +65,28 @@ var row  = hoe('div', {'class':'row'}, 'foo');
 
       <p>
       The first argument is a string with tag name.
-      It returns a jQuery object for the tag.
+      The second argument is plain object with tag attributes
       It can take any number of extra arguments where:
       </p>
       <ul>
-        <li>plain javascript objects are element attributes</li>
         <li>strings are appended to the element content</li>
-        <li>DOM element or jQuery object is appended to the element content</li>
-        <li>can also take an array of DOM/jQuery</li>
+        <li>DOM elements are appended to the element content</li>
       </ul>
 
 
       <h5>hoe.partial()</h5>
       <pre class="prettyprint">
 var row  = hoe.partial('div', {'class':'row'});
-row('foo');
+row(null, 'foo');
 //  &lt;div class="row"&gt;foo&lt;/div&gt;
-row('bar');
+row(null, 'bar');
 //  &lt;div class="row"&gt;bar&lt;/div&gt;
        </pre>
 
-      <p><code>hoe.partial()</code> is used to create helper functions to generate composed tags and/or include tag attributes.</p>
+      <p><code>hoe.partial()</code> is used to create helper functions to
+      generate composed tags and/or include tag attributes.
+      The first argument is tag attributes, remaining attributes are appended
+      to the element.</p>
 
 
       <h5>hoe.init()</h5>
@@ -108,14 +99,22 @@ row('bar');
 
       <pre class="prettyprint">
 hoe.init();
-var row = tr(td('col1', {'class': "my_class"}));
+var row = tr(null, td({'class':'my_class'}, 'col1'));
 //&lt;tr&gt;
 //  &lt;td class="my_class"&gt;col1&lt;/td&gt;
 //&lt;/tr&gt;
       </pre>
 
-      <p>You can customize the namespace and tags that will
-      be created (check the <a href="api/symbols/hoe.html#.init">API</a>)</p>
+      <p>You can customize the namespace (first argument) and tags that will
+      be created (second argument)</p>
+
+      <h5>Other helper functions</h5>
+      <ul>
+        <li><code>hoe.append()</code></li>
+        <li><code>hoe.html()</code></li>
+        <li><code>hoe.remove()</code></li>
+        <li><code>hoe.fragment()</code></li>
+      </ul>
     </div><!-- end panel 'dom' -->
 
 
@@ -159,7 +158,7 @@ var MyType = hoe.Type(function(){/*...*/});
       </pre>
 
 
-      <h5>hoe.Type.scope</h5>
+      <h5>hoe.Type.scope()</h5>
       Similar to <code>jQuery.proxy()</code> to be used in the current object scope.
 
       <pre class="prettyprint">
@@ -172,21 +171,21 @@ get_on_scope(); // 5
 </pre>
 
 
-      <h5>hoe.Type.forEach</h5>
-      Iterate through arrays or objects keeping the context to the current object.
+      <h5>hoe.Type.forArray()</h5>
+      Iterate through arrays keeping the context to the current object.
 
       <pre class="prettyprint">
 var MyType = hoe.Type(function(){
     this.class = 'my_class';
     this.$ele = div();
-};
+});
 MyType.prototype.add_span = function(content){
-   this.$ele.append(span({'class': this.class}, content));
+   hoe.append(this.$ele, span({'class': this.class}, content));
 }
 
 var my = new MyType();
-my.forEach(['ele1', 'ele2'], this.add_span);
-my.$ele.html();
+my.forArray(['ele1', 'ele2'], my.add_span);
+my.$ele.outerHTML;
 // &lt;div&gt;
 //    &lt;span class="my_class"&gt;ele1&lt;/span&gt;
 //    &lt;span class="my_class"&gt;ele2&lt;/span&gt;
@@ -194,25 +193,35 @@ my.$ele.html();
       </pre>
 
 
-      <h5>hoe.Type.map</h5>
-      Iterate through arrays or objects keeping the context to the current object. Returned values in iteration are used to create an array.
+      <h5>hoe.Type.mapArray()</h5>
+      Iterate through arrays keeping the context to the current object.
+      Returned values in iteration are used to create an array.
 
       <pre class="prettyprint">
 var MyType = hoe.Type(function(){
     this.class = 'my_class';
-};
+});
 MyType.prototype.create_span = function(content){
    return span({'class': this.class}, content);
 }
 
 var my = new MyType();
-var span_array = my.map(['ele1', 'ele2'], this.create_span);
-div(span_array);
+var span_array = my.mapArray(['ele1', 'ele2'], my.create_span);
+div(null, hoe.fragment(span_array));
 // &lt;div&gt;
 //    &lt;span class="my_class"&gt;ele1&lt;/span&gt;
 //    &lt;span class="my_class"&gt;ele2&lt;/span&gt;
 // &lt;/div&gt;
       </pre>
+
+
+      <h5>hoe.Type.forDict()</h5>
+      <p>Similar to <em>hoe.type.forArray()</em> but used for plain objects,
+      second callback argument is item key instead of index.</p>
+
+      <h5>hoe.Type.mapDict()</h5>
+      <p>Similar to <em>hoe.type.mapArray()</em> but used for plain objects,
+      second callback argument is item key instead of index.</p>
 
 
 
@@ -253,6 +262,36 @@ my2.listen(my, 'my-custom-event-name', function(val){
 });
       </pre>
     </div>
+
+    <div id="custom-elements" class="panel">
+      <h4>Custom Elements</h4>
+
+      <p>Check the <a href="#example">example</a> on top.</p>
+
+      <h5>hoe.Component()</h5>
+      <p>First argument is a string with tag name.</p>
+      <p>Second argument is a method, initializer to be called when an
+      element is created. The initializer has a single parameter, a plain object.
+      with values passed when called with <em>hoe.Component.New()</em> or
+      <em>hoe.Component.from_html()</em>.
+      </p>
+      <p>The return value is an Element <em>prototype</em>. This prototype
+      extends <em>hoe.Type()</em></p>
+
+      <h5>hoe.Component.from_html()</h5>
+      <p>Apart from the initializer passed on <em>hoe.Component</em> you
+      typically need to implement the <em>from_html()</em> that is responsible
+      from taking data from the original HTML and pass it to the initializer
+      method.
+      </p>
+
+      <h5>hoe.Component.New()</h5>
+      <p>This is a static <em>factory</em> method used to create new elements
+      programmatically from javascript code. It takes a single parameter,
+      a plain object to be passed to the initializer method.
+      </p>
+    </div>
+
   </div>
 </div>
 
