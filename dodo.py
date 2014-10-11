@@ -1,7 +1,9 @@
 import json
 from glob import glob
 
+from doit.tools import result_dep
 from doitweb import JsHint
+from doitweb import bower
 
 
 DOIT_CONFIG = {
@@ -83,15 +85,17 @@ def task_dist():
         }
 
     # concat files for source distribution
-    sources = ['src/hoe.model.js', 'src/hoe.js'] # hoe.app.js is unreleased
+    sources = ['src/hoe.js', 'src/hoe.model.js'] # hoe.app.js is unreleased
     yield {
         'name': 'dev',
         'actions': [
             'echo  "// hoe.js version: %(version)s" > %(targets)s',
-            'cat %(dependencies)s >> %(targets)s',
+            'cat src/hoe.js >> %(targets)s',
+            'cat src/hoe.model.js >> %(targets)s',
             ],
         'file_dep': sources,
         'getargs': {'version': ('dist:version', 'version')},
+        'uptodate': [result_dep('dist:version')],
         'targets': ['dist/hoe.js'],
         'clean': True,
         }
@@ -164,6 +168,17 @@ def task_deploy():
 ################## setup  ###################
 # sudo apt-get install nodejs
 
+def task_bower():
+    # build/move used files from bower_components to components folder
+    components = {
+        'chai.js': 'chai/chai.js',
+        'mocha.css': 'mocha/mocha.css',
+        'mocha.js': 'mocha/mocha.js',
+        'polymer-platform.js': 'polymer-platform/platform.js',
+        }
+    yield bower.bower(components)
+
+
 def task_dev_setup():
     """install setup third-part packages"""
     yield {
@@ -175,24 +190,6 @@ def task_dev_setup():
 
     yield {
         'name': 'bower',
-        'actions': ['bower install'],
-        'file_dep': ['bower.json'],
-        'targets': ['bower_components'],
+        'actions': [],
+        'task_dep': ['bower'],
         }
-
-
-    # build/move used files from bower_components to components folder
-    components = {
-        'chai.js': 'chai/chai.js',
-        'mocha.css': 'mocha/mocha.css',
-        'mocha.js': 'mocha/mocha.js',
-        'polymer-platform.js': 'polymer-platform/platform.js',
-        }
-    for dst, src in components.items():
-        yield {
-            'name': 'bower-{}'.format(dst),
-            'actions': ['mkdir -p components',
-                        'cp %(dependencies)s %(targets)s'],
-            'file_dep': ['bower_components/{}'.format(src)],
-            'targets': ['components/{}'.format(dst)],
-            }
